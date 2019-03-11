@@ -52,7 +52,7 @@ public:
 
 private:
   static TRandom3* fRandomGenerator;
-  
+
 };
 
 #endif
