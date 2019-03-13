@@ -20,11 +20,13 @@
 #include <JPetRandom/JPetRandom.h>
 #include <JPetWriter/JPetWriter.h>
 #include <JPetScin/JPetScin.h>
+#include <algorithm>
 #include <iostream>
+#include <sstream>
 #include <TMath.h>
 #include <string>
-#include <cmath>
 #include <array>
+#include <cmath>
 
 using namespace jpet_options_tools;
 
@@ -36,6 +38,22 @@ bool JPetGeantParser::init()
 {
   // create detector map
   std::unique_ptr<JPetGeomMapping> fDetectorMap(new JPetGeomMapping(getParamBank()));
+
+  // kk read Z resolution per scin map
+  std::ifstream inputFile("ZPosRes_Run4_Scins.txt");
+  std::string inputLine;
+  while (getline(inputFile, inputLine)) {
+    if (boost::algorithm::starts_with(inputLine, "#")) {
+      continue;
+    } else {
+      std::istringstream stream(inputLine);
+      int slot = -1;
+      double value = 0.0;
+      double error = 0.0;
+      stream >> slot >> value >> error;
+      fZPosResMap[slot] = value;
+    }
+  }
 
   fOutputEvents = new JPetTimeWindowMC("JPetHit", "JPetMCHit", "JPetMCDecayTree");
   auto opts = getOptions();
@@ -113,12 +131,13 @@ void JPetGeantParser::processMCEvent(JPetGeantEventPack* evPack)
   bool isGenPrompt = evPack->GetEventInformation()->GetPromptGammaGen();
   bool isGen2g = evPack->GetEventInformation()->GetTwoGammaGen();
   // kk
-  isGen2g = ture;
+  isGen2g = true;
   bool isGen3g = evPack->GetEventInformation()->GetThreeGammaGen();
 
   // first adjust all hits in single event to time window scheme
   float timeShift = JPetRandom::GetRandomGenerator()->Uniform(fMinTime, fMaxTime);
 
+  // kk
   if(evPack->GetNumberOfHits() == 2){
     JPetMCHit mcHit1 = JPetGeantParserTools::createJPetMCHit(evPack->GetHit(0), getParamBank());
     JPetMCHit mcHit2 = JPetGeantParserTools::createJPetMCHit(evPack->GetHit(1), getParamBank());
@@ -126,8 +145,9 @@ void JPetGeantParser::processMCEvent(JPetGeantEventPack* evPack)
     fStoredMCHits.push_back(mcHit2);
     if (fMakeHisto) fillHistoMCGen(mcHit1);
     if (fMakeHisto) fillHistoMCGen(mcHit2);
-    JPetHit recHit1 = JPetGeantParserTools::reconstructHit(mcHit1, getParamBank(), timeShift, fZresolution);
-    JPetHit recHit2 = JPetGeantParserTools::reconstructHit(mcHit2, getParamBank(), timeShift, fZresolution);
+
+    JPetHit recHit1 = JPetGeantParserTools::reconstructHit(mcHit1, getParamBank(), timeShift, fZPosResMap[mcHit1.getScintillator().getID()]);
+    JPetHit recHit2 = JPetGeantParserTools::reconstructHit(mcHit2, getParamBank(), timeShift, fZPosResMap[mcHit2.getScintillator().getID()]);
 
     TVector3 middleOfLOR = 0.5 * (mcHit1.getPos() + mcHit2.getPos());
     TVector3 versorOnLOR = (mcHit2.getPos() - mcHit1.getPos()).Unit();
@@ -214,6 +234,7 @@ void JPetGeantParser::fillHistoGenInfo(JPetGeantEventInformation* evInfo)
 {
   bool isGenPrompt = evInfo->GetPromptGammaGen();
   bool isGen2g = evInfo->GetTwoGammaGen();
+  isGen2g = true;
   bool isGen3g = evInfo->GetThreeGammaGen();
 
   // general histograms
@@ -286,9 +307,15 @@ void JPetGeantParser::bookBasicHistograms()
   getStatistics().createHistogram(new TH2F("gen_hits_xy_pos", "GEN hits XY pos", 121, -60.5, 60.5, 121, -60.5, 60.5));
   getStatistics().createHistogram(new TH1F("gen_hit_time", "Gen hit time", 100, 0.0, 15000.0));
   getStatistics().createHistogram(new TH1F("gen_hit_eneDepos", "Gen hit ene deposition", 750, 0.0, 1500.0));
-  getStatistics().createHistogram(new TH2F("gen_XY", "GEN XY coordinates of annihilation point", 110, -5.5, 5.5, 110, -5.5, 5.5));
-  getStatistics().createHistogram(new TH2F("gen_XZ", "GEN XZ coordinates of annihilation point", 110, -5.5, 5.5, 110, -5.5, 5.5));
-  getStatistics().createHistogram(new TH2F("gen_YZ", "GEN YZ coordinates of annihilation point", 110, -5.5, 5.5, 110, -5.5, 5.5));
+
+  getStatistics().createHistogram(new TH2F("gen_XY", "Generated Annihilation point XY", 244, -30.5, 30.5, 244, -30.5, 30.5));
+  getStatistics().createHistogram(new TH2F("gen_XZ", "Generated Annihilation point XY", 244, -30.5, 30.5, 244, -30.5, 30.5));
+  getStatistics().createHistogram(new TH2F("gen_YZ", "Generated Annihilation point XY", 244, -30.5, 30.5, 244, -30.5, 30.5));
+  // kk
+  getStatistics().createHistogram(new TH2F("gen_XY_zoom", "Generated Annihilation point XY", 44, -5.5, 5.5, 44, -5.5, 5.5));
+  getStatistics().createHistogram(new TH2F("gen_XZ_zoom", "Generated Annihilation point XZ", 44, -5.5, 5.5, 44, -5.5, 5.5));
+  getStatistics().createHistogram(new TH2F("gen_YZ_zoom", "Generated Annihilation point YZ", 44, -5.5, 5.5, 44, -5.5, 5.5));
+
   getStatistics().createHistogram(new TH2F("gen_prompt_XY", "GEN XY coordinates of prompt emission point", 121, -60.5, 60.5, 121, -60.5, 60.5));
   getStatistics().createHistogram(new TH2F("gen_prompt_XZ", "GEN XZ coordinates of prompt emission point", 121, -60.5, 60.5, 121, -60.5, 60.5));
   getStatistics().createHistogram(new TH2F("gen_prompt_YZ", "GEN YZ coordinates of prompt emission point", 121, -60.5, 60.5, 121, -60.5, 60.5));
@@ -302,9 +329,9 @@ void JPetGeantParser::bookBasicHistograms()
   getStatistics().createHistogram(new TH1F("rec_hit_eneDepos", "hit ene deposition", 750, 0.0, 1500.0));
 
   // kk
-  getStatistics().createHistogram(new TH2F("gen_anh_point_xy", "Generated annihilation point XY", 204, -25.5, 25.5, 204, -25.5, 25.5));
-  getStatistics().createHistogram(new TH2F("gen_anh_point_xz", "Generated annihilation point XZ", 204, -25.5, 25.5, 204, -25.5, 25.5));
-  getStatistics().createHistogram(new TH2F("gen_anh_point_yz", "Generated annihilation point YZ", 204, -25.5, 25.5, 204, -25.5, 25.5));
+  getStatistics().createHistogram(new TH2F("gen_anh_point_xy", "Generated annihilation point XY", 244, -30.5, 30.5, 244, -30.5, 30.5));
+  getStatistics().createHistogram(new TH2F("gen_anh_point_xz", "Generated annihilation point XZ", 244, -30.5, 30.5, 244, -30.5, 30.5));
+  getStatistics().createHistogram(new TH2F("gen_anh_point_yz", "Generated annihilation point YZ", 244, -30.5, 30.5, 244, -30.5, 30.5));
 }
 
 void JPetGeantParser::bookEfficiencyHistograms()

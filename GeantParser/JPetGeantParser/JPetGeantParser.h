@@ -35,7 +35,7 @@ class JPetWriter;
 #endif
 
 /**
- * @brief      Module responsible for creating JPetMCHit from GEANT MC simulations
+ * @brief Module responsible for creating JPetMCHit from GEANT MC simulations
  *
  */
 class JPetGeantParser: public JPetUserTask
@@ -47,7 +47,6 @@ public:
   virtual bool init() override;
   virtual bool exec() override;
   virtual bool terminate() override;
-
 
 protected :
   JPetGeomMapping* fDetectorMap =  nullptr;
@@ -91,6 +90,8 @@ protected :
   void fillHistoMCGen(JPetMCHit&);
   void fillHistoMCRec(JPetHit&);
 
+  // kk
+  std::map<int, double> fZPosResMap;
 
 };
 
