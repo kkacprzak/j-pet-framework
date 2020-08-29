@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2019 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2020 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -13,10 +13,11 @@
  *  @file JPetParamSaverAscii.cpp
  */
 
-#include <boost/property_tree/json_parser.hpp>
 #include "JPetParamGetterAscii/JPetParamAsciiConstants.h"
 #include "JPetParamGetterAscii/JPetParamSaverAscii.h"
 #include "JPetParamBank/JPetParamBank.h"
+
+#include <boost/property_tree/json_parser.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/filesystem.hpp>
 
@@ -49,6 +50,7 @@ void JPetParamSaverAscii::addToTree(
   fillSetups(runContents, bank);
   fillLayers(runContents, bank);
   fillSlots(runContents, bank);
+  fillWLSs(runContents, bank);
   fillScins(runContents, bank);
   fillPMs(runContents, bank);
   fillChannels(runContents, bank);
@@ -83,6 +85,16 @@ void JPetParamSaverAscii::fillSlots(
     infos.push_back(std::make_pair("", slotToInfo(*slot.second)));
   }
   runContents.add_child(objectsNames.at(ParamObjectType::kSlot), infos);
+}
+
+void JPetParamSaverAscii::fillWLSs(
+  boost::property_tree::ptree& runContents, const JPetParamBank& bank
+) {
+  boost::property_tree::ptree infos;
+  for (auto wls : bank.getWLSs()) {
+    infos.push_back(std::make_pair("", wlsToInfo(*wls.second)));
+  }
+  runContents.add_child(objectsNames.at(ParamObjectType::kWLS), infos);
 }
 
 void JPetParamSaverAscii::fillScins(
@@ -144,6 +156,23 @@ boost::property_tree::ptree JPetParamSaverAscii::slotToInfo(const JPetSlot& slot
     info.put("type", "module");
   }
   info.put(objectsNames.at(ParamObjectType::kLayer) + "_id", slot.getLayer().getID());
+  return info;
+}
+
+boost::property_tree::ptree JPetParamSaverAscii::wlsToInfo(const JPetWLS& wls)
+{
+  boost::property_tree::ptree info;
+  info.put("id", wls.getID());
+  info.put("length", wls.getLength());
+  info.put("width", wls.getWidth());
+  info.put("height", wls.getHeight());
+  info.put("xcenter", wls.getCenterX());
+  info.put("ycenter", wls.getCenterY());
+  info.put("zcenter", wls.getCenterZ());
+  info.put("pm_1_id", wls.getPMIDs().at(0));
+  info.put("pm_2_id", wls.getPMIDs().at(1));
+  info.put("pm_3_id", wls.getPMIDs().at(2));
+  info.put(objectsNames.at(ParamObjectType::kSlot) + "_id", wls.getSlot().getID());
   return info;
 }
 

@@ -57,6 +57,8 @@ int JPetParamBank::getSize(ParamObjectType type) const
     case kSlot:
       size = getSlotsSize();
       break;
+    case kWLS:
+      size = getWLSsSize();  
     case kScin:
       size = getScinsSize();
       break;

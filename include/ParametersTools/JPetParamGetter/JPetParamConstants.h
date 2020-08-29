@@ -20,6 +20,7 @@ enum ParamObjectType {
   kSetup,
   kLayer,
   kSlot,
+  kWLS,
   kScin,
   kPM,
   kChannel,

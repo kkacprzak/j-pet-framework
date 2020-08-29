@@ -194,6 +194,8 @@ set(SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Core/JPetAnalysisTools/JPetAnalysisTools
             ${CMAKE_CURRENT_SOURCE_DIR}/ParamObjects/JPetPM/JPetPMFactory.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/ParamObjects/JPetScin/JPetScin.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/ParamObjects/JPetScin/JPetScinFactory.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/ParamObjects/JPetWLS/JPetWLS.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/ParamObjects/JPetWLS/JPetWLSFactory.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/ParamObjects/JPetSlot/JPetSlot.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/ParamObjects/JPetSlot/JPetSlotFactory.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/ParamObjects/JPetLayer/JPetLayer.cpp
@@ -241,8 +243,9 @@ set(HEADERS_WITH_DICTIONARY_REQUIRED
   JPetChannel/JPetChannel.h
   JPetPM/JPetPM.h
   JPetScin/JPetScin.h
-  JPetLayer/JPetLayer.h
+  JPetWLS/JPetWLS.h
   JPetSlot/JPetSlot.h
+  JPetLayer/JPetLayer.h
   JPetSetup/JPetSetup.h
   JPetParamBank/JPetParamBank.h
   JPetMCHit/JPetMCHit.h

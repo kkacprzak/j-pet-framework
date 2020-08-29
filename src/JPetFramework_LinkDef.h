@@ -12,6 +12,8 @@
 #pragma link C++ function JPetWriter::Write(vector<JPetPM>&);
 #pragma link C++ function JPetWriter::Write(JPetScin&);
 #pragma link C++ function JPetWriter::Write(vector<JPetScin>&);
+#pragma link C++ function JPetWriter::Write(JPetWLS&);
+#pragma link C++ function JPetWriter::Write(vector<JPetWLS>&);
 #pragma link C++ function JPetWriter::Write(JPetSlot&);
 #pragma link C++ function JPetWriter::Write(vector<JPetSlot>&);
 #pragma link C++ function JPetWriter::Write(JPetLayer&);
@@ -45,6 +47,7 @@
 #pragma link C++ class JPetChannel+;
 #pragma link C++ class JPetPM+;
 #pragma link C++ class JPetScin+;
+#pragma link C++ class JPetWLS+;
 #pragma link C++ class JPetSlot+;
 #pragma link C++ class JPetLayer+;
 #pragma link C++ class JPetSetup+;

@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2019 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2020 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -99,6 +99,23 @@ JPetSlotFactory& JPetParamManager::getSlotFactory(const int runID)
   }
   fSlotFactories.at(runID);
   return fSlotFactories.at(runID);
+}
+
+std::map<int, JPetWLS*>& JPetParamManager::getWLSs(const int runID)
+{
+  return getWLSFactory(runID).getWLSs();
+}
+
+JPetWLSFactory& JPetParamManager::getWLSFactory(const int runID)
+{
+  if (fWLSFactories.count(runID) == 0) {
+    fWLSFactories.emplace(
+      std::piecewise_construct,
+      std::forward_as_tuple(runID),
+      std::forward_as_tuple(*fParamGetter, runID, getSlotFactory(runID))
+    );
+  }
+  return fWLSFactories.at(runID);
 }
 
 std::map<int, JPetScin*>& JPetParamManager::getScins(const int runID)

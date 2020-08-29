@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2019 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2020 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -23,6 +23,7 @@
 #include "JPetSlot/JPetSlot.h"
 #include "JPetScin/JPetScin.h"
 #include "JPetLoggerInclude.h"
+#include "JPetWLS/JPetWLS.h"
 #include "JPetPM/JPetPM.h"
 #include <cassert>
 #include <map>
@@ -77,6 +78,20 @@ public:
   inline int getSlotsSize() const { return fSlots.size(); }
 
   /**
+   * Adds a WLS to Param Bank. If a WLS with the same ID
+   * already exists in the Param Bank, the new element will not be added.
+   */
+  inline void addWLS(JPetWLS wls) {
+    if (!fWLSs.insert(std::make_pair(wls.getID(), new JPetWLS(wls))).second) {
+      WARNING("A WLS with this ID already exists in the ParamBank. It will not be added.");
+    }
+  }
+  inline const std::map<int, JPetWLS*>& getWLSs() const { return fWLSs; }
+  inline JPetWLS& getWLS(int i) const { return *(fWLSs.at(i)); }
+  inline int getWLSsSize() const { return fWLSs.size(); }
+
+
+  /**
    * Adds a Scin to Param Bank. If a Scin with the same ID
    * already exists in the Param Bank, the new element will not be added.
    */
@@ -128,6 +143,7 @@ private:
   std::map<int, JPetSetup*> fSetups;
   std::map<int, JPetLayer*> fLayers;
   std::map<int, JPetSlot*> fSlots;
+  std::map<int, JPetWLS*> fWLSs;
   std::map<int, JPetScin*> fScins;
   std::map<int, JPetPM*> fPMs;
   std::map<int, JPetChannel*> fChannels;
@@ -138,7 +154,7 @@ private:
     }
   }
 
-  ClassDef(JPetParamBank, 7);
+  ClassDef(JPetParamBank, 8);
 };
 
 #endif /* !JPETPARAMBANK_H */

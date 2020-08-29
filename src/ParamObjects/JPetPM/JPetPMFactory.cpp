@@ -41,7 +41,11 @@ void JPetPMFactory::initialize()
     ParamObjectType::kPM, ParamObjectType::kScin, fRunID
   );
   for (auto relation : relations) {
-    fPMs[relation.first]->setScin(*fScinFactory.getScins().at(relation.second));
+    if(relation.second!=-1){
+      fPMs[relation.first]->setScin(*fScinFactory.getScins().at(relation.second));
+    } else {
+      fPMs[relation.first]->setScin(JPetScin::getDummyResult());
+    }
   }
 }
 

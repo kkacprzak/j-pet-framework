@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2019 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2020 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -23,6 +23,7 @@
 #include "JPetLayer/JPetLayerFactory.h"
 #include "JPetScin/JPetScinFactory.h"
 #include "JPetSlot/JPetSlotFactory.h"
+#include "JPetWLS/JPetWLSFactory.h"
 #include "JPetReader/JPetReader.h"
 #include "JPetWriter/JPetWriter.h"
 #include "JPetPM/JPetPMFactory.h"
@@ -59,6 +60,7 @@ public:
   std::map<int, JPetSetup*>& getSetups(const int runID);
   std::map<int, JPetLayer*>& getLayers(const int runID);
   std::map<int, JPetSlot*>& getSlots(const int runID);
+  std::map<int, JPetWLS*>& getWLSs(const int runID);
   std::map<int, JPetScin*>& getScins(const int runID);
   std::map<int, JPetPM*>& getPMs(const int runID);
   std::map<int, JPetChannel*>& getChannels(const int runID);
@@ -82,12 +84,14 @@ private:
   std::map<int, JPetSetupFactory> fSetupFactories;
   std::map<int, JPetLayerFactory> fLayerFactories;
   std::map<int, JPetSlotFactory> fSlotFactories;
+  std::map<int, JPetWLSFactory> fWLSFactories;
   std::map<int, JPetScinFactory> fScinFactories;
   std::map<int, JPetPMFactory> fPMFactories;
   std::map<int, JPetChannelFactory> fChannelFactories;
   JPetSetupFactory& getSetupFactory(const int runID);
   JPetLayerFactory& getLayerFactory(const int runID);
   JPetSlotFactory& getSlotFactory(const int runID);
+  JPetWLSFactory& getWLSFactory(const int runID);
   JPetScinFactory& getScinFactory(const int runID);
   JPetPMFactory& getPMFactory(const int runID);
   JPetChannelFactory& getChannelFactory(const int runID);

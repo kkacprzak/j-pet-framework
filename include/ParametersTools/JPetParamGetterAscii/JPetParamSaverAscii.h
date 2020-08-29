@@ -37,15 +37,17 @@ private:
   void fillLayers(boost::property_tree::ptree& runContents, const JPetParamBank& bank);
   void fillSlots(boost::property_tree::ptree& runContents, const JPetParamBank& bank);
   void fillScins(boost::property_tree::ptree& runContents, const JPetParamBank& bank);
+  void fillWLSs(boost::property_tree::ptree& runContents, const JPetParamBank& bank);
   void fillPMs(boost::property_tree::ptree& runContents, const JPetParamBank& bank);
   void fillChannels(boost::property_tree::ptree& runContents, const JPetParamBank& bank);
 
   boost::property_tree::ptree setupToInfo(const JPetSetup& setup);
   boost::property_tree::ptree layerToInfo(const JPetLayer& layer);
   boost::property_tree::ptree slotToInfo(const JPetSlot& slot);
+  boost::property_tree::ptree wlsToInfo(const JPetWLS& wls);
   boost::property_tree::ptree scinToInfo(const JPetScin& scin);
   boost::property_tree::ptree pmToInfo(const JPetPM& pm);
-  boost::property_tree::ptree channelToInfo(const JPetChannel& tomb);
+  boost::property_tree::ptree channelToInfo(const JPetChannel& channel);
 };
 
 #endif /* !JPETPARAMSAVERASCII_H */
