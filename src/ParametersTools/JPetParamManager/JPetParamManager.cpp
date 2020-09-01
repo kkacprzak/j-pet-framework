@@ -196,6 +196,13 @@ void JPetParamManager::fillParameterBank(const int runID)
       fBank->getSlot(slot.getID()).setLayer(fBank->getLayer(slot.getLayer().getID()));
     }
   }
+  if (!fExpectMissing.count(ParamObjectType::kWLS)) {
+    for (auto& wls_p : getWLSs(runID)) {
+      auto& wls = *wls_p.second;
+      fBank->addWLS(wls);
+      fBank->getWLS(wls.getID()).setSlot(fBank->getSlot(wls.getSlot().getID()));
+    }
+  }
   if (!fExpectMissing.count(ParamObjectType::kScin)) {
     for (auto& scin_p : getScins(runID)) {
       auto& scin = *scin_p.second;
