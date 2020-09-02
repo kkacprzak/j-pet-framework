@@ -30,7 +30,7 @@
 class JPetSlot: public TNamed
 {
 public:
-  enum Type {Barrel, Module};
+  enum Type {Barrel, Module, WLS};
   JPetSlot();
   JPetSlot(int id, float theta, JPetSlot::Type type);
   JPetSlot(const JPetSlot &slot);
@@ -65,7 +65,7 @@ protected:
 #endif
   TRef fTRefLayer;
 
-  ClassDef(JPetSlot, 1);
+  ClassDef(JPetSlot, 2);
 };
 
 #endif /* !JPETSLOT_H */

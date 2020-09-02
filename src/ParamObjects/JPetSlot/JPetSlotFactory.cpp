@@ -58,6 +58,8 @@ JPetSlot* JPetSlotFactory::build(ParamObjectDescription data)
       return new JPetSlot(id, theta, JPetSlot::Barrel);
     } else if(type == "module") {
       return new JPetSlot(id, theta, JPetSlot::Module);
+    } else if(type == "wls") {
+      return new JPetSlot(id, theta, JPetSlot::WLS);
     }
   } catch (const std::exception& e) {
     ERROR(Form("Failed to build barrelSlot with error: %s", e.what()));
