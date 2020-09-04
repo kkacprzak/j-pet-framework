@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2019 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2020 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -30,7 +30,7 @@ class JPetScin;
 class JPetPM: public TNamed
 {
 public:
-  enum Side {SideA, SideB};
+  enum Side {SideA, SideB, WLS};
 
   JPetPM();
   JPetPM(int id, Side side, std::string desc, int matrixPosition);
@@ -72,7 +72,7 @@ protected:
 
   friend class JPetParamManager;
 
-  ClassDef(JPetPM, 7);
+  ClassDef(JPetPM, 8);
 };
 
 #endif /* !JPET_PM */

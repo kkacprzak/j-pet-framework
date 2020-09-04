@@ -214,7 +214,11 @@ void JPetParamManager::fillParameterBank(const int runID)
     for (auto& pm_p : getPMs(runID)) {
       auto& pm = *pm_p.second;
       fBank->addPM(pm);
-      fBank->getPM(pm.getID()).setScin(fBank->getScin(pm.getScin().getID()));
+      if(pm.getDesc()=="scin"){
+        fBank->getPM(pm.getID()).setScin(fBank->getScin(pm.getScin().getID()));
+      } else {
+        fBank->getPM(pm.getID()).setScin(JPetScin::getDummyResult());
+      }
     }
   }
   if (!fExpectMissing.count(ParamObjectType::kChannel)) {

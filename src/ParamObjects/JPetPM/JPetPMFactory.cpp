@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2019 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2020 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -41,7 +41,7 @@ void JPetPMFactory::initialize()
     ParamObjectType::kPM, ParamObjectType::kScin, fRunID
   );
   for (auto relation : relations) {
-    if(relation.second!=-1){
+    if(fPMs[relation.first]->getDesc()=="scin"){
       fPMs[relation.first]->setScin(*fScinFactory.getScins().at(relation.second));
     } else {
       fPMs[relation.first]->setScin(JPetScin::getDummyResult());
@@ -56,10 +56,12 @@ JPetPM* JPetPMFactory::build(ParamObjectDescription data)
     std::string side = boost::lexical_cast<std::string>(data.at("side"));
     std::string desc = boost::lexical_cast<std::string>(data.at("description"));
     int mtxPos = boost::lexical_cast<int>(data.at("pos_in_matrix"));
-    if(side == "A"){
+    if(side == "A") {
       return new JPetPM(id, JPetPM::SideA, desc, mtxPos);
-    } else if(side == "B"){
+    } else if(side == "B") {
       return new JPetPM(id, JPetPM::SideB, desc, mtxPos);
+    } else if(side == "WLS") {
+      return new JPetPM(id, JPetPM::WLS, desc, mtxPos);
     }
   } catch (const std::exception& e) {
     ERROR(Form("Failed to build PM with error: %s", e.what()));
