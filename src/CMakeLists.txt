@@ -69,18 +69,9 @@ set_property(TARGET ROOT::Flags_CXX APPEND PROPERTY
 set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
-find_package(Boost 1.50 REQUIRED
-             COMPONENTS filesystem
-                        program_options
-                        regex
-                        system
-                        log_setup
-                        log
-                        date_time
-                        thread
-                        chrono
-                        atomic
-                        )
+find_package(Boost 1.50 REQUIRED COMPONENTS
+  filesystem program_options regex system log_setup log date_time thread chrono atomic
+)
 
 if(NOT TARGET Boost::filesystem)
     add_library(Boost::filesystem IMPORTED INTERFACE)
@@ -132,7 +123,7 @@ set(FOLDERS_WITH_SOURCE
   ParametersTools
   MC
   GeantParser
-  )
+)
 
 ## Point sources and headers
 set(SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Core/JPetAnalysisTools/JPetAnalysisTools.cpp
@@ -192,6 +183,8 @@ set(SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Core/JPetAnalysisTools/JPetAnalysisTools
             ${CMAKE_CURRENT_SOURCE_DIR}/ParamObjects/JPetChannel/JPetChannelFactory.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/ParamObjects/JPetPM/JPetPM.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/ParamObjects/JPetPM/JPetPMFactory.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/ParamObjects/JPetMatrix/JPetMatrix.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/ParamObjects/JPetMatrix/JPetMatrixFactory.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/ParamObjects/JPetScin/JPetScin.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/ParamObjects/JPetScin/JPetScinFactory.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/ParamObjects/JPetWLS/JPetWLS.cpp
@@ -242,6 +235,7 @@ set(HEADERS_WITH_DICTIONARY_REQUIRED
   JPetTreeHeader/JPetTreeHeader.h
   JPetChannel/JPetChannel.h
   JPetPM/JPetPM.h
+  JPetMatrix/JPetMatrix.h
   JPetScin/JPetScin.h
   JPetWLS/JPetWLS.h
   JPetSlot/JPetSlot.h

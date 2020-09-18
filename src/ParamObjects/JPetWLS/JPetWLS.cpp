@@ -86,11 +86,6 @@ void JPetWLS::setCenterZ(double centerZ)
   fWLSCenter[2] = centerZ;
 }
 
-void JPetWLS::setPMIDs(std::vector<int> ids)
-{
-  fPMIDsVec = ids;
-}
-
 void JPetWLS::setSlot(JPetSlot& slot)
 {
   fTRefSlot = &slot;
@@ -136,11 +131,6 @@ double JPetWLS::getCenterZ() const
   return fWLSCenter.Z();
 }
 
-std::vector<int> JPetWLS::getPMIDs() const
-{
-  return fPMIDsVec;
-}
-
 const JPetSlot& JPetWLS::getSlot() const
 {
   if (fTRefSlot.GetObject()) {
@@ -158,7 +148,6 @@ bool JPetWLS::operator==(const JPetWLS& wls) const
     && this->getHeight() == wls.getHeight()
     && this->getWidth() == wls.getWidth()
     && this->getCenter() == wls.getCenter()
-    && this->getPMIDs() == wls.getPMIDs()
     && this->getSlot() == wls.getSlot();
 }
 

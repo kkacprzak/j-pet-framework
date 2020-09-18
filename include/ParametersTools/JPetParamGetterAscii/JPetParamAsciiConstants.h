@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2019 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2020 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -22,14 +22,17 @@
 /**
  * @brief Constants for names in the json file format
  */
-const std::map<ParamObjectType, std::string> objectsNames{
+const std::map<ParamObjectType, std::string> objectsNames
+{
   {ParamObjectType::kSetup, "setup"},
   {ParamObjectType::kLayer, "layer"},
   {ParamObjectType::kSlot, "slot"},
   {ParamObjectType::kWLS, "wls"},
   {ParamObjectType::kScin, "scin"},
+  {ParamObjectType::kMatrix, "matrix"},
   {ParamObjectType::kPM, "pm"},
-  {ParamObjectType::kChannel, "channel"}
+  {ParamObjectType::kChannel, "channel"},
+  {ParamObjectType::kParent, "parent"}
 };
 
 #endif /* !JPETPARAMASCIICONSTANTS_H */

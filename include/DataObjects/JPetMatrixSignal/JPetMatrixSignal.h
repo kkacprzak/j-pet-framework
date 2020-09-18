@@ -17,7 +17,7 @@
 #define JPETMATRIXSIGNAL_H
 
 #include "JPetRawSignal/JPetRawSignal.h"
-#include "JPetScin/JPetScin.h"
+#include "JPetMatrix/JPetMatrix.h"
 
 /**
  * @brief Data class representing a physical signal reconstructed
@@ -28,20 +28,24 @@ class JPetMatrixSignal: public JPetBaseSignal
 {
 public:
   JPetMatrixSignal();
-  explicit JPetMatrixSignal(float time);
+  explicit JPetMatrixSignal(double time);
   virtual ~JPetMatrixSignal();
   bool isNullObject() const;
   explicit JPetMatrixSignal(bool isNull);
 
-  float getTime() const;
-  void setTime(float time);
-  float getTOT() const;
+  double getTime() const;
+  void setTime(double time);
+  double getTOT() const;
   bool addRawSignal(const JPetRawSignal& rawSignal);
   std::map<int, JPetRawSignal> getRawSignals() const;
   void Clear(Option_t * opt = "");
 
+  void setMatrix(const JPetMatrix& matrix);
+  const JPetMatrix& getMatrix() const;
+
 private:
-  float fTime;
+  double fTime;
+  TRef fMatrix;
   std::map<int, JPetRawSignal> fRawSignalsMap;
 
 protected:
@@ -51,7 +55,7 @@ protected:
   bool fIsNullObject;
   #endif
 
-  ClassDef(JPetMatrixSignal, 4);
-
+  ClassDef(JPetMatrixSignal, 5);
 };
+
 #endif /* !JPETMATRIXSIGNAL_H */

@@ -10,61 +10,72 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *
- *  @file JPetPM.h
+ *  @file JPetMatrix.h
  */
 
-#ifndef JPET_PM
-#define JPET_PM
+#ifndef JPET_MATRIX
+#define JPET_MATRIX
 
-// #include "JPetMatrix/JPetMatrix.h"
+#include "JPetScin/JPetScin.h"
+#include "JPetWLS/JPetWLS.h"
 #include <TNamed.h>
 #include <TRef.h>
+
+class JPetScin;
+class JPetWLS;
 
 /**
  * @brief Representation of a photomultiplier.
  *
  * Parametric class representing database information of a single photomultiplier.
  */
-class JPetPM: public TNamed
+class JPetMatrix: public TNamed
 {
 public:
-  JPetPM();
-  JPetPM(int id, std::string desc, double position);
-  JPetPM(const JPetPM &pm);
-  explicit JPetPM(bool isNull);
-  virtual ~JPetPM();
+  JPetMatrix();
+  JPetMatrix(int id, std::string type, std::vector<int> pmIDs);
+  JPetMatrix(const JPetMatrix &matrix);
+  explicit JPetMatrix(bool isNull);
+  virtual ~JPetMatrix();
   void setID(int id);
-  void setDesc(std::string desc);
-  void setPosition(double position);
-  // void setMatrix(JPetMatrix& matrix);
-  int getID() const;
-  std::string getDesc() const;
-  double getPosition() const;
-  // JPetMatrix& getMatrix() const;
-  bool operator==(const JPetPM& pm) const;
-  bool operator!=(const JPetPM& pm) const;
-  bool isNullObject() const;
-  static JPetPM& getDummyResult();
+  void setType(std::string type);
+  void setPMIDs(std::vector<int> ids);
 
-// protected:
-  // void clearTRefMatrix();
+  void setScin(JPetScin& scin);
+  void setWLS(JPetWLS& wls);
+
+  int getID() const;
+  std::string getType() const;
+  std::vector<int> getPMIDs() const;
+
+  JPetScin& getScin() const;
+  JPetWLS& getWLS() const;
+
+  bool operator==(const JPetMatrix& matrix) const;
+  bool operator!=(const JPetMatrix& matrix) const;
+
+  bool isNullObject() const;
+  static JPetMatrix& getDummyResult();
+
+protected:
+  void clearTRefs();
 
 #ifndef __CINT__
   int fID = -1;
-  std::string fDesc = "";
-  double fPosition = -999.9;
+  std::string fType = "";
   bool fIsNullObject = false;
 #else
   int fID;
-  std::string fDesc;
-  double fPosition;
+  std::string fType;
   bool fIsNullObject;
 #endif
-  // TRef fTRefMatrix;
+  std::vector<int> fPMIDsVec;
+  TRef fTRefScin;
+  TRef fTRefWLS;
 
   friend class JPetParamManager;
 
-  ClassDef(JPetPM, 9);
+  ClassDef(JPetMatrix, 1);
 };
 
-#endif /* !JPET_PM */
+#endif /* !JPET_MATRIX */

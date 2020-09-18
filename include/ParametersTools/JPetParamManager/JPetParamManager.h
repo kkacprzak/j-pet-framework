@@ -18,6 +18,7 @@
 
 #include "JPetScopeConfigParser/JPetScopeConfigPOD.h"
 #include "JPetChannel/JPetChannelFactory.h"
+#include "JPetMatrix/JPetMatrixFactory.h"
 #include "JPetParamBank/JPetParamBank.h"
 #include "JPetSetup/JPetSetupFactory.h"
 #include "JPetLayer/JPetLayerFactory.h"
@@ -62,6 +63,7 @@ public:
   std::map<int, JPetSlot*>& getSlots(const int runID);
   std::map<int, JPetWLS*>& getWLSs(const int runID);
   std::map<int, JPetScin*>& getScins(const int runID);
+  std::map<int, JPetMatrix*>& getMatrices(const int runID);
   std::map<int, JPetPM*>& getPMs(const int runID);
   std::map<int, JPetChannel*>& getChannels(const int runID);
   void fillParameterBank(const int runID);
@@ -86,6 +88,7 @@ private:
   std::map<int, JPetSlotFactory> fSlotFactories;
   std::map<int, JPetWLSFactory> fWLSFactories;
   std::map<int, JPetScinFactory> fScinFactories;
+  std::map<int, JPetMatrixFactory> fMatrixFactories;
   std::map<int, JPetPMFactory> fPMFactories;
   std::map<int, JPetChannelFactory> fChannelFactories;
   JPetSetupFactory& getSetupFactory(const int runID);
@@ -93,6 +96,7 @@ private:
   JPetSlotFactory& getSlotFactory(const int runID);
   JPetWLSFactory& getWLSFactory(const int runID);
   JPetScinFactory& getScinFactory(const int runID);
+  JPetMatrixFactory& getMatrixFactory(const int runID);
   JPetPMFactory& getPMFactory(const int runID);
   JPetChannelFactory& getChannelFactory(const int runID);
 };

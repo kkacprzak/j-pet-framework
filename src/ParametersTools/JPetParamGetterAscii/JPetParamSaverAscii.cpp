@@ -22,12 +22,12 @@
 #include <boost/filesystem.hpp>
 
 void JPetParamSaverAscii::saveParamBank(
-  const JPetParamBank& bank, const int runNumber, const std::string& filename)
+  const JPetParamBank& /*bank*/, const int /*runNumber*/, const std::string& /*filename*/)
 {
-  std::string runNumberS = boost::lexical_cast<std::string>(runNumber);
-  auto fileTree = getTreeFromFile(filename);
-  addToTree(fileTree, bank, runNumberS);
-  write_json(filename, fileTree);
+  // std::string runNumberS = boost::lexical_cast<std::string>(runNumber);
+  // auto fileTree = getTreeFromFile(filename);
+  // addToTree(fileTree, bank, runNumberS);
+  // write_json(filename, fileTree);
 }
 
 boost::property_tree::ptree JPetParamSaverAscii::getTreeFromFile(const std::string& filename)
@@ -40,177 +40,177 @@ boost::property_tree::ptree JPetParamSaverAscii::getTreeFromFile(const std::stri
 }
 
 void JPetParamSaverAscii::addToTree(
-  boost::property_tree::ptree& tree, const JPetParamBank& bank, const std::string& runNumber
+  boost::property_tree::ptree& /*tree*/, const JPetParamBank& /*bank*/, const std::string& /*runNumber*/
 ) {
-  if (tree.count(runNumber) != 0) {
-    WARNING("Overwriting parameters in run number " + runNumber + ". I hope you wanted to do that.");
-    tree.erase(runNumber);
-  }
-  boost::property_tree::ptree runContents;
-  fillSetups(runContents, bank);
-  fillLayers(runContents, bank);
-  fillSlots(runContents, bank);
-  fillWLSs(runContents, bank);
-  fillScins(runContents, bank);
-  fillPMs(runContents, bank);
-  fillChannels(runContents, bank);
-  tree.add_child(runNumber, runContents);
+  // if (tree.count(runNumber) != 0) {
+  //   WARNING("Overwriting parameters in run number " + runNumber + ". I hope you wanted to do that.");
+  //   tree.erase(runNumber);
+  // }
+  // boost::property_tree::ptree runContents;
+  // fillSetups(runContents, bank);
+  // fillLayers(runContents, bank);
+  // fillSlots(runContents, bank);
+  // fillWLSs(runContents, bank);
+  // fillScins(runContents, bank);
+  // fillPMs(runContents, bank);
+  // fillChannels(runContents, bank);
+  // tree.add_child(runNumber, runContents);
 }
 
 void JPetParamSaverAscii::fillSetups(
-  boost::property_tree::ptree& runContents, const JPetParamBank& bank
+  boost::property_tree::ptree& /*runContents*/, const JPetParamBank& /*bank*/
 ) {
-  boost::property_tree::ptree infos;
-  for (auto setup : bank.getSetups()) {
-    infos.push_back(std::make_pair("", setupToInfo(*setup.second)));
-  }
-  runContents.add_child(objectsNames.at(ParamObjectType::kSetup), infos);
+  // boost::property_tree::ptree infos;
+  // for (auto setup : bank.getSetups()) {
+  //   infos.push_back(std::make_pair("", setupToInfo(*setup.second)));
+  // }
+  // runContents.add_child(objectsNames.at(ParamObjectType::kSetup), infos);
 }
 
 void JPetParamSaverAscii::fillLayers(
-  boost::property_tree::ptree& runContents, const JPetParamBank& bank
+  boost::property_tree::ptree& /*runContents*/, const JPetParamBank& /*bank*/
 ) {
-  boost::property_tree::ptree infos;
-  for (auto layer : bank.getLayers()) {
-    infos.push_back(std::make_pair("", layerToInfo(*layer.second)));
-  }
-  runContents.add_child(objectsNames.at(ParamObjectType::kLayer), infos);
+  // boost::property_tree::ptree infos;
+  // for (auto layer : bank.getLayers()) {
+  //   infos.push_back(std::make_pair("", layerToInfo(*layer.second)));
+  // }
+  // runContents.add_child(objectsNames.at(ParamObjectType::kLayer), infos);
 }
 
 void JPetParamSaverAscii::fillSlots(
-  boost::property_tree::ptree& runContents, const JPetParamBank& bank
+  boost::property_tree::ptree& /*runContents*/, const JPetParamBank& /*bank*/
 ) {
-  boost::property_tree::ptree infos;
-  for (auto slot : bank.getSlots()) {
-    infos.push_back(std::make_pair("", slotToInfo(*slot.second)));
-  }
-  runContents.add_child(objectsNames.at(ParamObjectType::kSlot), infos);
+  // boost::property_tree::ptree infos;
+  // for (auto slot : bank.getSlots()) {
+  //   infos.push_back(std::make_pair("", slotToInfo(*slot.second)));
+  // }
+  // runContents.add_child(objectsNames.at(ParamObjectType::kSlot), infos);
 }
 
 void JPetParamSaverAscii::fillWLSs(
-  boost::property_tree::ptree& runContents, const JPetParamBank& bank
+  boost::property_tree::ptree& /*runContents*/, const JPetParamBank& /*bank*/
 ) {
-  boost::property_tree::ptree infos;
-  for (auto wls : bank.getWLSs()) {
-    infos.push_back(std::make_pair("", wlsToInfo(*wls.second)));
-  }
-  runContents.add_child(objectsNames.at(ParamObjectType::kWLS), infos);
+  // boost::property_tree::ptree infos;
+  // for (auto wls : bank.getWLSs()) {
+  //   infos.push_back(std::make_pair("", wlsToInfo(*wls.second)));
+  // }
+  // runContents.add_child(objectsNames.at(ParamObjectType::kWLS), infos);
 }
 
 void JPetParamSaverAscii::fillScins(
-  boost::property_tree::ptree& runContents, const JPetParamBank& bank
+  boost::property_tree::ptree& /*runContents*/, const JPetParamBank& /*bank*/
 ) {
-  boost::property_tree::ptree infos;
-  for (auto scin : bank.getScins()) {
-    infos.push_back(std::make_pair("", scinToInfo(*scin.second)));
-  }
-  runContents.add_child(objectsNames.at(ParamObjectType::kScin), infos);
+  // boost::property_tree::ptree infos;
+  // for (auto scin : bank.getScins()) {
+  //   infos.push_back(std::make_pair("", scinToInfo(*scin.second)));
+  // }
+  // runContents.add_child(objectsNames.at(ParamObjectType::kScin), infos);
 }
 
 void JPetParamSaverAscii::fillPMs(
-  boost::property_tree::ptree& runContents, const JPetParamBank& bank
+  boost::property_tree::ptree& /*runContents*/, const JPetParamBank& /*bank*/
 ) {
-  boost::property_tree::ptree infos;
-  for (auto pm : bank.getPMs()) {
-    infos.push_back(std::make_pair("", pmToInfo(*pm.second)));
-  }
-  runContents.add_child(objectsNames.at(ParamObjectType::kPM), infos);
+  // boost::property_tree::ptree infos;
+  // for (auto pm : bank.getPMs()) {
+  //   infos.push_back(std::make_pair("", pmToInfo(*pm.second)));
+  // }
+  // runContents.add_child(objectsNames.at(ParamObjectType::kPM), infos);
 }
 
 void JPetParamSaverAscii::fillChannels(
-  boost::property_tree::ptree& runContents, const JPetParamBank& bank
+  boost::property_tree::ptree& /*runContents*/, const JPetParamBank& /*bank*/
 ) {
-  boost::property_tree::ptree infos;
-  for (auto channel : bank.getChannels()) {
-    infos.push_back(std::make_pair("", channelToInfo(*channel.second)));
-  }
-  runContents.add_child(objectsNames.at(ParamObjectType::kChannel), infos);
+  // boost::property_tree::ptree infos;
+  // for (auto channel : bank.getChannels()) {
+  //   infos.push_back(std::make_pair("", channelToInfo(*channel.second)));
+  // }
+  // runContents.add_child(objectsNames.at(ParamObjectType::kChannel), infos);
 }
 
-boost::property_tree::ptree JPetParamSaverAscii::setupToInfo(const JPetSetup& setup)
+boost::property_tree::ptree JPetParamSaverAscii::setupToInfo(const JPetSetup& /*setup*/)
 {
   boost::property_tree::ptree info;
-  info.put("id", setup.getID());
-  info.put("description", setup.getDescription());
+  // info.put("id", setup.getID());
+  // info.put("description", setup.getDescription());
   return info;
 }
 
-boost::property_tree::ptree JPetParamSaverAscii::layerToInfo(const JPetLayer& layer)
+boost::property_tree::ptree JPetParamSaverAscii::layerToInfo(const JPetLayer& /*layer*/)
 {
   boost::property_tree::ptree info;
-  info.put("id", layer.getID());
-  info.put("name", layer.getName());
-  info.put("radius", layer.getRadius());
-  info.put(objectsNames.at(ParamObjectType::kSetup) + "_id", layer.getSetup().getID());
+  // info.put("id", layer.getID());
+  // info.put("name", layer.getName());
+  // info.put("radius", layer.getRadius());
+  // info.put(objectsNames.at(ParamObjectType::kSetup) + "_id", layer.getSetup().getID());
   return info;
 }
 
-boost::property_tree::ptree JPetParamSaverAscii::slotToInfo(const JPetSlot& slot)
+boost::property_tree::ptree JPetParamSaverAscii::slotToInfo(const JPetSlot& /*slot*/)
 {
   boost::property_tree::ptree info;
-  info.put("id", slot.getID());
-  info.put("theta", slot.getTheta());
-  if(slot.getType() == JPetSlot::Barrel) {
-    info.put("type", "barrel");
-  } else if(slot.getType() == JPetSlot::Module){
-    info.put("type", "module");
-  }
-  info.put(objectsNames.at(ParamObjectType::kLayer) + "_id", slot.getLayer().getID());
+  // info.put("id", slot.getID());
+  // info.put("theta", slot.getTheta());
+  // if(slot.getType() == JPetSlot::Barrel) {
+  //   info.put("type", "barrel");
+  // } else if(slot.getType() == JPetSlot::Module){
+  //   info.put("type", "module");
+  // }
+  // info.put(objectsNames.at(ParamObjectType::kLayer) + "_id", slot.getLayer().getID());
   return info;
 }
 
-boost::property_tree::ptree JPetParamSaverAscii::wlsToInfo(const JPetWLS& wls)
+boost::property_tree::ptree JPetParamSaverAscii::wlsToInfo(const JPetWLS& /*wls*/)
 {
   boost::property_tree::ptree info;
-  info.put("id", wls.getID());
-  info.put("length", wls.getLength());
-  info.put("width", wls.getWidth());
-  info.put("height", wls.getHeight());
-  info.put("xcenter", wls.getCenterX());
-  info.put("ycenter", wls.getCenterY());
-  info.put("zcenter", wls.getCenterZ());
-  info.put("pm_1_id", wls.getPMIDs().at(0));
-  info.put("pm_2_id", wls.getPMIDs().at(1));
-  info.put("pm_3_id", wls.getPMIDs().at(2));
-  info.put(objectsNames.at(ParamObjectType::kSlot) + "_id", wls.getSlot().getID());
+  // info.put("id", wls.getID());
+  // info.put("length", wls.getLength());
+  // info.put("width", wls.getWidth());
+  // info.put("height", wls.getHeight());
+  // info.put("xcenter", wls.getCenterX());
+  // info.put("ycenter", wls.getCenterY());
+  // info.put("zcenter", wls.getCenterZ());
+  // info.put("pm_1_id", wls.getPMIDs().at(0));
+  // info.put("pm_2_id", wls.getPMIDs().at(1));
+  // info.put("pm_3_id", wls.getPMIDs().at(2));
+  // info.put(objectsNames.at(ParamObjectType::kSlot) + "_id", wls.getSlot().getID());
   return info;
 }
 
-boost::property_tree::ptree JPetParamSaverAscii::scinToInfo(const JPetScin& scin)
+boost::property_tree::ptree JPetParamSaverAscii::scinToInfo(const JPetScin& /*scin*/)
 {
   boost::property_tree::ptree info;
-  info.put("id", scin.getID());
-  info.put("length", scin.getLength());
-  info.put("width", scin.getWidth());
-  info.put("height", scin.getHeight());
-  info.put("xcenter", scin.getCenterX());
-  info.put("ycenter", scin.getCenterY());
-  info.put("zcenter", scin.getCenterZ());
-  info.put(objectsNames.at(ParamObjectType::kSlot) + "_id", scin.getSlot().getID());
+  // info.put("id", scin.getID());
+  // info.put("length", scin.getLength());
+  // info.put("width", scin.getWidth());
+  // info.put("height", scin.getHeight());
+  // info.put("xcenter", scin.getCenterX());
+  // info.put("ycenter", scin.getCenterY());
+  // info.put("zcenter", scin.getCenterZ());
+  // info.put(objectsNames.at(ParamObjectType::kSlot) + "_id", scin.getSlot().getID());
   return info;
 }
 
-boost::property_tree::ptree JPetParamSaverAscii::pmToInfo(const JPetPM& pm)
+boost::property_tree::ptree JPetParamSaverAscii::pmToInfo(const JPetPM& /*pm*/)
 {
   boost::property_tree::ptree info;
-  info.put("id", pm.getID());
-  if(pm.getSide() == JPetPM::Side::SideA) {
-    info.put("side", "A");
-  } else if(pm.getSide() == JPetPM::Side::SideB) {
-    info.put("side", "B");
-  }
-  info.put("description", pm.getDesc());
-  info.put("pos_in_matrix", pm.getMatrixPosition());
-  info.put(objectsNames.at(ParamObjectType::kScin) + "_id", pm.getScin().getID());
+  // info.put("id", pm.getID());
+  // if(pm.getSide() == JPetPM::Side::SideA) {
+  //   info.put("side", "A");
+  // } else if(pm.getSide() == JPetPM::Side::SideB) {
+  //   info.put("side", "B");
+  // }
+  // info.put("description", pm.getDesc());
+  // info.put("pos_in_matrix", pm.getMatrixPosition());
+  // info.put(objectsNames.at(ParamObjectType::kScin) + "_id", pm.getScin().getID());
   return info;
 }
 
-boost::property_tree::ptree JPetParamSaverAscii::channelToInfo(const JPetChannel& channel)
+boost::property_tree::ptree JPetParamSaverAscii::channelToInfo(const JPetChannel& /*channel*/)
 {
   boost::property_tree::ptree info;
-  info.put("id", channel.getID());
-  info.put("thr_num", channel.getThresholdNumber());
-  info.put("thr_val", channel.getThresholdValue());
-  info.put(objectsNames.at(ParamObjectType::kPM) + "_id", channel.getPM().getID());
+  // info.put("id", channel.getID());
+  // info.put("thr_num", channel.getThresholdNumber());
+  // info.put("thr_val", channel.getThresholdValue());
+  // info.put(objectsNames.at(ParamObjectType::kPM) + "_id", channel.getPM().getID());
   return info;
 }

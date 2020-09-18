@@ -20,7 +20,7 @@ ClassImp(JPetMatrixSignal);
 
 JPetMatrixSignal::JPetMatrixSignal(): fTime(0) {}
 
-JPetMatrixSignal::JPetMatrixSignal(float time): fTime(time) {}
+JPetMatrixSignal::JPetMatrixSignal(double time): fTime(time) {}
 
 JPetMatrixSignal::~JPetMatrixSignal() {}
 
@@ -34,17 +34,25 @@ bool JPetMatrixSignal::isNullObject() const
   return fIsNullObject;
 }
 
-float JPetMatrixSignal::getTime() const
+double JPetMatrixSignal::getTime() const
 {
   return fTime;
 }
 
-void JPetMatrixSignal::setTime(float time)
+void JPetMatrixSignal::setTime(double time)
 {
   fTime = time;
 }
 
-float JPetMatrixSignal::getTOT() const
+void JPetMatrixSignal::setMatrix(const JPetMatrix& matrix) {
+  fMatrix = const_cast<JPetMatrix*>(&matrix);
+}
+
+const JPetMatrix& JPetMatrixSignal::getMatrix() const {
+  return (JPetMatrix&) *fMatrix.GetObject();
+}
+
+double JPetMatrixSignal::getTOT() const
 {
   double tot = 0.0;
   for(auto element : fRawSignalsMap){
@@ -61,11 +69,10 @@ float JPetMatrixSignal::getTOT() const
 
 bool JPetMatrixSignal::addRawSignal(const JPetRawSignal& rawSignal)
 {
-
-  int mtxPos = rawSignal.getPM().getMatrixPosition();
-  auto search = fRawSignalsMap.find(mtxPos);
+  int pmID = rawSignal.getPM().getID();
+  auto search = fRawSignalsMap.find(pmID);
   if(search == fRawSignalsMap.end()){
-    fRawSignalsMap[mtxPos] = rawSignal;
+    fRawSignalsMap[pmID] = rawSignal;
     return true;
   } else {
     // There is already a signal from this SiPM in this matrix, not adding

@@ -39,70 +39,85 @@ class JPetMatrixSignal;
 class JPetHit: public TObject
 {
 public:
-  enum Signal { SideA, SideB };
+  enum Side { SideA, SideB, WLS };
   enum RecoFlag { Good, Corrupted, Unknown };
   JPetHit();
   JPetHit(
-    float energy, float qualityOfEnergy, float time, float qualityOfTime,
+    double energy, double qualityOfEnergy, double time, double qualityOfTime,
     TVector3& position, JPetMatrixSignal& signalA, JPetMatrixSignal& signalB,
-    JPetScin& scin
+    JPetMatrixSignal& wlsSignal, JPetScin& scin, JPetWLS&  wls
   );
   virtual ~JPetHit();
 
   JPetHit::RecoFlag getRecoFlag() const;
-  float getEnergy() const;
-  float getQualityOfEnergy() const;
-  float getTime() const;
-  float getTimeDiff() const;
-  float getQualityOfTime() const;
-  float getQualityOfTimeDiff() const;
-  float getPosX() const;
-  float getPosY() const;
-  float getPosZ() const;
-  float getPos(int index) const;
+  double getEnergy() const;
+  double getQualityOfEnergy() const;
+  double getTime() const;
+  double getTimeDiff() const;
+  double getQualityOfTime() const;
+  double getQualityOfTimeDiff() const;
+
+  double getPosX() const;
+  double getPosY() const;
+  double getPosZ() const;
+  double getPos(int index) const;
   const TVector3& getPos() const;
-  const JPetMatrixSignal& getSignal(Signal side) const;
+
+  const JPetMatrixSignal& getSignal(Side side) const;
   const JPetMatrixSignal& getSignalA() const;
   const JPetMatrixSignal& getSignalB() const;
+  const JPetMatrixSignal& getSignalWLS() const;
+
   const JPetScin& getScin() const;
+  const JPetWLS& getWLS() const;
 
   void setRecoFlag(JPetHit::RecoFlag flag);
-  void setEnergy(float energy);
-  void setQualityOfEnergy(float qualityOfEnergy);
-  void setTime(float time);
-  void setQualityOfTime(float qualityOfTime);
-  void setTimeDiff(float td);
-  void setQualityOfTimeDiff(float qtd);
-  void setPosX(float x);
-  void setPosY(float y);
-  void setPosZ(float z);
-  void setPos(float x, float y, float z);
-  void setSignals(const JPetMatrixSignal& sigA, const JPetMatrixSignal& sigB);
+  void setEnergy(double energy);
+  void setQualityOfEnergy(double qualityOfEnergy);
+  void setTime(double time);
+  void setQualityOfTime(double qualityOfTime);
+  void setTimeDiff(double td);
+  void setQualityOfTimeDiff(double qtd);
+
+  void setPosX(double x);
+  void setPosY(double y);
+  void setPosZ(double z);
+  void setPos(double x, double y, double z);
+  void setSignals(
+    const JPetMatrixSignal& sigA, const JPetMatrixSignal& sigB, const JPetMatrixSignal& sigWLS
+  );
   void setSignalA(const JPetMatrixSignal& sig);
   void setSignalB(const JPetMatrixSignal& sig);
+  void setSignalWLS(const JPetMatrixSignal& sig);
+
   void setScin(JPetScin& scin);
+  void setWLS(JPetWLS& wls);
 
   bool isSignalASet()const;
   bool isSignalBSet()const;
+  bool isSignalWLSSet()const;
   bool checkConsistency() const;
   void Clear(Option_t* opt  = "");
 
 private:
   RecoFlag fFlag = JPetHit::Unknown;
-  float fEnergy = 0.0f;
-  float fQualityOfEnergy = 0.0f;
-  float fTime = 0.0f;
-  float fQualityOfTime = 0.0f;
-  float fTimeDiff = 0.0f;
-  float fQualityOfTimeDiff = 0.0f;
+  double fEnergy = 0.0f;
+  double fQualityOfEnergy = 0.0f;
+  double fTime = 0.0f;
+  double fQualityOfTime = 0.0f;
+  double fTimeDiff = 0.0f;
+  double fQualityOfTimeDiff = 0.0f;
   bool fIsSignalAset = false;
   bool fIsSignalBset = false;
+  bool fIsSignalWLSset = false;
   TVector3 fPos;
   JPetMatrixSignal fSignalA;
   JPetMatrixSignal fSignalB;
+  JPetMatrixSignal fSignalWLS;
   TRef fScin = NULL;
+  TRef fWLS = NULL;
 
-  ClassDef(JPetHit, 12);
+  ClassDef(JPetHit, 13);
 };
 
 #endif /* !JPETHIT_H */

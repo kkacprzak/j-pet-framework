@@ -25,15 +25,16 @@ JPetHit::JPetHit(): TObject(), fFlag(JPetHit::Unknown) {}
  * Constructor with checking the consistency of the hit being created.
  */
 JPetHit::JPetHit(
-  float energy, float qualityOfEnergy, float time, float qualityOfTime,
+  double energy, double qualityOfEnergy, double time, double qualityOfTime,
   TVector3& position, JPetMatrixSignal& signalA, JPetMatrixSignal& signalB,
-  JPetScin& scin):
+  JPetMatrixSignal& signalWLS, JPetScin& scin, JPetWLS& wls):
   TObject(), fFlag(JPetHit::Unknown), fEnergy(energy), fQualityOfEnergy(qualityOfEnergy),
   fTime(time), fQualityOfTime(qualityOfTime), fPos(position),
-  fSignalA(signalA), fSignalB(signalB), fScin(&scin)
+  fSignalA(signalA), fSignalB(signalB), fSignalWLS(signalWLS), fScin(&scin), fWLS(&wls)
 {
   fIsSignalAset = true;
   fIsSignalBset = true;
+  fIsSignalWLSset = true;
   if (!checkConsistency()) {
     ERROR("Problem with creating Hit - consistency check failed.");
   }
@@ -52,7 +53,7 @@ JPetHit::RecoFlag JPetHit::getRecoFlag() const
 /**
  * Get hit energy in [keV]
  */
-float JPetHit::getEnergy() const
+double JPetHit::getEnergy() const
 {
   return fEnergy;
 }
@@ -60,7 +61,7 @@ float JPetHit::getEnergy() const
 /**
  * Get the quality of the hit energy in [kev]
  */
-float JPetHit::getQualityOfEnergy() const
+double JPetHit::getQualityOfEnergy() const
 {
   return fQualityOfEnergy;
 }
@@ -68,7 +69,7 @@ float JPetHit::getQualityOfEnergy() const
 /**
  * Get the reconstructed time of the hit in [ps]
  */
-float JPetHit::getTime() const
+double JPetHit::getTime() const
 {
   return fTime;
 }
@@ -76,7 +77,7 @@ float JPetHit::getTime() const
 /**
  * Get the time difference of the two signals, that construct the hit, unit is [ps]
  */
-float JPetHit::getTimeDiff() const
+double JPetHit::getTimeDiff() const
 {
   return fTimeDiff;
 }
@@ -84,7 +85,7 @@ float JPetHit::getTimeDiff() const
 /**
  * Get the quality of the hit time in [ps]
  */
-float JPetHit::getQualityOfTime() const
+double JPetHit::getQualityOfTime() const
 {
   return fQualityOfTime;
 }
@@ -92,7 +93,7 @@ float JPetHit::getQualityOfTime() const
 /**
  * Get the quality of the hit signals time difference in [ps]
  */
-float JPetHit::getQualityOfTimeDiff() const
+double JPetHit::getQualityOfTimeDiff() const
 {
   return fQualityOfTimeDiff;
 }
@@ -100,7 +101,7 @@ float JPetHit::getQualityOfTimeDiff() const
 /**
  * Get x-axis hit position
  */
-float JPetHit::getPosX() const
+double JPetHit::getPosX() const
 {
   return fPos.X();
 }
@@ -108,7 +109,7 @@ float JPetHit::getPosX() const
 /**
  * Get y-axis hit position
  */
-float JPetHit::getPosY() const
+double JPetHit::getPosY() const
 {
   return fPos.Y();
 }
@@ -116,7 +117,7 @@ float JPetHit::getPosY() const
 /**
  * Get z-axis hit position
  */
-float JPetHit::getPosZ() const
+double JPetHit::getPosZ() const
 {
   return fPos.Z();
 }
@@ -124,7 +125,7 @@ float JPetHit::getPosZ() const
 /**
  * Get position along the axis indicated by index argument
  */
-float JPetHit::getPos(int index) const
+double JPetHit::getPos(int index) const
 {
   return fPos(index);
 }
@@ -140,10 +141,11 @@ const TVector3& JPetHit::getPos() const
 /**
  * Get one of the signals, that construct this hit, from the side A or B
  */
-const JPetMatrixSignal& JPetHit::getSignal(Signal sig) const
+const JPetMatrixSignal& JPetHit::getSignal(Side side) const
 {
-  if (sig == SideA) return fSignalA;
-  else return fSignalB;
+  if (side == SideA) { return fSignalA; }
+  else if (side == SideB) { return fSignalA; }
+  else return fSignalWLS;
 }
 
 /**
@@ -163,6 +165,14 @@ const JPetMatrixSignal& JPetHit::getSignalB() const
 }
 
 /**
+ * Get the signal from WLS layer
+ */
+const JPetMatrixSignal& JPetHit::getSignalWLS() const
+{
+  return fSignalWLS;
+}
+
+/**
  * Get the scintillator object, associated with this hit
  */
 const JPetScin& JPetHit::getScin() const
@@ -172,6 +182,19 @@ const JPetScin& JPetHit::getScin() const
   } else {
     ERROR("No JPetScin slot set, Null object will be returned");
     return JPetScin::getDummyResult();
+  }
+}
+
+/**
+ * Get the WLS object, associated with this hit
+ */
+const JPetWLS& JPetHit::getWLS() const
+{
+  if(fWLS.GetObject()) {
+    return (JPetWLS&) * fWLS.GetObject();
+  } else {
+    ERROR("No JPetWLS slot set, Null object will be returned");
+    return JPetWLS::getDummyResult();
   }
 }
 
@@ -192,6 +215,14 @@ bool JPetHit::isSignalBSet() const
 }
 
 /**
+ * Check if signal on WLS is set
+ */
+bool JPetHit::isSignalWLSSet() const
+{
+  return fIsSignalWLSset;
+}
+
+/**
  * Set the reconstruction flag with enum
  */
 void JPetHit::setRecoFlag(JPetHit::RecoFlag flag)
@@ -202,7 +233,7 @@ void JPetHit::setRecoFlag(JPetHit::RecoFlag flag)
 /**
  * Set the reconstructed energy in [keV]
  */
-void JPetHit::setEnergy(float energy)
+void JPetHit::setEnergy(double energy)
 {
   fEnergy = energy;
 }
@@ -210,7 +241,7 @@ void JPetHit::setEnergy(float energy)
 /**
  * Set the value, that describes quality of reconstructed energy
  */
-void JPetHit::setQualityOfEnergy(float qualityOfEnergy)
+void JPetHit::setQualityOfEnergy(double qualityOfEnergy)
 {
   fQualityOfEnergy = qualityOfEnergy;
 }
@@ -218,7 +249,7 @@ void JPetHit::setQualityOfEnergy(float qualityOfEnergy)
 /**
  * Set the reconstructed time of the hit in [ps]
  */
-void JPetHit::setTime(float time)
+void JPetHit::setTime(double time)
 {
   fTime = time;
 }
@@ -226,7 +257,7 @@ void JPetHit::setTime(float time)
 /**
  * Set the value, that describes quality of reconstructed time
  */
-void JPetHit::setQualityOfTime(float qualityOfTime)
+void JPetHit::setQualityOfTime(double qualityOfTime)
 {
   fQualityOfTime = qualityOfTime;
 }
@@ -234,7 +265,7 @@ void JPetHit::setQualityOfTime(float qualityOfTime)
 /**
  * Set the time difference between signals in [ps]
  */
-void JPetHit::setTimeDiff(float td)
+void JPetHit::setTimeDiff(double td)
 {
   fTimeDiff = td;
 }
@@ -242,7 +273,7 @@ void JPetHit::setTimeDiff(float td)
 /**
  * Set the value, that describes the quality of time difference reconstruction
  */
-void JPetHit::setQualityOfTimeDiff(float qtd)
+void JPetHit::setQualityOfTimeDiff(double qtd)
 {
   fQualityOfTimeDiff = qtd;
 }
@@ -250,7 +281,7 @@ void JPetHit::setQualityOfTimeDiff(float qtd)
 /**
  * Set the x-axis position of the hit
  */
-void JPetHit::setPosX(float x)
+void JPetHit::setPosX(double x)
 {
   fPos.SetX(x);
 }
@@ -258,7 +289,7 @@ void JPetHit::setPosX(float x)
 /**
  * Set the y-axis position of the hit
  */
-void JPetHit::setPosY(float y)
+void JPetHit::setPosY(double y)
 {
   fPos.SetY(y);
 }
@@ -266,7 +297,7 @@ void JPetHit::setPosY(float y)
 /**
  * Set the z-axis position of the hit
  */
-void JPetHit::setPosZ(float z)
+void JPetHit::setPosZ(double z)
 {
   fPos.SetZ(z);
 }
@@ -274,7 +305,7 @@ void JPetHit::setPosZ(float z)
 /**
  * Set the position of the hit
  */
-void JPetHit::setPos(float x, float y, float z)
+void JPetHit::setPos(double x, double y, double z)
 {
   fPos.SetXYZ(x, y, z);
 }
@@ -300,41 +331,19 @@ void JPetHit::setScin(JPetScin& scin)
  */
 bool JPetHit::checkConsistency() const
 {
-  if (!fIsSignalAset || !fIsSignalBset) {
+  if (!fIsSignalAset || !fIsSignalBset || !fIsSignalWLSset) {
     return true;
   }
 
-  if (getSignalA().isNullObject() || getSignalB().isNullObject()) {
-    ERROR("one of the signal is a Null Object");
+  if (getSignalA().isNullObject() || getSignalB().isNullObject() || getSignalWLS().isNullObject()) {
+    ERROR("One of the signals is a Null Object");
     return false;
   }
 
-  if (getSignalA().getPM().isNullObject() || getSignalB().getPM().isNullObject()) {
-    ERROR("PM of signal is a Null Object");
-    return false;
-  }
-
-  if (getSignalA().getPM().getScin().isNullObject()
-    || getSignalB().getPM().getScin().isNullObject()) {
-    ERROR("Scintillator from a PM is a Null Object");
-    return false;
-  }
-
-  if (getSignalA().getPM().getSide() == getSignalB().getPM().getSide()) {
+  if (getSignalA().getMatrix().getType() == getSignalB().getMatrix().getType()) {
     ERROR(
       Form("Signals added to Hit come from PMTs at the same side. PMTs: %i and %i.",
       getSignalA().getPM().getID(), getSignalB().getPM().getID())
-    );
-    return false;
-  }
-
-  const int scinAID = getSignalA().getPM().getScin().getID();
-  const int scinBID = getSignalB().getPM().getScin().getID();
-
-  if (scinAID != scinBID) {
-    ERROR(
-      Form("Signals added to Hit come from different slots: %i and %i.",
-           scinAID, scinBID)
     );
     return false;
   }
@@ -345,12 +354,15 @@ bool JPetHit::checkConsistency() const
 /**
  * Set both signals for this hit
  */
-void JPetHit::setSignals(const JPetMatrixSignal& sigA, const JPetMatrixSignal& sigB)
-{
+void JPetHit::setSignals(
+  const JPetMatrixSignal& sigA, const JPetMatrixSignal& sigB, const JPetMatrixSignal& sigWLS
+){
   fSignalA = sigA;
   fIsSignalAset = true;
   fSignalB = sigB;
   fIsSignalBset = true;
+  fSignalWLS = sigWLS;
+  fIsSignalWLSset = true;
   if (!checkConsistency()) { return; }
 }
 
@@ -373,6 +385,15 @@ void JPetHit::setSignalB(const JPetMatrixSignal& sig)
 }
 
 /**
+ * Set signal WLS for this hit
+ */
+void JPetHit::setSignalWLS(const JPetMatrixSignal& sig)
+{
+  fSignalWLS = sig;
+  fIsSignalWLSset = true;
+}
+
+/**
  * Set fields of the hit to zero/false/null
  */
 void JPetHit::Clear(Option_t*)
@@ -386,7 +407,10 @@ void JPetHit::Clear(Option_t*)
   fPos = TVector3();
   fSignalA = JPetMatrixSignal();
   fSignalB = JPetMatrixSignal();
+  fSignalWLS = JPetMatrixSignal();
   fIsSignalAset = false;
   fIsSignalBset = false;
+  fIsSignalWLSset = false;
   fScin = NULL;
+  fWLS = NULL;
 }

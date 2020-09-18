@@ -37,32 +37,15 @@ void JPetPMFactory::initialize()
     fPMs[description.first] = build(description.second);
   }
   fInitialized = true;
-  ParamRelationalData relations = fParamGetter.getAllRelationalData(
-    ParamObjectType::kPM, ParamObjectType::kScin, fRunID
-  );
-  for (auto relation : relations) {
-    if(fPMs[relation.first]->getDesc()=="scin"){
-      fPMs[relation.first]->setScin(*fScinFactory.getScins().at(relation.second));
-    } else {
-      fPMs[relation.first]->setScin(JPetScin::getDummyResult());
-    }
-  }
 }
 
 JPetPM* JPetPMFactory::build(ParamObjectDescription data)
 {
   try {
     int id = boost::lexical_cast<int>(data.at("id"));
-    std::string side = boost::lexical_cast<std::string>(data.at("side"));
-    std::string desc = boost::lexical_cast<std::string>(data.at("description"));
-    int mtxPos = boost::lexical_cast<int>(data.at("pos_in_matrix"));
-    if(side == "A") {
-      return new JPetPM(id, JPetPM::SideA, desc, mtxPos);
-    } else if(side == "B") {
-      return new JPetPM(id, JPetPM::SideB, desc, mtxPos);
-    } else if(side == "WLS") {
-      return new JPetPM(id, JPetPM::WLS, desc, mtxPos);
-    }
+    std::string desc = boost::lexical_cast<std::string>(data.at("desc"));
+    double pos = boost::lexical_cast<double>(data.at("position"));
+    return new JPetPM(id, desc, pos);
   } catch (const std::exception& e) {
     ERROR(Form("Failed to build PM with error: %s", e.what()));
     throw;

@@ -25,7 +25,9 @@ JPetParamBank::JPetParamBank(const JPetParamBank& paramBank):fDummy(false){
   copyMapValues(fSetups, paramBank.fSetups);
   copyMapValues(fLayers, paramBank.fLayers);
   copyMapValues(fSlots, paramBank.fSlots);
+  copyMapValues(fWLSs, paramBank.fWLSs);
   copyMapValues(fScins, paramBank.fScins);
+  copyMapValues(fMatrices, paramBank.fMatrices);
   copyMapValues(fPMs, paramBank.fPMs);
   copyMapValues(fChannels, paramBank.fChannels);
 }
@@ -39,7 +41,9 @@ void JPetParamBank::clear()
   fSetups.clear();
   fLayers.clear();
   fSlots.clear();
+  fWLSs.clear();
   fScins.clear();
+  fMatrices.clear();
   fPMs.clear();
   fChannels.clear();
 }
@@ -58,9 +62,12 @@ int JPetParamBank::getSize(ParamObjectType type) const
       size = getSlotsSize();
       break;
     case kWLS:
-      size = getWLSsSize();  
+      size = getWLSsSize();
     case kScin:
       size = getScinsSize();
+      break;
+    case kMatrix:
+      size = getMatricesSize();
       break;
     case kPM:
       size = getPMsSize();

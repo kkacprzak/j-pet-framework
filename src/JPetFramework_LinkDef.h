@@ -10,6 +10,8 @@
 #pragma link C++ function JPetWriter::Write(vector<JPetChannel>&);
 #pragma link C++ function JPetWriter::Write(JPetPM&);
 #pragma link C++ function JPetWriter::Write(vector<JPetPM>&);
+#pragma link C++ function JPetWriter::Write(JPetMatrix&);
+#pragma link C++ function JPetWriter::Write(vector<JPetMatrix>&);
 #pragma link C++ function JPetWriter::Write(JPetScin&);
 #pragma link C++ function JPetWriter::Write(vector<JPetScin>&);
 #pragma link C++ function JPetWriter::Write(JPetWLS&);
@@ -46,6 +48,7 @@
 
 #pragma link C++ class JPetChannel+;
 #pragma link C++ class JPetPM+;
+#pragma link C++ class JPetMatrix+;
 #pragma link C++ class JPetScin+;
 #pragma link C++ class JPetWLS+;
 #pragma link C++ class JPetSlot+;
@@ -75,11 +78,11 @@
 #pragma link C++ struct shapePoint+;
 
 #pragma link C++ enum JPetSlot::Type;
-#pragma link C++ enum JPetPM::Side;
 #pragma link C++ enum JPetBaseSignal::RecoFlag;
 #pragma link C++ enum JPetSigCh::RecoFlag;
 #pragma link C++ enum JPetSigCh::EdgeType;
 #pragma link C++ enum JPetHits::RecoFlag;
+#pragma link C++ enum JPetHits::Side;
 #pragma link C++ enum JPetEvent::RecoFlag;
 
 #endif

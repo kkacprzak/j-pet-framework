@@ -47,7 +47,6 @@ public:
   void setCenterX(double centerX);
   void setCenterY(double centerY);
   void setCenterZ(double centerZ);
-  void setPMIDs(std::vector<int> ids);
   void setSlot(JPetSlot& slot);
   int getID() const;
   double getLength() const;
@@ -57,7 +56,6 @@ public:
   double getCenterX() const;
   double getCenterY() const;
   double getCenterZ() const;
-  std::vector<int> getPMIDs() const;
   const JPetSlot& getSlot() const;
   bool operator==(const JPetWLS& WLS) const;
   bool operator!=(const JPetWLS& WLS) const;
@@ -80,13 +78,12 @@ protected:
   double fWidth;
   bool fIsNullObject;
 #endif
-  std::vector<int> fPMIDsVec;
   TVector3 fWLSCenter;
   TRef fTRefSlot;
 
   friend class JPetParamManager;
 
-  ClassDef(JPetWLS, 1);
+  ClassDef(JPetWLS, 2);
 };
 
 #endif /* !JPETWLS_H */

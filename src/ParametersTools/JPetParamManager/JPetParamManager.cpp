@@ -135,6 +135,23 @@ JPetScinFactory& JPetParamManager::getScinFactory(const int runID)
   return fScinFactories.at(runID);
 }
 
+std::map<int, JPetMatrix*>& JPetParamManager::getMatrices(const int runID)
+{
+  return getMatrixFactory(runID).getMatrices();
+}
+
+JPetMatrixFactory& JPetParamManager::getMatrixFactory(const int runID)
+{
+  if (fMatrixFactories.count(runID) == 0) {
+    fMatrixFactories.emplace(
+      std::piecewise_construct,
+      std::forward_as_tuple(runID),
+      std::forward_as_tuple(*fParamGetter, runID, getScinFactory(runID), getWLSFactory(runID))
+    );
+  }
+  return fMatrixFactories.at(runID);
+}
+
 std::map<int, JPetPM*>& JPetParamManager::getPMs(const int runID)
 {
   return getPMFactory(runID).getPMs();
@@ -146,7 +163,7 @@ JPetPMFactory& JPetParamManager::getPMFactory(const int runID)
     fPMFactories.emplace(
       std::piecewise_construct,
       std::forward_as_tuple(runID),
-      std::forward_as_tuple(*fParamGetter, runID, getScinFactory(runID))
+      std::forward_as_tuple(*fParamGetter, runID)
     );
   }
   return fPMFactories.at(runID);
@@ -210,15 +227,23 @@ void JPetParamManager::fillParameterBank(const int runID)
       fBank->getScin(scin.getID()).setSlot(fBank->getSlot(scin.getSlot().getID()));
     }
   }
+  if (!fExpectMissing.count(ParamObjectType::kMatrix)) {
+    for (auto& matrix_p : getMatrices(runID)) {
+      auto& matrix = *matrix_p.second;
+      fBank->addMatrix(matrix);
+      if(matrix.getType()=="WLS"){
+        fBank->getMatrix(matrix.getID()).setScin(JPetScin::getDummyResult());
+        fBank->getMatrix(matrix.getID()).setWLS(fBank->getWLS(matrix.getWLS().getID()));
+      } else {
+        fBank->getMatrix(matrix.getID()).setWLS(JPetWLS::getDummyResult());
+        fBank->getMatrix(matrix.getID()).setScin(fBank->getScin(matrix.getScin().getID()));
+      }
+    }
+  }
   if (!fExpectMissing.count(ParamObjectType::kPM)) {
     for (auto& pm_p : getPMs(runID)) {
       auto& pm = *pm_p.second;
       fBank->addPM(pm);
-      if(pm.getDesc()=="scin"){
-        fBank->getPM(pm.getID()).setScin(fBank->getScin(pm.getScin().getID()));
-      } else {
-        fBank->getPM(pm.getID()).setScin(JPetScin::getDummyResult());
-      }
     }
   }
   if (!fExpectMissing.count(ParamObjectType::kChannel)) {

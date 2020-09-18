@@ -55,16 +55,7 @@ JPetWLS* JPetWLSFactory::build(ParamObjectDescription data)
     double centerX = boost::lexical_cast<double>(data.at("xcenter"));
     double centerY = boost::lexical_cast<double>(data.at("ycenter"));
     double centerZ = boost::lexical_cast<double>(data.at("zcenter"));
-    int pm_1_id = boost::lexical_cast<int>(data.at("pm_1_id"));
-    int pm_2_id = boost::lexical_cast<int>(data.at("pm_2_id"));
-    int pm_3_id = boost::lexical_cast<int>(data.at("pm_3_id"));
-    std::vector<int> pm_ids;
-    pm_ids.push_back(pm_1_id);
-    pm_ids.push_back(pm_2_id);
-    pm_ids.push_back(pm_3_id);
-    auto wls = new JPetWLS(id, length, height, width, centerX, centerY, centerZ);
-    wls->setPMIDs(pm_ids);
-    return wls;
+    return new JPetWLS(id, length, height, width, centerX, centerY, centerZ);
   } catch (const std::exception &e) {
     ERROR(Form("Failed to build WLStillator with error: %s", e.what()));
     throw;
