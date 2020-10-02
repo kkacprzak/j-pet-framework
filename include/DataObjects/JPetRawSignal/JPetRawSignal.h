@@ -40,10 +40,11 @@ public:
   void addPoint(const JPetSigCh& sigch);
   std::vector<JPetSigCh> getPoints(JPetSigCh::EdgeType edge,
     JPetRawSignal::PointsSortOrder order = JPetRawSignal::ByThrValue) const;
-  std::map<int, float> getTimesVsThresholdNumber(JPetSigCh::EdgeType edge) const;
-  std::map<int, std::pair<float, float>> getTimesVsThresholdValue(JPetSigCh::EdgeType edge) const;
-  std::map<int, float> getTOTsVsThresholdValue() const;
-  std::map<int, float> getTOTsVsThresholdNumber() const;
+  std::map<int, double> getTimesVsThresholdNumber(JPetSigCh::EdgeType edge) const;
+  std::map<int, std::pair<double, double>> getTimesVsThresholdValue(JPetSigCh::EdgeType edge) const;
+  std::map<int, double> getTOTsVsThresholdValue() const;
+  std::map<int, double> getTOTsVsThresholdNumber() const;
+  double getTOT() const;
 
   void Clear(Option_t * opt = "");
 
@@ -51,7 +52,7 @@ private:
   std::vector<JPetSigCh> fLeadingPoints;
   std::vector<JPetSigCh> fTrailingPoints;
 
-  ClassDef(JPetRawSignal, 8);
+  ClassDef(JPetRawSignal, 9);
 };
 
 #endif /* !JPETRAWSIGNAL_H */

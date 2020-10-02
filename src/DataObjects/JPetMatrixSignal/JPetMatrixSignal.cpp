@@ -56,13 +56,7 @@ double JPetMatrixSignal::getTOT() const
 {
   double tot = 0.0;
   for(auto element : fRawSignalsMap){
-    auto leads = element.second.getPoints(JPetSigCh::Leading, JPetRawSignal::ByThrValue);
-    auto trails = element.second.getPoints(JPetSigCh::Trailing, JPetRawSignal::ByThrValue);
-    if(leads.size()==trails.size()){
-      for(uint i = 0; i<leads.size(); i++){
-        tot += trails.at(i).getTime()-leads.at(i).getTime();
-      }
-    }
+    tot += element.second.getTOT();
   }
   return tot;
 }

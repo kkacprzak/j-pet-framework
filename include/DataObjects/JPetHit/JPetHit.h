@@ -93,9 +93,9 @@ public:
   void setScin(JPetScin& scin);
   void setWLS(JPetWLS& wls);
 
-  bool isSignalASet()const;
-  bool isSignalBSet()const;
-  bool isSignalWLSSet()const;
+  bool isSignalASet() const;
+  bool isSignalBSet() const;
+  bool isSignalWLSSet() const;
   bool checkConsistency() const;
   void Clear(Option_t* opt  = "");
 

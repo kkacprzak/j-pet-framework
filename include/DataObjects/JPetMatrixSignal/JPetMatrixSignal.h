@@ -55,7 +55,7 @@ protected:
   bool fIsNullObject;
   #endif
 
-  ClassDef(JPetMatrixSignal, 5);
+  ClassDef(JPetMatrixSignal, 6);
 };
 
 #endif /* !JPETMATRIXSIGNAL_H */
