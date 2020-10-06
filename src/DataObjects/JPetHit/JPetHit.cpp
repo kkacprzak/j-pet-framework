@@ -319,6 +319,14 @@ void JPetHit::setScin(JPetScin& scin)
 }
 
 /**
+ * Set the WLS object for this hit
+ */
+void JPetHit::setWLS(JPetWLS& wls)
+{
+  fWLS = &wls;
+}
+
+/**
  * @brief Checks consistency of the hit object
  *
  * Method check whether information contained in the hit and logs
