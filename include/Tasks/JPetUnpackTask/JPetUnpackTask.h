@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2019 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2021 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -29,24 +29,23 @@ public:
   bool init(const JPetParams& inOptions) override;
   bool run(const JPetDataInterface& inData) override;
   bool terminate(JPetParams& outOptions) override;
-  static bool validateFiles(
-    std::string fileNameWithPath, std::string xmlConfig,
-    std::string totCalib, bool totCalibSet,
-    std::string tdcCalib, bool tdcCalibSet
-  );
+
+  UInt_t* pHeader;
+  UInt_t* pSubHeader;
 
 protected:
   const std::string kTDCnonlinearityCalibKey = "Unpacker_TDCnonlinearityCalib_std::string";
   const std::string kTOTOffsetCalibKey = "Unpacker_TOToffsetCalib_std::string";
+  std::string fTDCnonlinearityCalibFile = std::string("");
+  std::string fTOTOffsetCalibFile = std::string("") = std::string("");
+  OptsStrAny fOptions;
+
+
+
+
   std::string fOutputFilePath = std::string("");
   std::string fInputFilePath = std::string("");
   std::string fInputFile = std::string("");
-  std::string fTDCnonlinearityCalibFile = std::string("");
-  std::string fTOTOffsetCalibFile = std::string("") = std::string("");
-  std::string fXMLConfFile = std::string("");
-  int fEventsToProcess = 1000000000;
-  Unpacker2* fUnpacker2 = nullptr;
-  OptsStrAny fOptions;
 };
 
 #endif /* !JPETUNPACKTASK_H */

@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2019 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2021 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -14,6 +14,7 @@
  */
 
 #include "JPetOptionsGenerator/JPetOptionsGeneratorTools.h"
+#include "JPetUnpackTask/JPetUnpackTaskTools.h"
 #include "JPetOptionsTools/JPetOptionsTools.h"
 #include "JPetCommonTools/JPetCommonTools.h"
 #include "JPetUnpackTask/JPetUnpackTask.h"
@@ -41,8 +42,6 @@ bool JPetUnpackTask::init(const JPetParams& inParams)
     fOutputFilePath = fInputFilePath;
   }
 
-  fXMLConfFile = getUnpackerConfigFile(fOptions);
-
   if (getTotalEvents(fOptions) > 0) {
     fEventsToProcess = getTotalEvents(fOptions);
   }
@@ -61,11 +60,6 @@ bool JPetUnpackTask::init(const JPetParams& inParams)
     WARNING("No TDC nonlinearity file set int the user options!");
   }
 
-  return validateFiles(
-    fInputFilePath+fInputFile, fXMLConfFile,
-    fTOTOffsetCalibFile, totCalibSet,
-    fTDCnonlinearityCalibFile, tdcCalibSet
-  );
 }
 
 bool JPetUnpackTask::run(const JPetDataInterface&)
