@@ -29,12 +29,12 @@ class JPetWLS;
  *
  * Parametric class representing database information of a single photomultiplier.
  */
-class JPetMatrix: public TNamed
+class JPetMatrix : public TNamed
 {
 public:
   JPetMatrix();
   JPetMatrix(int id, std::string type, std::vector<int> pmIDs);
-  JPetMatrix(const JPetMatrix &matrix);
+  JPetMatrix(const JPetMatrix& matrix);
   explicit JPetMatrix(bool isNull);
   virtual ~JPetMatrix();
   void setID(int id);
@@ -75,7 +75,7 @@ protected:
 
   friend class JPetParamManager;
 
-  ClassDef(JPetMatrix, 1);
+  ClassDef(JPetMatrix, 2);
 };
 
 #endif /* !JPET_MATRIX */

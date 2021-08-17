@@ -20,9 +20,9 @@
 #include "JPetLoggerInclude.h"
 #include "JPetPM/JPetPM.h"
 #include <TClass.h>
+#include <TRef.h>
 #include <cassert>
 #include <vector>
-#include <TRef.h>
 
 /**
  * @brief Data class representing a Signal from a single tdc Channel.
@@ -30,11 +30,20 @@
  * Represents time of signal from one PMT crossing a certain voltage threshold
  * at either leading or trailing edge of the signal.
  */
-class JPetSigCh: public TObject
+class JPetSigCh : public TObject
 {
 public:
-  enum RecoFlag { Good, Corrupted, Unknown };
-  enum EdgeType { Trailing, Leading };
+  enum RecoFlag
+  {
+    Good,
+    Corrupted,
+    Unknown
+  };
+  enum EdgeType
+  {
+    Trailing,
+    Leading
+  };
   const static float kUnset;
 
   JPetSigCh();
@@ -51,7 +60,7 @@ public:
   const JPetChannel& getChannel() const;
   static bool compareByThresholdNumber(const JPetSigCh& a, const JPetSigCh& b);
   static bool compareByThresholdValue(const JPetSigCh& a, const JPetSigCh& b);
-  void Clear(Option_t * = "");
+  void Clear(Option_t* = "");
 
 private:
   RecoFlag fFlag = JPetSigCh::Unknown;
@@ -59,7 +68,7 @@ private:
   float fTime = 0.0f;
   TRef fChannel = NULL;
 
-  ClassDef(JPetSigCh, 10);
+  ClassDef(JPetSigCh, 11);
 };
 
 #endif /* !JPETSIGCH_H */

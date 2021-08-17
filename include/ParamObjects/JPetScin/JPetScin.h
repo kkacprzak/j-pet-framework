@@ -17,9 +17,9 @@
 #define JPETSCIN_H
 
 #include "./JPetSlot/JPetSlot.h"
-#include <TVector3.h>
 #include <TNamed.h>
 #include <TRef.h>
+#include <TVector3.h>
 
 /**
  * @brief Representation of a scintillator.
@@ -27,15 +27,12 @@
  * Parametric class representing database information of a scintillator in the
  * JPetSlot object.
  */
-class JPetScin: public TNamed
+class JPetScin : public TNamed
 {
 public:
   JPetScin();
-  JPetScin(
-    int id, float length, float height, float width,
-    float center_x, float center_y, float center_z
-  );
-  JPetScin(const JPetScin &scin);
+  JPetScin(int id, float length, float height, float width, float center_x, float center_y, float center_z);
+  JPetScin(const JPetScin& scin);
   explicit JPetScin(bool isNull);
   virtual ~JPetScin();
 
@@ -83,7 +80,7 @@ protected:
 
   friend class JPetParamManager;
 
-  ClassDef(JPetScin, 6);
+  ClassDef(JPetScin, 7);
 };
 
 #endif /* !JPETSCIN_H */

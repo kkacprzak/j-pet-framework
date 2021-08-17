@@ -18,11 +18,11 @@
 
 #include "JPetMatrixSignal/JPetMatrixSignal.h"
 #include "JPetScin/JPetScin.h"
-#include "TVector3.h"
 #include "TObject.h"
+#include "TVector3.h"
+#include <TRef.h>
 #include <cstddef>
 #include <utility>
-#include <TRef.h>
 
 class JPetMatrixSignal;
 
@@ -36,17 +36,24 @@ class JPetMatrixSignal;
  * User can describe quality of energy, hit time and time difference
  * between the two signals in the hit.
  */
-class JPetHit: public TObject
+class JPetHit : public TObject
 {
 public:
-  enum Side { SideA, SideB, WLS };
-  enum RecoFlag { Good, Corrupted, Unknown };
+  enum Side
+  {
+    SideA,
+    SideB,
+    WLS
+  };
+  enum RecoFlag
+  {
+    Good,
+    Corrupted,
+    Unknown
+  };
   JPetHit();
-  JPetHit(
-    double energy, double qualityOfEnergy, double time, double qualityOfTime,
-    TVector3& position, JPetMatrixSignal& signalA, JPetMatrixSignal& signalB,
-    JPetMatrixSignal& wlsSignal, JPetScin& scin, JPetWLS&  wls
-  );
+  JPetHit(double energy, double qualityOfEnergy, double time, double qualityOfTime, TVector3& position, JPetMatrixSignal& signalA,
+          JPetMatrixSignal& signalB, JPetMatrixSignal& wlsSignal, JPetScin& scin, JPetWLS& wls);
   virtual ~JPetHit();
 
   JPetHit::RecoFlag getRecoFlag() const;
@@ -83,9 +90,7 @@ public:
   void setPosY(double y);
   void setPosZ(double z);
   void setPos(double x, double y, double z);
-  void setSignals(
-    const JPetMatrixSignal& sigA, const JPetMatrixSignal& sigB, const JPetMatrixSignal& sigWLS
-  );
+  void setSignals(const JPetMatrixSignal& sigA, const JPetMatrixSignal& sigB, const JPetMatrixSignal& sigWLS);
   void setSignalA(const JPetMatrixSignal& sig);
   void setSignalB(const JPetMatrixSignal& sig);
   void setSignalWLS(const JPetMatrixSignal& sig);
@@ -97,7 +102,7 @@ public:
   bool isSignalBSet() const;
   bool isSignalWLSSet() const;
   bool checkConsistency() const;
-  void Clear(Option_t* opt  = "");
+  void Clear(Option_t* opt = "");
 
 private:
   RecoFlag fFlag = JPetHit::Unknown;
@@ -117,7 +122,7 @@ private:
   TRef fScin = NULL;
   TRef fWLS = NULL;
 
-  ClassDef(JPetHit, 13);
+  ClassDef(JPetHit, 14);
 };
 
 #endif /* !JPETHIT_H */

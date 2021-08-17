@@ -16,9 +16,9 @@
 #ifndef JPETBASESIGNAL_H
 #define JPETBASESIGNAL_H
 
+#include "JPetPM/JPetPM.h"
 #include "JPetSigCh/JPetSigCh.h"
 #include "JPetSlot/JPetSlot.h"
-#include "JPetPM/JPetPM.h"
 #include <TObject.h>
 #include <TRef.h>
 
@@ -29,10 +29,15 @@
  * such as Raw and Physical Signals. A signal have to assigned to a Barrel Slot
  * and a PhotoMultiplier.
  */
-class JPetBaseSignal: public TObject
+class JPetBaseSignal : public TObject
 {
 public:
-  enum RecoFlag { Good, Corrupted, Unknown };
+  enum RecoFlag
+  {
+    Good,
+    Corrupted,
+    Unknown
+  };
 
   JPetBaseSignal();
   explicit JPetBaseSignal(bool isNull);
@@ -41,34 +46,29 @@ public:
   JPetBaseSignal::RecoFlag getRecoFlag() const;
   bool isNullObject() const;
   static JPetBaseSignal& getDummyResult();
-  void Clear(Option_t * opt = "");
+  void Clear(Option_t* opt = "");
 
   /**
    * @brief Set the reference to the PhotoMultiplier parametric object
    */
-  inline void setPM(const JPetPM & pm) {
-    fPM = const_cast<JPetPM*>(&pm);
-  }
+  inline void setPM(const JPetPM& pm) { fPM = const_cast<JPetPM*>(&pm); }
 
   /**
    * @brief Obtain a reference to the PhotoMultiplier parametric object
    */
-  inline const JPetPM & getPM() const {
-    return (JPetPM&) *fPM.GetObject();
-  }
+  inline const JPetPM& getPM() const { return (JPetPM&)*fPM.GetObject(); }
 
 private:
   TRef fPM;
   RecoFlag fFlag = JPetBaseSignal::Unknown;
 
 protected:
-  #ifndef __CINT__
+#ifndef __CINT__
   bool fIsNullObject = false;
-  #else
+#else
   bool fIsNullObject;
-  #endif
+#endif
 
-  ClassDef(JPetBaseSignal, 6);
-
+  ClassDef(JPetBaseSignal, 7);
 };
 #endif /* !JPETBASESIGNAL_H */

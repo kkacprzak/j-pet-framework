@@ -27,12 +27,12 @@
  * layer of a JPetSetup. The layer consists of slots represented by JPetSlot
  * objects.
  */
-class JPetLayer: public TNamed
+class JPetLayer : public TNamed
 {
 public:
   JPetLayer();
   JPetLayer(int id, std::string name, float radius);
-  JPetLayer(const JPetLayer &layer);
+  JPetLayer(const JPetLayer& layer);
   explicit JPetLayer(bool isNull);
   virtual ~JPetLayer();
   void setID(int id);
@@ -64,6 +64,6 @@ protected:
 #endif
   TRef fTRefSetup;
 
-  ClassDef(JPetLayer, 6);
+  ClassDef(JPetLayer, 7);
 };
 #endif /* !JPET_LAYER_H */

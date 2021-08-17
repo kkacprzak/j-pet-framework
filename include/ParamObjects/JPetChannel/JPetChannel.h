@@ -28,7 +28,7 @@ class JPetChannel : public TNamed
 public:
   JPetChannel();
   JPetChannel(int id, int thrNum, float thrVal);
-  JPetChannel(const JPetChannel &channel);
+  JPetChannel(const JPetChannel& channel);
   explicit JPetChannel(bool isNull);
   virtual ~JPetChannel();
   void setID(int id);
@@ -60,7 +60,7 @@ protected:
 
   friend class JPetParamManager;
 
-  ClassDef(JPetChannel, 1);
+  ClassDef(JPetChannel, 2);
 };
 
 #endif /* JPETCHANNEL_H */
