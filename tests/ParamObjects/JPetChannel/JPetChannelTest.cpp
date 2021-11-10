@@ -16,9 +16,9 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE JPetChannelTest
 
-#include <boost/test/unit_test.hpp>
-#include "JPetChannelFactory.h"
 #include "JPetChannel.h"
+#include "JPetChannelFactory.h"
+#include <boost/test/unit_test.hpp>
 
 // TODO finish
 
@@ -47,122 +47,113 @@ BOOST_AUTO_TEST_CASE(constructor)
 
 BOOST_AUTO_TEST_SUITE_END()
 
-
 BOOST_AUTO_TEST_SUITE(FactorySuite)
 
-class TestParamGetter: public JPetParamGetter
+class TestParamGetter : public JPetParamGetter
 {
 
-ParamObjectsDescriptions getAllBasicData(
-    ParamObjectType type, const int runID
-) {
-  ParamObjectsDescriptions result;
-  switch (type) {
+  ParamObjectsDescriptions getAllBasicData(ParamObjectType type, const int runID)
+  {
+    ParamObjectsDescriptions result;
+    switch (type)
+    {
     case ParamObjectType::kChannel:
-      switch (runID) {
-        // No Channels
-        case 0:
-          break;
-        // Single object
-        case 1:
-          result = {
-            {1, {	{"id", "1"}, {"thr_num", "1"}, {"thr_val", "80.0"}, {"pm_id", "1"} } }
-          };
-          break;
-        // Two objects
-        case 2:
-          result = {
-            {1, {	{"id", "1"}, {"thr_num", "1"}, {"thr_val", "80.0"}, {"pm_id", "1"} } },
-            {5, {	{"id", "5"}, {"thr_num", "2"}, {"thr_val", "110.0"}, {"pm_id", "1"} } }
-          };
-          break;
-        // Missing field
-        case 3:
-          result = {
-            {1, {	{"id", "1"}, {"thr_num", "1"}, {"pm_id", "1"} } }
-          };
-          break;
-        // Wrong field
-        case 4:
-          result = {
-            {1, {	{"id", "1"}, {"thr_num", "last"}, {"thr_val", "80.0"}, {"pm_id", "1"} } }
-          };
-          break;
-        // Wrong relation
-        case 5:
-          result = {
-            {1, {	{"id", "1"}, {"thr_num", "33"}, {"thr_val", "80.0"}, {"pm_id", "22"} } }
-          };
-          break;
+      switch (runID)
+      {
+      // No Channels
+      case 0:
+        break;
+      // Single object
+      case 1:
+        result = {{1, {{"id", "1"}, {"thr_num", "1"}, {"thr_val", "80.0"}, {"pm_id", "1"}}}};
+        break;
+      // Two objects
+      case 2:
+        result = {{1, {{"id", "1"}, {"thr_num", "1"}, {"thr_val", "80.0"}, {"pm_id", "1"}}},
+                  {5, {{"id", "5"}, {"thr_num", "2"}, {"thr_val", "110.0"}, {"pm_id", "1"}}}};
+        break;
+      // Missing field
+      case 3:
+        result = {{1, {{"id", "1"}, {"thr_num", "1"}, {"pm_id", "1"}}}};
+        break;
+      // Wrong field
+      case 4:
+        result = {{1, {{"id", "1"}, {"thr_num", "last"}, {"thr_val", "80.0"}, {"pm_id", "1"}}}};
+        break;
+      // Wrong relation
+      case 5:
+        result = {{1, {{"id", "1"}, {"thr_num", "33"}, {"thr_val", "80.0"}, {"pm_id", "22"}}}};
+        break;
       }
       break;
     case ParamObjectType::kPM:
-      result = {
-        {1, { {"id", "1"}, {"side", "B"}, {"description", "nice"}, {"pos_in_matrix", "1"}, {"scin_id", "1"} } }
-      };
+      result = {{1, {{"id", "1"}, {"side", "B"}, {"description", "nice"}, {"pos_in_matrix", "1"}, {"scin_id", "1"}}}};
       break;
     case ParamObjectType::kScin:
-      result = {
-        {1, { {"id", "1"},
-          {"length", "50.0"}, {"width", "15.0"}, {"height", "7.0"},
-          {"center_x", "5.0"}, {"center_y", "-5.0"}, {"center_z", "15.0"},
-          {"slot_id", "1"}
-        } }
-      };
+      result = {{1,
+                 {{"id", "1"},
+                  {"length", "50.0"},
+                  {"width", "15.0"},
+                  {"height", "7.0"},
+                  {"center_x", "5.0"},
+                  {"center_y", "-5.0"},
+                  {"center_z", "15.0"},
+                  {"slot_id", "1"}}}};
       break;
     case ParamObjectType::kSlot:
-      result = { { 1, { {"id", "1"}, {"theta", "5.5"}, {"type", "module"}, {"layer_id", "1"} } } };
+      result = {{1, {{"id", "1"}, {"theta", "5.5"}, {"type", "module"}, {"layer_id", "1"}}}};
       break;
     case ParamObjectType::kLayer:
-      result = { { 1, { {"id", "1"}, {"name", "sorbet"}, {"radius", "10.5"}, {"setup_id", "1"} } } };
+      result = {{1, {{"id", "1"}, {"name", "sorbet"}, {"radius", "10.5"}, {"setup_id", "1"}}}};
       break;
     case ParamObjectType::kSetup:
-      result = { { 1, { {"id", "1" }, {"description", "jpet"} } } };
+      result = {{1, {{"id", "1"}, {"description", "jpet"}}}};
       break;
     default:
       break;
+    }
+    return result;
   }
-  return result;
-}
 
-ParamRelationalData getAllRelationalData(
-    ParamObjectType type, ParamObjectType, const int runID
-) {
-  ParamRelationalData result;
-  switch (type) {
+  ParamRelationalData getAllRelationalData(ParamObjectType type, ParamObjectType, const int runID)
+  {
+    ParamRelationalData result;
+    switch (type)
+    {
     case ParamObjectType::kChannel:
-      switch (runID) {
-        // No relations
-        case 0:
-          break;
-        // Single object
-        case 1:
-          result = { {1, 1} };
-          break;
-        // Two objects
-        case 2:
-          result = { {1, 1}, {5, 1} };
-          break;
-        // Missing field
-        case 3:
-          result = { {1, 1} };
-          break;
-        // Wrong field
-        case 4:
-          result = { {1, 1} };
-          break;
-        // Wrong relation
-        case 5:
-          result = { {1, 43} };
-          break;
+      switch (runID)
+      {
+      // No relations
+      case 0:
+        break;
+      // Single object
+      case 1:
+        result = {{1, 1}};
+        break;
+      // Two objects
+      case 2:
+        result = {{1, 1}, {5, 1}};
+        break;
+      // Missing field
+      case 3:
+        result = {{1, 1}};
+        break;
+      // Wrong field
+      case 4:
+        result = {{1, 1}};
+        break;
+      // Wrong relation
+      case 5:
+        result = {{1, 43}};
+        break;
       }
       break;
     default:
-      result = { {1, 1} };
+      result = {{1, 1}};
       break;
+    }
+    return result;
   }
-  return result;
-}
 };
 
 TestParamGetter paramGetter;

@@ -119,10 +119,10 @@ private:
   JPetMatrixSignal fSignalA;
   JPetMatrixSignal fSignalB;
   JPetMatrixSignal fSignalWLS;
-  TRef fScin = NULL;
-  TRef fWLS = NULL;
+  TRef fScin = nullptr;
+  TRef fWLS = nullptr;
 
-  ClassDef(JPetHit, 14);
+  ClassDef(JPetHit, 15);
 };
 
 #endif /* !JPETHIT_H */

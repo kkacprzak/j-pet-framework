@@ -18,21 +18,14 @@
 
 #include "JPetParamGetter/JPetParamConstants.h"
 #include <map>
+#include <string>
 
 /**
  * @brief Constants for names in the json file format
  */
-const std::map<ParamObjectType, std::string> objectsNames
-{
-  {ParamObjectType::kSetup, "setup"},
-  {ParamObjectType::kLayer, "layer"},
-  {ParamObjectType::kSlot, "slot"},
-  {ParamObjectType::kWLS, "wls"},
-  {ParamObjectType::kScin, "scin"},
-  {ParamObjectType::kMatrix, "matrix"},
-  {ParamObjectType::kPM, "pm"},
-  {ParamObjectType::kChannel, "channel"},
-  {ParamObjectType::kParent, "parent"}
-};
+const std::map<ParamObjectType, std::string> objectsNames{
+    {ParamObjectType::kSetup, "setup"}, {ParamObjectType::kLayer, "layer"},     {ParamObjectType::kSlot, "slot"},
+    {ParamObjectType::kWLS, "wls"},     {ParamObjectType::kScin, "scin"},       {ParamObjectType::kMatrix, "matrix"},
+    {ParamObjectType::kPM, "pm"},       {ParamObjectType::kChannel, "channel"}, {ParamObjectType::kParent, "parent"}};
 
 #endif /* !JPETPARAMASCIICONSTANTS_H */
