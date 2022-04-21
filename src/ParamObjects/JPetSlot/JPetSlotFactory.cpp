@@ -60,6 +60,10 @@ JPetSlot* JPetSlotFactory::build(ParamObjectDescription data)
     {
       type = JPetSlot::Module;
     }
+    else if (typeStr == "wls")
+    {
+      type = JPetSlot::WLS;
+    }
     return new JPetSlot(id, theta, type);
   }
   catch (const std::exception& e)

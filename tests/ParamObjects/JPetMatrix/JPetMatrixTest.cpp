@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2021 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2022 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -34,8 +34,13 @@ BOOST_AUTO_TEST_CASE(constructors)
   BOOST_REQUIRE_EQUAL(matrix2.getSide(), JPetMatrix::SideB);
   BOOST_REQUIRE(!matrix2.isNullObject());
 
-  JPetMatrix matrix3(true);
-  BOOST_REQUIRE(matrix3.isNullObject());
+  JPetMatrix matrix3(123, JPetMatrix::WLS);
+  BOOST_REQUIRE_EQUAL(matrix3.getID(), 123);
+  BOOST_REQUIRE_EQUAL(matrix3.getSide(), JPetMatrix::WLS);
+  BOOST_REQUIRE(!matrix3.isNullObject());
+
+  JPetMatrix matrix4(true);
+  BOOST_REQUIRE(matrix4.isNullObject());
 }
 
 BOOST_AUTO_TEST_CASE(set_get_tests)

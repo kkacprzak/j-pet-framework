@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2021 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2022 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -61,6 +61,10 @@ JPetMatrix* JPetMatrixFactory::build(ParamObjectDescription data)
     else if (sideStr == "B")
     {
       side = JPetMatrix::SideB;
+    }
+    else if (sideStr == "WLS")
+    {
+      side = JPetMatrix::WLS;
     }
     return new JPetMatrix(id, side);
   }

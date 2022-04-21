@@ -33,7 +33,8 @@ public:
   enum Type
   {
     Barrel,
-    Module
+    Module,
+    WLS
   };
   JPetSlot();
   JPetSlot(int id, float theta, JPetSlot::Type type);
@@ -62,7 +63,7 @@ protected:
   bool fIsNullObject = false;
   TRef fTRefLayer;
 
-  ClassDef(JPetSlot, 1);
+  ClassDef(JPetSlot, 2);
 };
 
 #endif /* !JPETSLOT_H */
