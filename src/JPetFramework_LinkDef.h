@@ -79,6 +79,7 @@
 #pragma link C++ class JPetTimeWindow + ;
 #pragma link C++ class JPetBaseSignal + ;
 #pragma link C++ class JPetChannelSignal + ;
+#pragma link C++ class std::pair < JPetChannelSignal, JPetChannelSignal> + ;
 #pragma link C++ class JPetMatrixSignal + ;
 #pragma link C++ class JPetPhysRecoHit + ;
 #pragma link C++ class JPetPMSignal + ;
