@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2021 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2022 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -19,12 +19,12 @@
 
 using namespace std;
 
-JPetRawMCHit JPetGeantParserTools::createJPetRawMCHit(const JPetGeantScinHits* geantHit, const JPetParamBank& paramBank)
+JPetRawMCHit JPetGeantParserTools::createJPetRawMCHit(JPetGeantScinHits* geantHit, const JPetParamBank& paramBank, double timeShift)
 {
   JPetRawMCHit mcHit;
   mcHit.setMCDecayTreeIndex(0);
   mcHit.setMCVtxIndex(geantHit->GetEvtID());
-  mcHit.setTime(geantHit->GetTime());
+  mcHit.setTime(geantHit->GetTime() + timeShift);
   mcHit.setEnergy(geantHit->GetEneDepos());
   mcHit.setPos(geantHit->GetHitPosition());
   mcHit.setPolarization(geantHit->GetPolarizationIn());
@@ -34,28 +34,22 @@ JPetRawMCHit JPetGeantParserTools::createJPetRawMCHit(const JPetGeantScinHits* g
   return mcHit;
 }
 
-JPetMCRecoHit JPetGeantParserTools::reconstructHit(const JPetRawMCHit& mcHit, const double timeShift, JPetHitExperimentalParametrizer& parametrizer)
+JPetMCRecoHit JPetGeantParserTools::reconstructHit(JPetRawMCHit& mcHit, JPetHitExperimentalParametrizer& parametrizer)
 {
-  auto time = mcHit.getTime() + timeShift;
-
   JPetMCRecoHit recoHit;
   recoHit.setRecoFlag(JPetRecoHit::MC);
   recoHit.setPosX(mcHit.getScin().getCenterX());
   recoHit.setPosY(mcHit.getScin().getCenterY());
-  recoHit.setPosZ(parametrizer.addZHitSmearing(mcHit.getScin().getID(), mcHit.getPosZ(), mcHit.getEnergy(), time));
-  recoHit.setTime(parametrizer.addTimeSmearing(mcHit.getScin().getID(), mcHit.getPosZ(), mcHit.getEnergy(), time));
-  recoHit.setEnergy(parametrizer.addEnergySmearing(mcHit.getScin().getID(), mcHit.getPosZ(), mcHit.getEnergy(), time));
+  recoHit.setPosZ(parametrizer.addZHitSmearing(mcHit.getScin().getID(), mcHit.getPosZ(), mcHit.getEnergy(), mcHit.getTime()));
+  recoHit.setTime(parametrizer.addTimeSmearing(mcHit.getScin().getID(), mcHit.getPosZ(), mcHit.getEnergy(), mcHit.getTime()));
+  recoHit.setEnergy(parametrizer.addEnergySmearing(mcHit.getScin().getID(), mcHit.getPosZ(), mcHit.getEnergy(), mcHit.getTime()));
   return recoHit;
 }
 
-bool JPetGeantParserTools::isHitReconstructed(const JPetMCRecoHit& recoHit, const double energyThreshold)
-{
-  return recoHit.getEnergy() >= energyThreshold;
-}
+bool JPetGeantParserTools::isHitReconstructed(JPetMCRecoHit& recoHit, const double energyThreshold) { return recoHit.getEnergy() >= energyThreshold; }
 
-void JPetGeantParserTools::identifyRecoHits(const JPetGeantScinHits* geantHit, const JPetMCRecoHit& recoHit, bool& isRecPrompt,
-                                            array<bool, 2>& isSaved2g, array<bool, 3>& isSaved3g, double& enePrompt, array<double, 2>& ene2g,
-                                            array<double, 3>& ene3g)
+void JPetGeantParserTools::identifyRecoHits(JPetGeantScinHits* geantHit, JPetMCRecoHit& recoHit, bool& isRecPrompt, array<bool, 2>& isSaved2g,
+                                            array<bool, 3>& isSaved3g, double& enePrompt, array<double, 2>& ene2g, array<double, 3>& ene3g)
 {
   if (geantHit->GetGenGammaMultiplicity() == 1)
   {
@@ -85,6 +79,13 @@ tuple<vector<double>, vector<double>> JPetGeantParserTools::getTimeDistoOfDecays
 
   double timeShift = estimateNextDecayTimeExp(activityMBq);
   double nextTime = timeWindowMin + timeShift;
+
+  // checking if the draw time is not outside the timewindow -> Fix to the low activity issue
+  if (nextTime > timeWindowMax)
+  {
+    double timeWindowSize = timeWindowMax - timeWindowMin;
+    nextTime = timeWindowMin + fmod(nextTime, timeWindowSize);
+  }
 
   while (nextTime < timeWindowMax)
   {

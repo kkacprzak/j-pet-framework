@@ -91,6 +91,7 @@
 #pragma link C++ class JPetTimeWindowMC + ;
 
 #pragma link C++ class JPetGeantDecayTree + ;
+#pragma link C++ class JPetGeantDecayTreeBranch + ;
 #pragma link C++ class JPetGeantEventInformation + ;
 #pragma link C++ class JPetGeantEventPack + ;
 #pragma link C++ class JPetGeantScinHits + ;

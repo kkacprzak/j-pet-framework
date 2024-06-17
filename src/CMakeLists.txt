@@ -152,6 +152,7 @@ set(SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/DataObjects/JPetLOR/JPetLOR.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/DataObjects/JPetTimeWindow/JPetTimeWindow.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/GeantParser/JPetGeantDecayTree/JPetGeantDecayTree.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/GeantParser/JPetGeantDecayTreeBranch/JPetGeantDecayTreeBranch.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/GeantParser/JPetGeantEventInformation/JPetGeantEventInformation.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/GeantParser/JPetGeantEventPack/JPetGeantEventPack.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/GeantParser/JPetGeantParser/JPetGeantParser.cpp
@@ -242,6 +243,7 @@ set(HEADERS_WITH_DICTIONARY_REQUIRED
   ${PROJECT_SOURCE_DIR}/include/MC/JPetMCDecayTree/JPetMCDecayTree.h
   ${PROJECT_SOURCE_DIR}/include/GeantParser/JPetGeantScinHits/JPetGeantScinHits.h
   ${PROJECT_SOURCE_DIR}/include/GeantParser/JPetGeantDecayTree/JPetGeantDecayTree.h
+  ${PROJECT_SOURCE_DIR}/include/GeantParser/JPetGeantDecayTreeBranch/JPetGeantDecayTreeBranch.h
   ${PROJECT_SOURCE_DIR}/include/GeantParser/JPetGeantEventPack/JPetGeantEventPack.h
   ${PROJECT_SOURCE_DIR}/include/GeantParser/JPetGeantEventInformation/JPetGeantEventInformation.h
 )

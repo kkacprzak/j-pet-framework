@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2020 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2021 The J-PET Monte Carlo Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -17,93 +17,107 @@
 
 ClassImp(JPetGeantDecayTree)
 
-Branch::Branch(int trackID, int primaryBranch)
+    JPetGeantDecayTree::JPetGeantDecayTree()
+    : fDecayTreeBranches("JPetGeantDecayTreeBranch", 1000)
 {
-  fTrackID = trackID;
-  fPrimaryBranchID = primaryBranch;
 }
 
-void Branch::AddNodeID(int nodeID, InteractionType interactionType)
+JPetGeantDecayTree::~JPetGeantDecayTree()
 {
-  fNodeIDs.push_back(nodeID);
-  fInteractionType.push_back(interactionType);
+  fEventID = 0;
+  fDecayTreeBranchesIndex = 0;
+  fDecayChannel = DecayChannel::kUnknown;
+  fDecayTreeBranches.Clear("C");
+  fTrackBranchConnection.clear();
 }
 
-int Branch::GetPreviousNodeID(int nodeID) const
+void JPetGeantDecayTree::Clear(Option_t*)
 {
-  if (fNodeIDs.size() > 1) {
-    for (unsigned i=fNodeIDs.size(); i>1; i--) {
-      if (fNodeIDs[i-1] == nodeID)
-        return fNodeIDs[i-2];
-    }
-  }
-  return fNodeIDs[0];
+  fEventID = 0;
+  fDecayTreeBranchesIndex = 0;
+  fDecayChannel = DecayChannel::kUnknown;
+  fDecayTreeBranches.Clear("C");
+  fTrackBranchConnection.clear();
 }
 
-InteractionType Branch::GetInteractionType(int nodeID) const
+void JPetGeantDecayTree::CopyDecayTree(JPetGeantDecayTree* decayTree)
 {
-  for (unsigned i = fNodeIDs.size(); i > 0; i--)
+  this->SetEventNumber(decayTree->GetEventNumber());
+  this->SetDecayChannel(decayTree->GetDecayChannel());
+  this->SetTrackBranchConnections(decayTree->GetTrackBranchConnections());
+  for (auto i = 0; i < decayTree->GetNumberOfBranches(); i++)
   {
-    if (fNodeIDs[i - 1] == nodeID)
-      return fInteractionType[i - 1];
+    this->CopyDecayTreeBranch(decayTree->GetDecayTreeBranch(i));
   }
-  return kUnknownInteractionType;
 }
 
-JPetGeantDecayTree::JPetGeantDecayTree() {}
-
-JPetGeantDecayTree::~JPetGeantDecayTree() 
+void JPetGeantDecayTree::CopyDecayTreeBranch(JPetGeantDecayTreeBranch* branchToCopy)
 {
-  fBranches.clear();
-  fTrackBranchConnection.clear();
-}
-
-void JPetGeantDecayTree::Clean()
-{
-  this->ClearVectors();
-}
-
-void JPetGeantDecayTree::ClearVectors() 
-{
-  fBranches.clear();
-  fTrackBranchConnection.clear();
-}
-
-int JPetGeantDecayTree::FindPrimaryPhoton(int nodeID)
-{
-  for (unsigned i=fBranches.size(); i>0; i--) {
-    if (fBranches[i-1].GetLastNodeID() == nodeID)
-      return i-1;
+  JPetGeantDecayTreeBranch* newBranch = this->ConstructNextDecayTreeBranch();
+  newBranch->SetTrackID(branchToCopy->GetTrackID());
+  newBranch->SetPrimaryBranchID(branchToCopy->GetPrimaryBranchID());
+  int primaryNodeID = branchToCopy->GetPrimaryNodeID();
+  InteractionType primaryInterType = branchToCopy->GetInteractionType(primaryNodeID);
+  newBranch->AddNodeID(primaryNodeID, primaryInterType);
+  int lastNodeID = branchToCopy->GetLastNodeID();
+  while (newBranch->GetNumberOfNodes() < branchToCopy->GetNumberOfNodes())
+  {
+    int currentNodeID = lastNodeID;
+    while (branchToCopy->GetPreviousNodeID(currentNodeID) > primaryNodeID)
+    {
+      currentNodeID = branchToCopy->GetPreviousNodeID(currentNodeID);
+    }
+    newBranch->AddNodeID(currentNodeID, branchToCopy->GetInteractionType(currentNodeID));
+    primaryNodeID = currentNodeID;
   }
-  return -1;
+}
+
+JPetGeantDecayTreeBranch* JPetGeantDecayTree::ConstructNextDecayTreeBranch()
+{
+  return dynamic_cast<JPetGeantDecayTreeBranch*>(fDecayTreeBranches.ConstructedAt(fDecayTreeBranchesIndex++));
 }
 
 void JPetGeantDecayTree::AddNodeToBranch(int nodeID, int trackID, InteractionType interactionType)
 {
   auto search = fTrackBranchConnection.find(trackID);
-  if (search == fTrackBranchConnection.end()) {
-    int branchSize = fBranches.size();
+  if (search == fTrackBranchConnection.end())
+  {
+    int branchSize = GetNumberOfBranches();
     int primaryBranchID = -1;
     if (interactionType == kSecondaryPart)
-      primaryBranchID = FindPrimaryPhoton(nodeID/10);
-    Branch newBranch(trackID, primaryBranchID);
-    newBranch.AddNodeID(nodeID, interactionType);
-    fBranches.push_back(newBranch);
+      primaryBranchID = FindPrimaryPhoton(nodeID / 10);
+    JPetGeantDecayTreeBranch* newBranch = this->ConstructNextDecayTreeBranch();
+    newBranch->SetTrackID(trackID);
+    newBranch->SetPrimaryBranchID(primaryBranchID);
+    newBranch->AddNodeID(nodeID, interactionType);
     fTrackBranchConnection.insert(std::make_pair(trackID, branchSize));
-  } else {
+  }
+  else
+  {
     int branchID = fTrackBranchConnection.at(trackID);
-    fBranches[branchID].AddNodeID(nodeID, interactionType);
+    GetDecayTreeBranch(branchID)->AddNodeID(nodeID, interactionType);
   }
 }
 
-Branch JPetGeantDecayTree::GetBranch(unsigned trackID) const
+int JPetGeantDecayTree::FindPrimaryPhoton(int nodeID)
+{
+  for (unsigned i = GetNumberOfBranches(); i > 0; i--)
+  {
+    if (GetDecayTreeBranch(i - 1)->GetLastNodeID() == nodeID)
+      return i - 1;
+  }
+  return -1;
+}
+
+// cppcheck-suppress unusedFunction
+JPetGeantDecayTreeBranch* JPetGeantDecayTree::GetDecayTreeBranchByTrack(unsigned trackID)
 {
   auto search = fTrackBranchConnection.find(trackID);
-  if (search != fTrackBranchConnection.end()) {
+  if (search != fTrackBranchConnection.end())
+  {
     int branchID = fTrackBranchConnection.at(trackID);
-    return fBranches[branchID];
-  } else {
-    Branch newBranch;
-    return newBranch;
+    return GetDecayTreeBranch(branchID);
   }
+  else
+    return GetDecayTreeBranch(fDecayTreeBranchesIndex);
 }

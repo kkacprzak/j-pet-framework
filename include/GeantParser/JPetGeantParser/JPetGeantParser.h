@@ -24,6 +24,8 @@
 #include "JPetSmearingFunctions/JPetSmearingFunctions.h"
 #include "JPetUserTask/JPetUserTask.h"
 #include <functional>
+#include <map>
+#include <tuple>
 #include <vector>
 
 class JPetWriter;
@@ -55,6 +57,16 @@ protected:
   double fExperimentalThreshold = 10.0;
   unsigned long fSeed = 0.0;
 
+  bool fUseDefaultZSmearing = false;
+  bool fUseDefaultTimeSmearing = false;
+  bool fUseDefaultEnergySmearing = false;
+
+  float fDefaultZSmearingSigma = 3.0;
+  float fDefaultTimeSmearingSigma = 220.0;
+  float fDefaultTimeSmearingThresholdEnergy = 200.0;
+  float fDefaultTimeSmearingReferenceEnergy = 270.0;
+  float fDefaultEnergySmearingFraction = 0.044;
+
   JPetHitExperimentalParametrizer fExperimentalParametrizer;
 
   ///< internal variables
@@ -77,6 +89,17 @@ protected:
   const std::string kZPositionSmearingParametersParamKey = "GeantParser_ZPositionSmearingParameters_std::vector<double>";
   const std::string kZPositionSmearingFunctionParamKey = "GeantParser_ZPositionSmearingFunction_std::string";
   const std::string kZPositionSmearingFunctionLimitsParamKey = "GeantParser_ZPositionSmearingFunctionLimits_std::vector<double>";
+
+  const std::string kUseDefaultZSmearingKey = "GeantParser_UseDefaultZSmearing_bool";
+  const std::string kDefaultZSmearingSigmaKey = "GeantParser_DefaultZSmearingSigma_double";
+
+  const std::string kUseDefaultTimeSmearingKey = "GeantParser_UseDefaultTimeSmearing_bool";
+  const std::string kDefaultTimeSmearingSigmaKey = "GeantParser_DefaultTimeSmearingSigma_double";
+  const std::string kDefaultTimeSmearingThresholdEnergyKey = "GeantParser_DefaultTimeSmearingThresholdEnergy_double";
+  const std::string kDefaultTimeSmearingReferenceEnergyKey = "GeantParser_DefaultTimeSmearingReferenceEnergy_double";
+
+  const std::string kUseDefaultEnergySmearingKey = "GeantParser_UseDefaultEnergySmearing_bool";
+  const std::string kDefaultEnergySmearingFractionKey = "GeantParser_DefaultEnergySmearingFraction_double";
 
   const std::string kSeedParamKey = "GeantParser_Seed_int";
 
