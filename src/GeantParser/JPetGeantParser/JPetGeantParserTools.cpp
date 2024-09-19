@@ -13,7 +13,6 @@
  *  @file JPetGeantParserTools.cpp
  */
 
-#include "JPetGeantParser/JPetGeantParserTools.h"
 #include "JPetSmearingFunctions/JPetSmearingFunctions.h"
 #include <TMath.h>
 
@@ -84,6 +83,13 @@ tuple<vector<double>, vector<double>> JPetGeantParserTools::getTimeDistoOfDecays
   if (nextTime > timeWindowMax)
   {
     double timeWindowSize = timeWindowMax - timeWindowMin;
+    nextTime = timeWindowMin + fmod(nextTime, timeWindowSize);
+  }
+
+  // checking if the draw time is not outside the timewindow -> Fix to the low activity issue
+  if (nextTime > timeWindowMax)
+  {
+    float timeWindowSize = timeWindowMax - timeWindowMin;
     nextTime = timeWindowMin + fmod(nextTime, timeWindowSize);
   }
 

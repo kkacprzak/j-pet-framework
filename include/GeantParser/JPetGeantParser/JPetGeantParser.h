@@ -67,6 +67,16 @@ protected:
   float fDefaultTimeSmearingReferenceEnergy = 270.0;
   float fDefaultEnergySmearingFraction = 0.044;
 
+  bool fUseDefaultZSmearing = false;
+  bool fUseDefaultTimeSmearing = false;
+  bool fUseDefaultEnergySmearing = false;
+
+  float fDefaultZSmearingSigma = 3.0;
+  float fDefaultTimeSmearingSigma = 220.0;
+  float fDefaultTimeSmearingThresholdEnergy = 200.0;
+  float fDefaultTimeSmearingReferenceEnergy = 270.0;
+  float fDefaultEnergySmearingFraction = 0.044;
+
   JPetHitExperimentalParametrizer fExperimentalParametrizer;
 
   ///< internal variables
@@ -97,7 +107,6 @@ protected:
   const std::string kDefaultTimeSmearingSigmaKey = "GeantParser_DefaultTimeSmearingSigma_double";
   const std::string kDefaultTimeSmearingThresholdEnergyKey = "GeantParser_DefaultTimeSmearingThresholdEnergy_double";
   const std::string kDefaultTimeSmearingReferenceEnergyKey = "GeantParser_DefaultTimeSmearingReferenceEnergy_double";
-
   const std::string kUseDefaultEnergySmearingKey = "GeantParser_UseDefaultEnergySmearing_bool";
   const std::string kDefaultEnergySmearingFractionKey = "GeantParser_DefaultEnergySmearingFraction_double";
 

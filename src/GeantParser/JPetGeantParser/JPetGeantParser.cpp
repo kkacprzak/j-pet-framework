@@ -145,6 +145,7 @@ void JPetGeantParser::loadSmearingOptionsAndSetupExperimentalParametrizer()
   }
 
   std::vector<double> zPositionSmearingLimits;
+
   if (isOptionSet(fParams.getOptions(), kZPositionSmearingFunctionLimitsParamKey))
   {
     zPositionSmearingLimits = getOptionAsVectorOfDoubles(fParams.getOptions(), kZPositionSmearingFunctionLimitsParamKey);
