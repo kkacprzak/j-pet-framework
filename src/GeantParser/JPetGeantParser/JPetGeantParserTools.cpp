@@ -13,6 +13,7 @@
  *  @file JPetGeantParserTools.cpp
  */
 
+#include "JPetGeantParser/JPetGeantParserTools.h"
 #include "JPetSmearingFunctions/JPetSmearingFunctions.h"
 #include <TMath.h>
 

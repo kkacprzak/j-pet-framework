@@ -16,27 +16,23 @@
 #ifndef COMMON_TOOLS_H
 #define COMMON_TOOLS_H
 
-
-#include <boost/noncopyable.hpp>
+#include <algorithm>
 #include <boost/filesystem.hpp>
+#include <boost/noncopyable.hpp>
+#include <cctype>
 #include <ctime>
 #include <fstream>
-#include <sstream>
-#include <string>
 #include <iomanip>
-#include <algorithm>
-#include <cctype>
+#include <sstream>
 #include <stdlib.h>
+#include <string>
 
 class JPetCommonTools : public boost::noncopyable
 {
 public:
   static const std::string currentDateTime();
 
-  static std::string Itoa(int x)
-  {
-    return intToString(x);
-  }
+  static std::string Itoa(int x) { return intToString(x); }
 
   static std::string intToString(int x)
   {
@@ -61,7 +57,8 @@ public:
   static bool ifFileExisting(const std::string& name)
   {
     std::ifstream f(name.c_str());
-    if (f.good()) {
+    if (f.good())
+    {
       f.close();
       return true;
     }
@@ -70,53 +67,41 @@ public:
   }
 
   /**
-    * @brief returns the time std::string in the format dd.mm.yyyy HH:MM
-    */
+   * @brief returns the time std::string in the format dd.mm.yyyy HH:MM
+   */
   static std::string getTimeString()
   {
     time_t _tm = time(NULL);
-    struct tm* curtime = localtime ( &_tm );
+    struct tm* curtime = localtime(&_tm);
     char buf[100];
-    strftime( buf, 100, "%d.%m.%Y %R", curtime);
+    strftime(buf, 100, "%d.%m.%Y %R", curtime);
 
-    return std::string( buf );
+    return std::string(buf);
   }
 
   template <typename Map>
   static bool mapComparator(Map const& lhs, Map const& rhs)
   {
-    auto pred = [](decltype(*lhs.begin()) a, decltype(a) b) {
-      return a.first == b.first
-             && a.second == b.second;
-    };
+    auto pred = [](decltype(*lhs.begin()) a, decltype(a) b) { return a.first == b.first && a.second == b.second; };
 
-    return lhs.size() == rhs.size()
-           && std::equal(lhs.begin(), lhs.end(), rhs.begin(), pred);
+    return lhs.size() == rhs.size() && std::equal(lhs.begin(), lhs.end(), rhs.begin(), pred);
   }
 
-  ///removes the suffix of the file
-  inline static std::string stripFileNameSuffix(const std::string& filename)
-  {
-    return  boost::filesystem::change_extension(filename, "").string();
-  }
-  inline static std::string exctractFileNameSuffix(const std::string& filename)
-  {
-    return boost::filesystem::extension(filename);
-  }
+  /// removes the suffix of the file
+  inline static std::string stripFileNameSuffix(const std::string& filename) { return boost::filesystem::change_extension(filename, "").string(); }
 
-  inline static std::string currentFullPath()
-  {
-    return boost::filesystem::path( boost::filesystem::current_path() ).string();
-  }
+  inline static std::string exctractFileNameSuffix(const std::string& filename) { return boost::filesystem::extension(filename); }
+
+  inline static std::string currentFullPath() { return boost::filesystem::path(boost::filesystem::current_path()).string(); }
 
   inline static std::string extractPathFromFile(const std::string& fileWithPath)
   {
-    return boost::filesystem::path( fileWithPath ).parent_path().string();
+    return boost::filesystem::path(fileWithPath).parent_path().string();
   }
 
   inline static std::string extractFileNameFromFullPath(const std::string& fileWithPath)
   {
-    return boost::filesystem::path( fileWithPath ).filename().string();
+    return boost::filesystem::path(fileWithPath).filename().string();
   }
 
   /// Function extracts from the file name a substring that corresponds to the data type.
@@ -138,14 +123,13 @@ public:
 
   inline static std::string appendSlashToPathIfAbsent(const std::string& path)
   {
-    if (!path.empty() && path.back() != '/') return path + '/';
-    else return path;
+    if (!path.empty() && path.back() != '/')
+      return path + '/';
+    else
+      return path;
   }
 
-  inline static bool isDirectory( const std::string& dir)
-  {
-    return boost::filesystem::is_directory(dir);
-  }
+  inline static bool isDirectory(const std::string& dir) { return boost::filesystem::is_directory(dir); }
 
   /// Creates a pair int and const char* arguments to emulate int arc, const char** argv parameters
   /// in commandLine="./blabla.x -p test" will be transformed to a array of
@@ -155,46 +139,49 @@ public:
   static std::vector<const char*> createArgs(const std::string& commandLine);
 };
 
-
 /// This code below is the implementation of the make_pointer construct that is missing in C++11
 /// In C++14 and greater the std::make_unique should be used
 /// The code is the copy of  Stephan T. Lavavej code proposed here and later incorporated into C++14 standard.
-/// See the source here: https://isocpp.org/files/papers/N3656.txt 
+/// See the source here: https://isocpp.org/files/papers/N3656.txt
 #include <cstddef>
 #include <memory>
 #include <type_traits>
 #include <utility>
 
-
-namespace  jpet_common_tools
+namespace jpet_common_tools
 {
-  template<class T> struct _Unique_if {
-    typedef std::unique_ptr<T> _Single_object;
-  };
+template <class T>
+struct _Unique_if
+{
+  typedef std::unique_ptr<T> _Single_object;
+};
 
-  template<class T> struct _Unique_if<T[]> {
-    typedef std::unique_ptr<T[]> _Unknown_bound;
-  };
+template <class T>
+struct _Unique_if<T[]>
+{
+  typedef std::unique_ptr<T[]> _Unknown_bound;
+};
 
-  template<class T, size_t N> struct _Unique_if<T[N]> {
-    typedef void _Known_bound;
-  };
+template <class T, size_t N>
+struct _Unique_if<T[N]>
+{
+  typedef void _Known_bound;
+};
 
-  template<class T, class... Args>
-    typename _Unique_if<T>::_Single_object
-    make_unique(Args&&... args) {
-      return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
-    }
-
-  template<class T>
-    typename _Unique_if<T>::_Unknown_bound
-    make_unique(size_t n) {
-      typedef typename std::remove_extent<T>::type U;
-      return std::unique_ptr<T>(new U[n]());
-    }
-
-  template<class T, class... Args>
-    typename _Unique_if<T>::_Known_bound
-    make_unique(Args&&...) = delete;
+template <class T, class... Args>
+typename _Unique_if<T>::_Single_object make_unique(Args&&... args)
+{
+  return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
 }
+
+template <class T>
+typename _Unique_if<T>::_Unknown_bound make_unique(size_t n)
+{
+  typedef typename std::remove_extent<T>::type U;
+  return std::unique_ptr<T>(new U[n]());
+}
+
+template <class T, class... Args>
+typename _Unique_if<T>::_Known_bound make_unique(Args&&...) = delete;
+} // namespace jpet_common_tools
 #endif // COMMON_TOOLS_H

@@ -67,16 +67,6 @@ protected:
   float fDefaultTimeSmearingReferenceEnergy = 270.0;
   float fDefaultEnergySmearingFraction = 0.044;
 
-  bool fUseDefaultZSmearing = false;
-  bool fUseDefaultTimeSmearing = false;
-  bool fUseDefaultEnergySmearing = false;
-
-  float fDefaultZSmearingSigma = 3.0;
-  float fDefaultTimeSmearingSigma = 220.0;
-  float fDefaultTimeSmearingThresholdEnergy = 200.0;
-  float fDefaultTimeSmearingReferenceEnergy = 270.0;
-  float fDefaultEnergySmearingFraction = 0.044;
-
   JPetHitExperimentalParametrizer fExperimentalParametrizer;
 
   ///< internal variables

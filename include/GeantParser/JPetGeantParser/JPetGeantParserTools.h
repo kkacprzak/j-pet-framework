@@ -21,8 +21,8 @@
 #include "JPetGeantScinHits/JPetGeantScinHits.h"
 #include "JPetMCDecayTree/JPetMCDecayTree.h"
 #include "JPetParamBank/JPetParamBank.h"
-#include "JPetRawMCHit/JPetRawMCHit.h"
 #include "JPetSmearingFunctions/JPetSmearingFunctions.h"
+#include "MC/JPetRawMCHit/JPetRawMCHit.h"
 #include <TRandom3.h>
 #include <array>
 #include <functional>

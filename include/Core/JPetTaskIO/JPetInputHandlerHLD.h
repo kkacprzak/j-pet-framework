@@ -21,12 +21,14 @@
 
 #include <TObject.h>
 
+#include "JPetOptionsTools/JPetOptionsTools.h"
 #include "JPetParamBank/JPetParamBank.h"
 #include "JPetTaskIO/JPetInputHandler.h"
 
 #include "unpacker_types.hpp"
 
 using ENDPData = std::vector<unpacker::hit_t>;
+using namespace jpet_options_tools;
 
 class JPetHLDdata : public TObject
 {
@@ -54,12 +56,16 @@ public:
   std::tuple<bool, long long, long long> calculateEntryRange(const jpet_options_tools::OptsStrAny& options) const override;
 
   bool loadTDCCalib(const JPetParams& params);
+  bool loadTOTCalib(const JPetParams& params);
 
 private:
   std::ifstream fFile;
   JPetHLDdata fEntryData;
   unpacker::tdc_calib_t fTDCCalib;
-  const std::string kTOTOffsetCalibKey = "Unpacker_TDCnonlinearityCalib_std::string";
+  unpacker::tot_calib_t fTOTCalib;
+  detector_type_checker::DetectorType fDetectorType = detector_type_checker::DetectorType::kModular;
+  const std::string kTDCOffsetCalibKey = "Unpacker_TDCnonlinearityCalib_std::string";
+  const std::string kTOTOffsetCalibKey = "Unpacker_TOTStrecherCalib_std::string";
 };
 
 #endif /*  !JPETINPUTHANDLERHLD_H */

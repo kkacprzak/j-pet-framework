@@ -46,6 +46,29 @@ bool JPetInputHandlerHLD::openInput(const char* inputFilename, const JPetParams&
     return false;
   }
 
+  if (detector_type_checker::getDetectorType(options) == detector_type_checker::DetectorType::kBarrel)
+  {
+    fDetectorType = detector_type_checker::DetectorType::kBarrel;
+
+    // Large Barrel needs a TOT strecher calibration
+    if (!loadTOTCalib(params))
+    {
+      WARNING("Failed to load TOT strecher calibration. Unpacker will proceed without calibration.");
+    }
+    else
+    {
+      if (!fTOTCalib.empty())
+      {
+        unpacker::set_tot_calib(fTOTCalib);
+      }
+    }
+  }
+  else if (detector_type_checker::getDetectorType(options) == detector_type_checker::DetectorType::kModular)
+  {
+    fDetectorType = detector_type_checker::DetectorType::kModular;
+  }
+
+  // TDC calibrtion is loaded for Morular and Large Barrel
   if (!loadTDCCalib(params))
   {
     WARNING("Failed to load TDC nonlinearity calibration. Unpacker will proceed without calibration.");
@@ -62,6 +85,7 @@ bool JPetInputHandlerHLD::openInput(const char* inputFilename, const JPetParams&
 }
 
 void JPetInputHandlerHLD::closeInput() { fFile.close(); }
+
 TObject& JPetInputHandlerHLD::getEntry() { return fEntryData; }
 
 bool JPetInputHandlerHLD::nextEntry()
@@ -72,7 +96,18 @@ bool JPetInputHandlerHLD::nextEntry()
   }
   fEntryRange.currentEntry++;
 
-  int success = unpacker::get_time_window(fEntryData.fMetaData, fEntryData.fOriginalData, fEntryData.fFilteredData, fEntryData.fPreprocData, fFile);
+  int success = 0;
+
+  if (fDetectorType == detector_type_checker::DetectorType::kModular)
+  {
+    success =
+        unpacker::get_time_window_modular(fEntryData.fMetaData, fEntryData.fOriginalData, fEntryData.fFilteredData, fEntryData.fPreprocData, fFile);
+  }
+  else if (fDetectorType == detector_type_checker::DetectorType::kBarrel)
+  {
+    success =
+        unpacker::get_time_window_barrel(fEntryData.fMetaData, fEntryData.fOriginalData, fEntryData.fFilteredData, fEntryData.fPreprocData, fFile);
+  }
 
   if (success == 0)
   {
@@ -109,12 +144,10 @@ std::tuple<bool, long long, long long> JPetInputHandlerHLD::calculateEntryRange(
 
 bool JPetInputHandlerHLD::loadTDCCalib(const JPetParams& params)
 {
-  using namespace jpet_options_tools;
-
-  std::string pathToRootFile = "";
-  if (isOptionSet(params.getOptions(), kTOTOffsetCalibKey))
+  std::string tdcCalibRootFile = "";
+  if (isOptionSet(params.getOptions(), kTDCOffsetCalibKey))
   {
-    pathToRootFile = getOptionAsString(params.getOptions(), kTOTOffsetCalibKey);
+    tdcCalibRootFile = getOptionAsString(params.getOptions(), kTDCOffsetCalibKey);
   }
   else
   {
@@ -122,10 +155,10 @@ bool JPetInputHandlerHLD::loadTDCCalib(const JPetParams& params)
     return false;
   }
 
-  TFile* calib_rootfile = new TFile(pathToRootFile.c_str(), "READ");
+  TFile* calib_rootfile = new TFile(tdcCalibRootFile.c_str(), "READ");
   if (!calib_rootfile->IsOpen())
   {
-    WARNING(TString::Format("Unable to open file: %s. Skipping TDC calibration.", pathToRootFile.c_str()));
+    WARNING(TString::Format("Unable to open file: %s. Skipping TDC calibration.", tdcCalibRootFile.c_str()));
     return false;
   }
 
@@ -176,8 +209,22 @@ bool JPetInputHandlerHLD::loadTDCCalib(const JPetParams& params)
     fTDCCalib[address][local_channel_no] = corr_vec;
   }
 
-  // calib_rootfile->Close();
-  // delete calib_rootfile;
-
   return true;
+}
+
+bool JPetInputHandlerHLD::loadTOTCalib(const JPetParams& params)
+{
+  std::string totCalibRootFile = "";
+  if (isOptionSet(params.getOptions(), kTOTOffsetCalibKey))
+  {
+    totCalibRootFile = getOptionAsString(params.getOptions(), kTOTOffsetCalibKey);
+  }
+  else
+  {
+    WARNING("Path to file with TDC nonlinearity calibrations was not set. Skipping TDC calibration.");
+    return false;
+  }
+
+  // TODO
+  return false;
 }
