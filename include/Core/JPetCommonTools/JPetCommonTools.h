@@ -88,9 +88,17 @@ public:
   }
 
   /// removes the suffix of the file
-  inline static std::string stripFileNameSuffix(const std::string& filename) { return boost::filesystem::change_extension(filename, "").string(); }
+  inline static std::string stripFileNameSuffix(const std::string& filename)
+  {
+    boost::filesystem::path filePath(filename);
+    return filePath.replace_extension().string();
+  }
 
-  inline static std::string exctractFileNameSuffix(const std::string& filename) { return boost::filesystem::extension(filename); }
+  inline static std::string exctractFileNameSuffix(const std::string& filename)
+  {
+    boost::filesystem::path filePath(filename);
+    return filePath.extension().string();
+  }
 
   inline static std::string currentFullPath() { return boost::filesystem::path(boost::filesystem::current_path()).string(); }
 

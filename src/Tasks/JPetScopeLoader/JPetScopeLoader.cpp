@@ -74,7 +74,8 @@ std::map<std::string, int> JPetScopeLoader::createInputScopeFileNames(const std:
   {
     for (recursive_directory_iterator iter(current_dir), end; iter != end; ++iter)
     {
-      std::string filename = iter->path().leaf().string();
+      std::string filename = iter->path().filename().string();
+
       if (isCorrectScopeFileName(filename))
       {
         auto prefix = getFilePrefix(filename);
