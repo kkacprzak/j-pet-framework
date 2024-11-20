@@ -52,29 +52,25 @@ BOOST_AUTO_TEST_CASE(goodRootRun)
 {
   // goodRootFile.root needs to be updated
   // JPetManager& manager = JPetManager::getManager();
-  // const char* args[7] = {
+  // const char* args[5] = {
   //   "test/Path",
   //   "--file",
   //   "unitTestData/JPetManagerTest/goodRootFile.root",
   //   "--type",
-  //   "root",
-  //   "-p",
-  //   "conf_trb3.xml"
+  //   "root"
   // };
-  // BOOST_REQUIRE_NO_THROW(manager.run(7, args));
+  // BOOST_REQUIRE_NO_THROW(manager.run(5, args));
 }
 
 BOOST_AUTO_TEST_CASE(goodZipRun)
 {
   // std::remove("unitTestData/JPetManagerTest/xx14099113231.hld");
   // JPetManager& manager = JPetManager::getManager();
-  // const char* args[14] = {"test/Path",
+  // const char* args[12] = {"test/Path",
   //                         "--file",
   //                         "unitTestData/JPetManagerTest/xx14099113231.hld.xz",
   //                         "--type",
   //                         "zip",
-  //                         "-p",
-  //                         "unitTestData/JPetManagerTest/conf_trb3.xml",
   //                         "-r",
   //                         "0",
   //                         "10",
@@ -82,15 +78,15 @@ BOOST_AUTO_TEST_CASE(goodZipRun)
   //                         "unitTestData/JPetManagerTest/large_barrel.json",
   //                         "-i",
   //                         "44"};
-  // BOOST_REQUIRE_NO_THROW(manager.run(14, args));
+  // BOOST_REQUIRE_NO_THROW(manager.run(12, args));
 }
 
 BOOST_AUTO_TEST_CASE(goodMCRun)
 {
   // JPetManager& manager = JPetManager::getManager();
-  // const char* args[11] = {"test/Path",     "--file", "unitTestData/JPetManagerTest/goodMCFile.mcGeant.root", "--type", "mcGeant", "-p",
-  //                         "conf_trb3.xml", "-l",     "unitTestData/JPetManagerTest/large_barrel.json",       "-i",     "44"};
-  // BOOST_REQUIRE_NO_THROW(manager.run(11, args));
+  // const char* args[9] = {"test/Path",     "--file", "unitTestData/JPetManagerTest/goodMCFile.mcGeant.root", "--type", "mcGeant", "-l",
+  // "unitTestData/JPetManagerTest/large_barrel.json",       "-i",     "44"};
+  // BOOST_REQUIRE_NO_THROW(manager.run(9, args));
 }
 
 BOOST_AUTO_TEST_CASE(goodControlTasks)

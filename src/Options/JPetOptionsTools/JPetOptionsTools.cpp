@@ -240,11 +240,6 @@ std::string getLocalDBCreate(const std::map<std::string, boost::any>& opts)
   return result;
 }
 
-std::string getUnpackerConfigFile(const std::map<std::string, boost::any>& opts)
-{
-  return any_cast<std::string>(opts.at("unpackerConfigFile_std::string"));
-}
-
 std::string getConfigFileName(const std::map<std::string, boost::any>& optsMap)
 {
   if (optsMap.count("userCfg_std::string"))
@@ -337,34 +332,40 @@ std::map<std::string, boost::any> createOptionsFromConfigFile(const std::string&
           mapOptions.insert(std::make_pair(key, item.second.get_value<bool>()));
           break;
         case JPetOptionsTypeHandler::kAllowedTypes::kVectorString:
-          mapOptions.insert(std::make_pair(key, [&optionsTree, &key]() -> std::vector<std::string> {
-            std::vector<std::string> values;
-            for (pt::ptree::value_type& value : optionsTree.get_child(key))
-            {
-              values.push_back(value.second.get_value<std::string>());
-            }
-            return values;
-          }()));
+          mapOptions.insert(std::make_pair(key,
+                                           [&optionsTree, &key]() -> std::vector<std::string>
+                                           {
+                                             std::vector<std::string> values;
+                                             for (pt::ptree::value_type& value : optionsTree.get_child(key))
+                                             {
+                                               values.push_back(value.second.get_value<std::string>());
+                                             }
+                                             return values;
+                                           }()));
           break;
         case JPetOptionsTypeHandler::kAllowedTypes::kVectorInt:
-          mapOptions.insert(std::make_pair(key, [&optionsTree, &key]() -> std::vector<int> {
-            std::vector<int> values;
-            for (pt::ptree::value_type& value : optionsTree.get_child(key))
-            {
-              values.push_back(value.second.get_value<int>());
-            }
-            return values;
-          }()));
+          mapOptions.insert(std::make_pair(key,
+                                           [&optionsTree, &key]() -> std::vector<int>
+                                           {
+                                             std::vector<int> values;
+                                             for (pt::ptree::value_type& value : optionsTree.get_child(key))
+                                             {
+                                               values.push_back(value.second.get_value<int>());
+                                             }
+                                             return values;
+                                           }()));
           break;
         case JPetOptionsTypeHandler::kAllowedTypes::kVectorDouble:
-          mapOptions.insert(std::make_pair(key, [&optionsTree, &key]() -> std::vector<double> {
-            std::vector<double> values;
-            for (pt::ptree::value_type& value : optionsTree.get_child(key))
-            {
-              values.push_back(value.second.get_value<double>());
-            }
-            return values;
-          }()));
+          mapOptions.insert(std::make_pair(key,
+                                           [&optionsTree, &key]() -> std::vector<double>
+                                           {
+                                             std::vector<double> values;
+                                             for (pt::ptree::value_type& value : optionsTree.get_child(key))
+                                             {
+                                               values.push_back(value.second.get_value<double>());
+                                             }
+                                             return values;
+                                           }()));
           break;
         default:
           WARNING("Unknow option type: " + typeOfOption + " skipping option: " + key);

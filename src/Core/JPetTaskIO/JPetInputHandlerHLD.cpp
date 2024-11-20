@@ -106,7 +106,8 @@ bool JPetInputHandlerHLD::nextEntry()
   else if (fDetectorType == detector_type_checker::DetectorType::kBarrel)
   {
     success = unpacker::get_time_window_barrel(
-        /*fEntryData.fMetaData, fEntryData.fOriginalData, fEntryData.fFilteredData, fEntryData.fPreprocData, fFile*/);
+        /*fEntryData.fMetaData, fEntryData.fOriginalData, fEntryData.fFilteredData, fEntryData.fPreprocData, fFile*/
+    );
   }
 
   if (success == 0)
