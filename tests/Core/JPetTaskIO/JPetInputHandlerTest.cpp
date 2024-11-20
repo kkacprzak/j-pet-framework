@@ -21,6 +21,8 @@ const char* kInputTestFile = "unitTestData/JPetTaskChainExecutorTest/dabc_170251
 // 99                     10
 // 100 (last one)         11
 
+// TODO make test for JPetInputHandlerHLD
+
 int getEntrysInWindow(JPetInputHandler& handler)
 {
   auto& event = handler.getEntry();
@@ -36,177 +38,175 @@ BOOST_AUTO_TEST_CASE(basicTest)
   JPetParams params;
   using namespace jpet_options_generator_tools;
   auto opts = getDefaultOptions();
-  JPetInputHandlerHLD handler;
 
-  // TODO - Change InputHandelr to HLD or ROOT instances
-
-  // BOOST_REQUIRE(!handler.openInput("", params));
-  // auto range = handler.getEntryRange();
-  // BOOST_REQUIRE_EQUAL(range.firstEntry, 0);
-  // BOOST_REQUIRE_EQUAL(range.lastEntry, 0);
-  // BOOST_REQUIRE_EQUAL(range.currentEntry, -1);
-  // BOOST_REQUIRE_EQUAL(handler.getFirstEntryNumber(), 0);
-  // BOOST_REQUIRE_EQUAL(handler.getLastEntryNumber(), 0);
-  // BOOST_REQUIRE_EQUAL(handler.getCurrentEntryNumber(), -1);
-  // BOOST_REQUIRE(!handler.nextEntry());
+  JPetInputHandlerROOT handler;
+  BOOST_REQUIRE(!handler.openInput("", params));
+  auto range = handler.getEntryRange();
+  BOOST_REQUIRE_EQUAL(range.firstEntry, 0);
+  BOOST_REQUIRE_EQUAL(range.lastEntry, 0);
+  BOOST_REQUIRE_EQUAL(range.currentEntry, -1);
+  BOOST_REQUIRE_EQUAL(handler.getFirstEntryNumber(), 0);
+  BOOST_REQUIRE_EQUAL(handler.getLastEntryNumber(), 0);
+  BOOST_REQUIRE_EQUAL(handler.getCurrentEntryNumber(), -1);
+  BOOST_REQUIRE(!handler.nextEntry());
 }
 
 BOOST_AUTO_TEST_CASE(calculateEntryRange)
 {
-  // using namespace jpet_options_generator_tools;
-  // auto opts = getDefaultOptions();
-  //
-  // auto mgr = std::make_shared<JPetParamManager>(new JPetParamManager(new JPetParamGetterAscii(dataFileName)));
-  // JPetParams params(opts, mgr);
-  //
-  // JPetInputHandler handler;
-  // auto res = handler.openInput(kInputTestFile, params);
-  // BOOST_REQUIRE(res);
-  // auto firstEvent = 0ll;
-  // auto lastEvent = 0ll;
-  // bool isOK = false;
-  // std::tie(isOK, firstEvent, lastEvent) = handler.calculateEntryRange(opts);
-  // BOOST_REQUIRE(isOK);
-  // BOOST_REQUIRE_EQUAL(firstEvent, 0);
-  // BOOST_REQUIRE_EQUAL(lastEvent, 100);
+  using namespace jpet_options_generator_tools;
+  auto opts = getDefaultOptions();
+
+  auto mgr = std::make_shared<JPetParamManager>(new JPetParamManager(new JPetParamGetterAscii(dataFileName)));
+  JPetParams params(opts, mgr);
+
+  JPetInputHandlerROOT handler;
+  auto res = handler.openInput(kInputTestFile, params);
+  BOOST_REQUIRE(res);
+  auto firstEvent = 0ll;
+  auto lastEvent = 0ll;
+  bool isOK = false;
+  std::tie(isOK, firstEvent, lastEvent) = handler.calculateEntryRange(opts);
+  BOOST_REQUIRE(isOK);
+  BOOST_REQUIRE_EQUAL(firstEvent, 0);
+  BOOST_REQUIRE_EQUAL(lastEvent, 100);
 }
 
 BOOST_AUTO_TEST_CASE(setEntryRange2)
 {
-  // using namespace jpet_options_generator_tools;
-  // auto opts = getDefaultOptions();
-  //
-  // opts["firstEvent_int"] = 1;
-  // opts["lastEvent_int"] = 1;
-  // auto mgr = std::make_shared<JPetParamManager>(new JPetParamManager(new JPetParamGetterAscii(dataFileName)));
-  // JPetParams params(opts, mgr);
-  //
-  // JPetInputHandler handler;
-  // handler.openInput(kInputTestFile, params);
-  // bool isOK = handler.setEntryRange(opts);
-  // BOOST_REQUIRE(isOK);
-  // BOOST_REQUIRE_EQUAL(1, handler.getFirstEntryNumber());
-  // BOOST_REQUIRE_EQUAL(1, handler.getLastEntryNumber());
-  // BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 10);
+  using namespace jpet_options_generator_tools;
+  auto opts = getDefaultOptions();
+
+  opts["firstEvent_int"] = 1;
+  opts["lastEvent_int"] = 1;
+  auto mgr = std::make_shared<JPetParamManager>(new JPetParamManager(new JPetParamGetterAscii(dataFileName)));
+  JPetParams params(opts, mgr);
+
+  JPetInputHandlerROOT handler;
+  handler.openInput(kInputTestFile, params);
+  bool isOK = handler.setEntryRange(opts);
+  BOOST_REQUIRE(isOK);
+  BOOST_REQUIRE_EQUAL(1, handler.getFirstEntryNumber());
+  BOOST_REQUIRE_EQUAL(1, handler.getLastEntryNumber());
+  BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 10);
 }
 
 BOOST_AUTO_TEST_CASE(calculateEntryRange3)
 {
-  // using namespace jpet_options_generator_tools;
-  // auto opts = getDefaultOptions();
-  //
-  // opts["firstEvent_int"] = 0;
-  // opts["lastEvent_int"] = 1;
-  // auto mgr = std::make_shared<JPetParamManager>(new JPetParamManager(new JPetParamGetterAscii(dataFileName)));
-  // JPetParams params(opts, mgr);
-  //
-  // JPetInputHandler handler;
-  // handler.openInput(kInputTestFile, params);
-  // bool isOK = handler.setEntryRange(opts);
-  // BOOST_REQUIRE(isOK);
-  // BOOST_REQUIRE_EQUAL(0, handler.getFirstEntryNumber());
-  // BOOST_REQUIRE_EQUAL(1, handler.getLastEntryNumber());
-  // BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 15);
+  using namespace jpet_options_generator_tools;
+  auto opts = getDefaultOptions();
+
+  opts["firstEvent_int"] = 0;
+  opts["lastEvent_int"] = 1;
+  auto mgr = std::make_shared<JPetParamManager>(new JPetParamManager(new JPetParamGetterAscii(dataFileName)));
+  JPetParams params(opts, mgr);
+
+  JPetInputHandlerROOT handler;
+  handler.openInput(kInputTestFile, params);
+  bool isOK = handler.setEntryRange(opts);
+  BOOST_REQUIRE(isOK);
+  BOOST_REQUIRE_EQUAL(0, handler.getFirstEntryNumber());
+  BOOST_REQUIRE_EQUAL(1, handler.getLastEntryNumber());
+  BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 15);
 }
 
 BOOST_AUTO_TEST_CASE(calculateEntryRange4)
 {
-  // using namespace jpet_options_generator_tools;
-  // auto opts = getDefaultOptions();
-  //
-  // opts["firstEvent_int"] = 1;
-  // opts["lastEvent_int"] = -1;
-  // auto mgr = std::make_shared<JPetParamManager>(new JPetParamManager(new JPetParamGetterAscii(dataFileName)));
-  // JPetParams params(opts, mgr);
-  //
-  // JPetInputHandler handler;
-  // handler.openInput(kInputTestFile, params);
-  // bool isOK = handler.setEntryRange(opts);
-  // BOOST_REQUIRE(isOK);
-  // BOOST_REQUIRE_EQUAL(1, handler.getFirstEntryNumber());
-  // BOOST_REQUIRE_EQUAL(100, handler.getLastEntryNumber());
-  // BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 10);
+  using namespace jpet_options_generator_tools;
+  auto opts = getDefaultOptions();
+
+  opts["firstEvent_int"] = 1;
+  opts["lastEvent_int"] = -1;
+  auto mgr = std::make_shared<JPetParamManager>(new JPetParamManager(new JPetParamGetterAscii(dataFileName)));
+  JPetParams params(opts, mgr);
+
+  JPetInputHandlerROOT handler;
+  handler.openInput(kInputTestFile, params);
+  bool isOK = handler.setEntryRange(opts);
+  BOOST_REQUIRE(isOK);
+  BOOST_REQUIRE_EQUAL(1, handler.getFirstEntryNumber());
+  BOOST_REQUIRE_EQUAL(100, handler.getLastEntryNumber());
+  BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 10);
 }
 
 BOOST_AUTO_TEST_CASE(calculateEntryRange5)
 {
-  // using namespace jpet_options_generator_tools;
-  // auto opts = getDefaultOptions();
-  //
-  // opts["firstEvent_int"] = -1;
-  // opts["lastEvent_int"] = -1;
-  // auto mgr = std::make_shared<JPetParamManager>(new JPetParamManager(new JPetParamGetterAscii(dataFileName)));
-  // JPetParams params(opts, mgr);
-  //
-  // JPetInputHandler handler;
-  // handler.openInput(kInputTestFile, params);
-  // bool isOK = handler.setEntryRange(opts);
-  // BOOST_REQUIRE(isOK);
-  // BOOST_REQUIRE_EQUAL(0, handler.getFirstEntryNumber());
-  // BOOST_REQUIRE_EQUAL(100, handler.getLastEntryNumber());
-  // BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 15);
+  using namespace jpet_options_generator_tools;
+  auto opts = getDefaultOptions();
+
+  opts["firstEvent_int"] = -1;
+  opts["lastEvent_int"] = -1;
+  auto mgr = std::make_shared<JPetParamManager>(new JPetParamManager(new JPetParamGetterAscii(dataFileName)));
+  JPetParams params(opts, mgr);
+
+  JPetInputHandlerROOT handler;
+  handler.openInput(kInputTestFile, params);
+  bool isOK = handler.setEntryRange(opts);
+  BOOST_REQUIRE(isOK);
+  BOOST_REQUIRE_EQUAL(0, handler.getFirstEntryNumber());
+  BOOST_REQUIRE_EQUAL(100, handler.getLastEntryNumber());
+  BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 15);
 }
 
 BOOST_AUTO_TEST_CASE(calculateEntryRange6)
 {
-  // using namespace jpet_options_generator_tools;
-  // auto opts = getDefaultOptions();
-  //
-  // opts["firstEvent_int"] = -1;
-  // opts["lastEvent_int"] = 5;
-  // auto mgr = std::make_shared<JPetParamManager>(new JPetParamManager(new JPetParamGetterAscii(dataFileName)));
-  // JPetParams params(opts, mgr);
-  //
-  // JPetInputHandler handler;
-  // handler.openInput(kInputTestFile, params);
-  // bool isOK = handler.setEntryRange(opts);
-  // BOOST_REQUIRE(isOK);
-  // BOOST_REQUIRE_EQUAL(0, handler.getFirstEntryNumber());
-  // BOOST_REQUIRE_EQUAL(5, handler.getLastEntryNumber());
-  // BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 15);
+  using namespace jpet_options_generator_tools;
+  auto opts = getDefaultOptions();
+
+  opts["firstEvent_int"] = -1;
+  opts["lastEvent_int"] = 5;
+  auto mgr = std::make_shared<JPetParamManager>(new JPetParamManager(new JPetParamGetterAscii(dataFileName)));
+  JPetParams params(opts, mgr);
+
+  JPetInputHandlerROOT handler;
+  handler.openInput(kInputTestFile, params);
+  bool isOK = handler.setEntryRange(opts);
+  BOOST_REQUIRE(isOK);
+  BOOST_REQUIRE_EQUAL(0, handler.getFirstEntryNumber());
+  BOOST_REQUIRE_EQUAL(5, handler.getLastEntryNumber());
+  BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 15);
 }
 
 BOOST_AUTO_TEST_CASE(calculateEntryRange7)
 {
-  // using namespace jpet_options_generator_tools;
-  // auto opts = getDefaultOptions();
-  //
-  // opts["firstEvent_int"] = 2;
-  // opts["lastEvent_int"] = 5;
-  // auto mgr = std::make_shared<JPetParamManager>(new JPetParamManager(new JPetParamGetterAscii(dataFileName)));
-  // JPetParams params(opts, mgr);
-  //
-  // JPetInputHandler handler;
-  // handler.openInput(kInputTestFile, params);
-  // bool isOK = handler.setEntryRange(opts);
-  // BOOST_REQUIRE(isOK);
-  // BOOST_REQUIRE_EQUAL(2, handler.getFirstEntryNumber());
-  // BOOST_REQUIRE_EQUAL(5, handler.getLastEntryNumber());
-  // BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 6);
+  using namespace jpet_options_generator_tools;
+  auto opts = getDefaultOptions();
+
+  opts["firstEvent_int"] = 2;
+  opts["lastEvent_int"] = 5;
+  auto mgr = std::make_shared<JPetParamManager>(new JPetParamManager(new JPetParamGetterAscii(dataFileName)));
+  JPetParams params(opts, mgr);
+
+  JPetInputHandlerROOT handler;
+  handler.openInput(kInputTestFile, params);
+  bool isOK = handler.setEntryRange(opts);
+  BOOST_REQUIRE(isOK);
+  BOOST_REQUIRE_EQUAL(2, handler.getFirstEntryNumber());
+  BOOST_REQUIRE_EQUAL(5, handler.getLastEntryNumber());
+  BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 6);
 }
 
 BOOST_AUTO_TEST_CASE(getNextEntry)
 {
-  // using namespace jpet_options_generator_tools;
-  // auto opts = getDefaultOptions();
-  //
-  // opts["firstEvent_int"] = -1;
-  // opts["lastEvent_int"] = 5;
-  // auto mgr = std::make_shared<JPetParamManager>(new JPetParamManager(new JPetParamGetterAscii(dataFileName)));
-  // JPetParams params(opts, mgr);
-  //
-  // JPetInputHandler handler;
-  // handler.openInput(kInputTestFile, params);
-  // handler.setEntryRange(opts);
-  // BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 15);
-  // BOOST_REQUIRE(handler.nextEntry());
-  // BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 10);
-  // BOOST_REQUIRE(handler.nextEntry());
-  // BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 6);
-  // BOOST_REQUIRE(handler.nextEntry());
-  // BOOST_REQUIRE(handler.nextEntry());
-  // BOOST_REQUIRE(handler.nextEntry());
-  // BOOST_REQUIRE(!handler.nextEntry());
+  using namespace jpet_options_generator_tools;
+  auto opts = getDefaultOptions();
+
+  opts["firstEvent_int"] = -1;
+  opts["lastEvent_int"] = 5;
+  auto mgr = std::make_shared<JPetParamManager>(new JPetParamManager(new JPetParamGetterAscii(dataFileName)));
+  JPetParams params(opts, mgr);
+
+  JPetInputHandlerROOT handler;
+  handler.openInput(kInputTestFile, params);
+  handler.setEntryRange(opts);
+  BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 15);
+  BOOST_REQUIRE(handler.nextEntry());
+  BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 10);
+  BOOST_REQUIRE(handler.nextEntry());
+  BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 6);
+  BOOST_REQUIRE(handler.nextEntry());
+  BOOST_REQUIRE(handler.nextEntry());
+  BOOST_REQUIRE(handler.nextEntry());
+  BOOST_REQUIRE(!handler.nextEntry());
 }
 
 BOOST_AUTO_TEST_SUITE_END()
