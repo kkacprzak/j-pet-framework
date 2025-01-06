@@ -37,6 +37,7 @@ SHELL ["/bin/bash", "-c"]
 RUN conda init && /bin/bash && cd /opt/ && \
   git clone --single-branch --branch $JPET_FRAMEWORK_BRANCH $JPET_FRAMEWORK_REPO && \
   cd j-pet-framework/ && git submodule init && git submodule update && \
+  conda env create --name jpet -f /opt/j-pet-framework/docker/j-pet-framework-conda-env.yml && \
   source /opt/conda/etc/profile.d/conda.sh && conda activate jpet && \
   cd /opt/ && mkdir framework-build && mkdir framework-install && cd framework-build && \
   cmake -DCMAKE_INSTALL_PREFIX=../framework-install ../j-pet-framework/ && make -j2 && make install && \
