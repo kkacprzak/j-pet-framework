@@ -48,6 +48,7 @@ void JPetManager::run(int argc, const char** argv)
     std::cerr << "Error has occurred while parsing command line! Check the log!" << std::endl;
     throw std::invalid_argument("Error in parsing command line arguments"); /// temporary change to check if the examples are working
   }
+
   JPetManager::registerDefaultTasks();
   useTasksFromUserParams(allValidatedOptions);  // add userTasks registered in userParams to run
   checkDisableLogRotation(allValidatedOptions); // disable log rotation if enabled
@@ -108,6 +109,15 @@ std::pair<bool, std::map<std::string, boost::any>> JPetManager::parseCmdLine(int
     JPetCmdParser parser;
     auto optionsFromCmdLine = parser.parseCmdLineArgs(argc, argv);
     allValidatedOptions = optionsGenerator.generateAndValidateOptions(optionsFromCmdLine);
+
+    // Initialise Logger with output path
+    // Log has to initialised with a output path if requested
+    // before any other process calls it
+    if (optionsFromCmdLine.count("outputPath"))
+    {
+      auto logPath = boost::any_cast<std::string>(optionsFromCmdLine.find("outputPath")->second.value());
+      JPetLogger::setLogOutputPath(logPath);
+    }
   }
   catch (std::exception& e)
   {
