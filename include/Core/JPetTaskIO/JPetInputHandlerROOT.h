@@ -37,7 +37,6 @@ public:
 
   JPetTreeHeader* getHeaderClone() override;
 
-
 protected:
   std::unique_ptr<JPetReaderInterface> fReader{nullptr};
 

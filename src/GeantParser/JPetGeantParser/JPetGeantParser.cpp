@@ -252,9 +252,6 @@ bool JPetGeantParser::exec()
   {
     if (auto& mcEventPack = dynamic_cast<JPetGeantEventPack* const>(fEvent))
     {
-      // std::cout << " hits " << mcEventPack->GetNumberOfHits() << " decays " << mcEventPack->GetNumberOfDecayTrees() << " evt "
-      //           << mcEventPack->GetEventNumber() << std::endl;
-
       processMCEvent(mcEventPack);
 
       if (fProcessSingleEventinWindow)
@@ -458,16 +455,12 @@ void JPetGeantParser::saveHits()
 {
   for (const auto& mcHit : fStoredMCHits)
   {
-    // std::cout << "hit xyz " << mcHit.getPosX() << " " << mcHit.getPosY() << " " << mcHit.getPosZ() << std::endl;
     dynamic_cast<JPetTimeWindowMC*>(fOutputEvents)->addMCHit<JPetRawMCHit>(mcHit);
   }
 
   for (const auto& recoHit : fStoredRecoHits)
   {
-    // std::cout << "reco hit mc index " << recoHit.getMCindex() << std::endl;
-
     dynamic_cast<JPetTimeWindow*>(fOutputEvents)->add<JPetMCRecoHit>(recoHit);
-    // dynamic_cast<JPetTimeWindowMC*>(fOutputEvents)->addMCHit<JPetMCRecoHit>(recoHit);
   }
 
   if (fMakeHisto)

@@ -337,34 +337,40 @@ std::map<std::string, boost::any> createOptionsFromConfigFile(const std::string&
           mapOptions.insert(std::make_pair(key, item.second.get_value<bool>()));
           break;
         case JPetOptionsTypeHandler::kAllowedTypes::kVectorString:
-          mapOptions.insert(std::make_pair(key, [&optionsTree, &key]() -> std::vector<std::string> {
-            std::vector<std::string> values;
-            for (pt::ptree::value_type& value : optionsTree.get_child(key))
-            {
-              values.push_back(value.second.get_value<std::string>());
-            }
-            return values;
-          }()));
+          mapOptions.insert(std::make_pair(key,
+                                           [&optionsTree, &key]() -> std::vector<std::string>
+                                           {
+                                             std::vector<std::string> values;
+                                             for (pt::ptree::value_type& value : optionsTree.get_child(key))
+                                             {
+                                               values.push_back(value.second.get_value<std::string>());
+                                             }
+                                             return values;
+                                           }()));
           break;
         case JPetOptionsTypeHandler::kAllowedTypes::kVectorInt:
-          mapOptions.insert(std::make_pair(key, [&optionsTree, &key]() -> std::vector<int> {
-            std::vector<int> values;
-            for (pt::ptree::value_type& value : optionsTree.get_child(key))
-            {
-              values.push_back(value.second.get_value<int>());
-            }
-            return values;
-          }()));
+          mapOptions.insert(std::make_pair(key,
+                                           [&optionsTree, &key]() -> std::vector<int>
+                                           {
+                                             std::vector<int> values;
+                                             for (pt::ptree::value_type& value : optionsTree.get_child(key))
+                                             {
+                                               values.push_back(value.second.get_value<int>());
+                                             }
+                                             return values;
+                                           }()));
           break;
         case JPetOptionsTypeHandler::kAllowedTypes::kVectorDouble:
-          mapOptions.insert(std::make_pair(key, [&optionsTree, &key]() -> std::vector<double> {
-            std::vector<double> values;
-            for (pt::ptree::value_type& value : optionsTree.get_child(key))
-            {
-              values.push_back(value.second.get_value<double>());
-            }
-            return values;
-          }()));
+          mapOptions.insert(std::make_pair(key,
+                                           [&optionsTree, &key]() -> std::vector<double>
+                                           {
+                                             std::vector<double> values;
+                                             for (pt::ptree::value_type& value : optionsTree.get_child(key))
+                                             {
+                                               values.push_back(value.second.get_value<double>());
+                                             }
+                                             return values;
+                                           }()));
           break;
         default:
           WARNING("Unknow option type: " + typeOfOption + " skipping option: " + key);
@@ -394,8 +400,8 @@ void handleErrorMessage(const std::string& errorMessage, const std::out_of_range
 
 file_type_checker::FileType file_type_checker::getFileType(const std::map<std::string, boost::any>& opts, const std::string& fileTypeName)
 {
-  std::map<std::string, file_type_checker::FileType> fileTypeMap = {{"", kNoType}, {"root", kRoot},       {"mcGeant", kMCGeant}, {"scope", kScope},
-                                                                    {"hld", kHld}, {"hldRoot", kHldRoot}, {"zip", kZip}};
+  std::map<std::string, file_type_checker::FileType> fileTypeMap = {{"", kNoType},     {"root", kRoot}, {"mcGeant", kMCGeant}, {"mcGATE", kMCGATE},
+                                                                    {"scope", kScope}, {"hld", kHld},   {"hldRoot", kHldRoot}, {"zip", kZip}};
 
   try
   {

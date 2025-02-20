@@ -76,6 +76,7 @@ enum FileType
   kHldRoot,
   kZip,
   kMCGeant,
+  kMCGATE,
   kUndefinedFileType
 };
 FileType getFileType(const OptsStrAny& opts, const std::string& fileType);
