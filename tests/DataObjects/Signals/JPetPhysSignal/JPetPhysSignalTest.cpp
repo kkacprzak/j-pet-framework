@@ -19,7 +19,7 @@
 #include "Signals/JPetPhysSignal/JPetPhysSignal.h"
 #include <boost/test/unit_test.hpp>
 
-BOOST_AUTO_TEST_SUITE()
+BOOST_AUTO_TEST_SUITE(PhysSignalTestSuite)
 
 double epsilon = 0.0001;
 

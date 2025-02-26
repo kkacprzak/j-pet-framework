@@ -55,14 +55,13 @@ public:
   bool setEntryRange(const jpet_options_tools::OptsStrAny& options) override;
   std::tuple<bool, long long, long long> calculateEntryRange(const jpet_options_tools::OptsStrAny& options) const override;
 
-  bool loadTDCCalib(const JPetParams& params);
-  bool loadTOTCalib(const JPetParams& params);
+  bool loadCalibModular(const JPetParams& params);
+  bool loadCalibsBarrel(const JPetParams& params);
 
 private:
   std::ifstream fFile;
   JPetHLDdata fEntryData;
   unpacker::tdc_calib_t fTDCCalib;
-  unpacker::tot_calib_t fTOTCalib;
   detector_type_checker::DetectorType fDetectorType = detector_type_checker::DetectorType::kModular;
   const std::string kTDCOffsetCalibKey = "Unpacker_TDCnonlinearityCalib_std::string";
   const std::string kTOTOffsetCalibKey = "Unpacker_TOTStrecherCalib_std::string";

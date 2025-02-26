@@ -19,7 +19,7 @@
 #include "Signals/JPetMatrixSignal/JPetMatrixSignal.h"
 #include <boost/test/unit_test.hpp>
 
-BOOST_AUTO_TEST_SUITE()
+BOOST_AUTO_TEST_SUITE(MatrixSignalTestSuite)
 
 double epsilon = 0.00001;
 

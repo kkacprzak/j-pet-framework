@@ -50,34 +50,19 @@ bool JPetInputHandlerHLD::openInput(const char* inputFilename, const JPetParams&
   {
     fDetectorType = detector_type_checker::DetectorType::kBarrel;
 
-    // Large Barrel needs a TOT strecher calibration
-    if (!loadTOTCalib(params))
+    // Large Barrel needs a TOT strecher and TDC nonlinearity calibration
+    if (!loadCalibsBarrel(params))
     {
-      WARNING("Failed to load TOT strecher calibration. Unpacker will proceed without calibration.");
-    }
-    else
-    {
-      if (!fTOTCalib.empty())
-      {
-        unpacker::set_tot_calib(fTOTCalib);
-      }
+      WARNING("Failed to load TOT or TDC calibration. Unpacker will proceed without calibration.");
     }
   }
   else if (detector_type_checker::getDetectorType(options) == detector_type_checker::DetectorType::kModular)
   {
     fDetectorType = detector_type_checker::DetectorType::kModular;
-  }
-
-  // TDC calibrtion is loaded for Morular and Large Barrel
-  if (!loadTDCCalib(params))
-  {
-    WARNING("Failed to load TDC nonlinearity calibration. Unpacker will proceed without calibration.");
-  }
-  else
-  {
-    if (!fTDCCalib.empty())
+    // TDC calibrtion is loaded for Modular
+    if (!loadCalibModular(params))
     {
-      unpacker::set_tdc_calib(fTDCCalib);
+      WARNING("Failed to load TDC nonlinearity calibration. Unpacker will proceed without calibration.");
     }
   }
 
@@ -100,14 +85,13 @@ bool JPetInputHandlerHLD::nextEntry()
 
   if (fDetectorType == detector_type_checker::DetectorType::kModular)
   {
-    success =
-        unpacker::get_time_window_modular(fEntryData.fMetaData, fEntryData.fOriginalData, fEntryData.fFilteredData, fEntryData.fPreprocData, fFile);
+    success = unpacker::get_time_window_modular(fEntryData.fMetaData, fEntryData.fOriginalData, fEntryData.fFilteredData, fEntryData.fPreprocData,
+                                                fFile, fTDCCalib);
   }
   else if (fDetectorType == detector_type_checker::DetectorType::kBarrel)
   {
-    success = unpacker::get_time_window_barrel(
-        /*fEntryData.fMetaData, fEntryData.fOriginalData, fEntryData.fFilteredData, fEntryData.fPreprocData, fFile*/
-    );
+    success = unpacker::get_time_window_barrel(fEntryData.fMetaData, fEntryData.fOriginalData, fEntryData.fFilteredData, fEntryData.fPreprocData,
+                                               fFile, fTDCCalib);
   }
 
   if (success == 0)
@@ -143,12 +127,12 @@ std::tuple<bool, long long, long long> JPetInputHandlerHLD::calculateEntryRange(
   return JPetTaskIOTools::setUserLimits(options, totalEntries);
 }
 
-bool JPetInputHandlerHLD::loadTDCCalib(const JPetParams& params)
+bool JPetInputHandlerHLD::loadCalibModular(const JPetParams& params)
 {
-  std::string tdcCalibRootFile = "";
+  std::string tdcFileName = "";
   if (isOptionSet(params.getOptions(), kTDCOffsetCalibKey))
   {
-    tdcCalibRootFile = getOptionAsString(params.getOptions(), kTDCOffsetCalibKey);
+    tdcFileName = getOptionAsString(params.getOptions(), kTDCOffsetCalibKey);
   }
   else
   {
@@ -156,22 +140,21 @@ bool JPetInputHandlerHLD::loadTDCCalib(const JPetParams& params)
     return false;
   }
 
-  TFile* calib_rootfile = new TFile(tdcCalibRootFile.c_str(), "READ");
-  if (!calib_rootfile->IsOpen())
+  TFile* tdcCalibRootFile = new TFile(tdcFileName.c_str(), "READ");
+  if (!tdcCalibRootFile->IsOpen())
   {
-    WARNING(TString::Format("Unable to open file: %s. Skipping TDC calibration.", tdcCalibRootFile.c_str()));
+    WARNING(TString::Format("Unable to open file: %s. Skipping TDC calibration.", tdcFileName.c_str()));
     return false;
   }
 
   int run_id = getRunNumber(params.getOptions());
   for (auto& channel : params.getParamManager()->getChannels(run_id))
   {
-
     uint32_t channel_no = channel.second->getID();
     uint32_t address = channel.second->getDataModule().getTBRNetAddress();
     uint32_t local_channel_no = channel_no - channel.second->getDataModule().getChannelsOffset();
 
-    TH1F* corr_histo = dynamic_cast<TH1F*>(calib_rootfile->FindObjectAny(TString::Format("correction%d", channel_no)));
+    TH1F* corr_histo = dynamic_cast<TH1F*>(tdcCalibRootFile->FindObjectAny(TString::Format("correction%d", channel_no)));
     if (corr_histo == nullptr)
     {
       WARNING(TString::Format("Missing TDC correction for channel %d", channel_no));
@@ -194,7 +177,7 @@ bool JPetInputHandlerHLD::loadTDCCalib(const JPetParams& params)
     uint32_t local_channel_no = dm.second->getChannelsNumber() - 1;
     uint32_t channel_no = dm.second->getChannelsOffset() + local_channel_no;
 
-    TH1F* corr_histo = dynamic_cast<TH1F*>(calib_rootfile->FindObjectAny(TString::Format("correction%d", channel_no)));
+    TH1F* corr_histo = dynamic_cast<TH1F*>(tdcCalibRootFile->FindObjectAny(TString::Format("correction%d", channel_no)));
     if (corr_histo == nullptr)
     {
       WARNING(TString::Format("Missing TDC correction for channel %d", channel_no));
@@ -213,12 +196,13 @@ bool JPetInputHandlerHLD::loadTDCCalib(const JPetParams& params)
   return true;
 }
 
-bool JPetInputHandlerHLD::loadTOTCalib(const JPetParams& params)
+bool JPetInputHandlerHLD::loadCalibsBarrel(const JPetParams& params)
 {
-  std::string totCalibRootFile = "";
-  if (isOptionSet(params.getOptions(), kTOTOffsetCalibKey))
+  // Getting calib files paths
+  std::string tdcFileName = "";
+  if (isOptionSet(params.getOptions(), kTDCOffsetCalibKey))
   {
-    totCalibRootFile = getOptionAsString(params.getOptions(), kTOTOffsetCalibKey);
+    tdcFileName = getOptionAsString(params.getOptions(), kTDCOffsetCalibKey);
   }
   else
   {
@@ -226,6 +210,93 @@ bool JPetInputHandlerHLD::loadTOTCalib(const JPetParams& params)
     return false;
   }
 
-  // TODO
-  return false;
+  std::string totFileName = "";
+  if (isOptionSet(params.getOptions(), kTOTOffsetCalibKey))
+  {
+    totFileName = getOptionAsString(params.getOptions(), kTOTOffsetCalibKey);
+  }
+  else
+  {
+    WARNING("Path to file with TOT stretcher calibrations was not set. Skipping TOT calibration.");
+    return false;
+  }
+
+  // Reading TDC calibration file
+  TFile* tdcCalibRootFile = new TFile(tdcFileName.c_str(), "READ");
+  if (!tdcCalibRootFile->IsOpen())
+  {
+    ERROR(TString::Format("Unable to open file: %s. Skipping TDC calibration.", tdcFileName.c_str()));
+    return false;
+  }
+
+  // Getting offsets from the setup configuration
+  std::unordered_map<uint32_t, uint32_t> tdc_offsets;
+  int run_id = getRunNumber(params.getOptions());
+  for (auto& dm : params.getParamManager()->getDataModules(run_id))
+  {
+    tdc_offsets[dm.second->getTBRNetAddress()] = dm.second->getChannelsOffset();
+  }
+
+  for (uint32_t i = 0; i < 2080; i++)
+  {
+    uint32_t channel_no = i;
+    uint32_t address = 0;
+    for (const auto& p : tdc_offsets)
+    {
+      if (i - (i % 65) == p.second)
+      {
+        address = p.first;
+      }
+    }
+
+    // prepare tdc offset map for global channel mapping
+    std::vector<uint32_t> vec(1);
+    vec[0] = i - (i % 65);
+    fTDCCalib[0x1111][address] = vec;
+    if (address == 0)
+    {
+      ERROR("Unable to load cTDC alibrations");
+      return false;
+    }
+
+    TH1F* corr_histo = dynamic_cast<TH1F*>(tdcCalibRootFile->FindObjectAny(TString::Format("correction%d", channel_no)));
+    if (corr_histo == nullptr)
+    {
+      WARNING(TString::Format("Missing TDC correction for channel %d", channel_no));
+      continue;
+    }
+
+    std::vector<uint32_t> corr_vec(500);
+    for (int i = 1; i < corr_histo->GetNbinsX(); ++i)
+    {
+      corr_vec[i - 1] = corr_histo->GetBinContent(i);
+    }
+
+    // store the TDC non-linearity correction vectors
+    fTDCCalib[0x2222][i] = corr_vec;
+  }
+
+  if (fTDCCalib[0x1111].size() != 32 && fTDCCalib[0x2222].size() != 2080)
+  {
+    ERROR("Failed loading calibrations for all 32 endpoints");
+    return false;
+  }
+
+  // loading TOT calibrations into tdc_calib_t as id 0x3333
+  TFile* totCalibRootFile = new TFile(totFileName.c_str(), "READ");
+  if (!totCalibRootFile->IsOpen())
+  {
+    ERROR(TString::Format("Unable to open file: %s. Skipping TDC calibration.", totFileName.c_str()));
+    return false;
+  }
+
+  TH1F* corr_histo = dynamic_cast<TH1F*>(totCalibRootFile->FindObjectAny("stretcher_offsets"));
+  std::vector<uint32_t> vec(2100);
+  for (int i = 0; i < 2100; i++)
+  {
+    vec[i] = corr_histo->GetBinContent(i + 1);
+  }
+  fTDCCalib[0x3333][0] = vec;
+
+  return true;
 }
