@@ -201,6 +201,7 @@ set(SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/Tasks/JPetScopeTask/JPetScopeTask.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/Tasks/JPetSimplePhysSignalReco/JPetSimplePhysSignalReco.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/Tasks/JPetUnzipTask/JPetUnzipTask.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/../j-pet-unpacker/src/unpacker.cpp
 )
 
 foreach(dir ${FOLDERS_WITH_SOURCE})
@@ -281,11 +282,13 @@ foreach(dir ${FOLDERS_WITH_SOURCE})
          $<INSTALL_INTERFACE:include/${dir}>
         )
 endforeach(dir ${FOLDERS_WITH_SOURCE})
+
 #include header-only j-pet-unpacker library
 target_include_directories(JPetFramework PUBLIC
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/j-pet-unpacker/include/>
-  $<INSTALL_INTERFACE:include/>
+  $<INSTALL_INTERFACE:include/j-pet-unpacker/>
   )
+
 set_target_properties(JPetFramework PROPERTIES LINKER_LANGUAGE CXX)
 
 target_link_libraries(JPetFramework PUBLIC
@@ -346,7 +349,7 @@ install(TARGETS JPetFramework
         )
 
 install(DIRECTORY ../include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-install(FILES ../j-pet-unpacker/include/unpacker.hpp ../j-pet-unpacker/include/unpacker_types.hpp ../j-pet-unpacker/include/unpacker_common.hpp ../j-pet-unpacker/include/unpacker_queue_barrel.hpp ../j-pet-unpacker/include/unpacker_queue_modular.hpp DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/)
+install(DIRECTORY ../j-pet-unpacker/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/j-pet-unpacker)
 
 install(EXPORT JPetFramework
         FILE JPetFrameworkTargets.cmake
