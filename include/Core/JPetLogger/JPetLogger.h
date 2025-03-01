@@ -16,8 +16,10 @@
 #ifndef JPETLOGGER_H
 #define JPETLOGGER_H
 
+#include "JPetOptionsTools/JPetOptionsTools.h"
 #include "JPetTMessageHandler.h"
 #include "JPetTextFileBackend.h"
+
 #include <fstream>
 #include <iostream>
 #include <ostream>
@@ -39,13 +41,14 @@
  * that is multithread safe and implements own formatter.
  */
 
-class JPetLogger {
+class JPetLogger
+{
 public:
-
   static boost::log::sources::severity_logger<boost::log::trivial::severity_level>& getSeverity()
   {
     static bool isInitialized = false;
-    if (!isInitialized) {
+    if (!isInitialized)
+    {
       JPetLogger::getInstance(); // if JPetLogger is not initialized, get
                                  // instance to call constructor
       isInitialized = true;
@@ -57,7 +60,8 @@ public:
 
   static void formatter(boost::log::record_view const& rec, boost::log::formatting_ostream& out_stream);
 
-  static void setLogLevel(boost::log::trivial::severity_level level) {
+  static void setLogLevel(boost::log::trivial::severity_level level)
+  {
     JPetLogger::getInstance().sink->set_filter(boost::log::trivial::severity >= level);
   }
 
@@ -67,23 +71,42 @@ public:
     return logger;
   }
 
+  static JPetLogger& getInstance(std::string logPath)
+  {
+    static JPetLogger logger(logPath);
+    return logger;
+  }
+
   static void setThreadsEnabled(bool value) { JPetLogger::getInstance().isThreadsEnabled = value; }
 
-  static void setRotationSize(unsigned int value) { JPetLogger::getInstance().backend->set_rotation_size(value); }
+  static void setRotationSize(unsigned int value) { JPetLogger::getInstance().fBackend->set_rotation_size(value); }
+
+  static void setLogOutputPath(std::string outputPath) { JPetLogger::getInstance(outputPath).fOutputPath = outputPath; }
+
+#else
+void getSeverity();
+void formatter();
+void setLogLevel();
+
+#endif
 
 private:
   JPetLogger();
+  JPetLogger(std::string logPath);
   JPetLogger(const JPetLogger&);
   JPetLogger& operator=(const JPetLogger&);
 
   const int kRotationSize = 10 * 1024 * 1024; // 10 * MiB, log will rotate after 10MiB
 
-  void init();
-  boost::shared_ptr<JPetTextFileBackend> backend;
+#ifndef __CINT__
+  void init(std::string logPath = "./");
+  boost::shared_ptr<JPetTextFileBackend> fBackend;
   typedef boost::log::sinks::synchronous_sink<JPetTextFileBackend> sink_t;
   boost::shared_ptr<sink_t> sink;
-
   bool isThreadsEnabled = false;
+  std::string fOutputPath;
+
+#endif
 };
 
 #endif /* !JPETLOGGER_H */
