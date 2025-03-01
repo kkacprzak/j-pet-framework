@@ -83,13 +83,6 @@ public:
 
   static void setLogOutputPath(std::string outputPath) { JPetLogger::getInstance(outputPath).fOutputPath = outputPath; }
 
-#else
-void getSeverity();
-void formatter();
-void setLogLevel();
-
-#endif
-
 private:
   JPetLogger();
   JPetLogger(std::string logPath);
@@ -98,15 +91,12 @@ private:
 
   const int kRotationSize = 10 * 1024 * 1024; // 10 * MiB, log will rotate after 10MiB
 
-#ifndef __CINT__
   void init(std::string logPath = "./");
   boost::shared_ptr<JPetTextFileBackend> fBackend;
   typedef boost::log::sinks::synchronous_sink<JPetTextFileBackend> sink_t;
   boost::shared_ptr<sink_t> sink;
   bool isThreadsEnabled = false;
   std::string fOutputPath;
-
-#endif
 };
 
 #endif /* !JPETLOGGER_H */
