@@ -283,7 +283,7 @@ foreach(dir ${FOLDERS_WITH_SOURCE})
 endforeach(dir ${FOLDERS_WITH_SOURCE})
 #include header-only j-pet-unpacker library
 target_include_directories(JPetFramework PUBLIC
-  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/j-pet-unpacker>
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/j-pet-unpacker/include/>
   $<INSTALL_INTERFACE:include/>
   )
 set_target_properties(JPetFramework PROPERTIES LINKER_LANGUAGE CXX)
@@ -346,7 +346,7 @@ install(TARGETS JPetFramework
         )
 
 install(DIRECTORY ../include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-install(FILES ../j-pet-unpacker/unpacker.hpp ../j-pet-unpacker/unpacker_types.hpp DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/)
+install(FILES ../j-pet-unpacker/include/unpacker.hpp ../j-pet-unpacker/include/unpacker_types.hpp ../j-pet-unpacker/include/unpacker_common.hpp ../j-pet-unpacker/include/unpacker_queue_barrel.hpp ../j-pet-unpacker/include/unpacker_queue_modular.hpp DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/)
 
 install(EXPORT JPetFramework
         FILE JPetFrameworkTargets.cmake
