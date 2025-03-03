@@ -57,9 +57,18 @@ bool JPetGateParser::init()
   return true;
 }
 
-bool JPetGateParser::checkIfInCurrentTimeWindow(double fTime_us_inTimeWindow, long int fWindowNumber)
+int JPetGateParser::mapScintillatorFromGate(JPetGATEData* mcEntry)
 {
-  double timeBasedOnPreviousTimeWindow = fTime_us_inTimeWindow - fWindowNumber*fClockWindowTime_us;
+  if (mcEntry->fRSectorID < 6)
+  {
+	return 266 + mcEntry->fCrystalID - 13*mcEntry->fRSectorID;
+  }
+  return 266 + mcEntry->fCrystalID - 13*mcEntry->fRSectorID + 312;
+}
+
+bool JPetGateParser::checkIfInCurrentTimeWindow(double fTime_us_inTimeWindow, unsigned long long int fWindowNumber)
+{
+  double timeBasedOnPreviousTimeWindow = fTime_us_inTimeWindow - (double)fWindowNumber*fClockWindowTime_us;
   if (timeBasedOnPreviousTimeWindow < fClockWindowTime_us)
   {
 	return true;
@@ -74,13 +83,14 @@ bool JPetGateParser::exec()
     if (auto& mcEntry = dynamic_cast<JPetGATEData* const>(fEvent))
     {
 	  fTime_us_inTimeWindow = (mcEntry->fTime)*pow(10.,6);	// switch to us
+
 	  if (!checkIfInCurrentTimeWindow(fTime_us_inTimeWindow, fWindowNumber) && fStoredMCHits.size() != 0)
 	  {
 		saveHits();
     	fStoredMCHits.clear();
 		fStoredRecoHits.clear();
 	  }
-	  fWindowNumber = (int)(fTime_us_inTimeWindow/fClockWindowTime_us);
+	  fWindowNumber = (unsigned long long int)(fTime_us_inTimeWindow/fClockWindowTime_us);	// period of 'unsigned long long int' is too long to worry about crossing the limit
 
 	  if (checkIfInCurrentTimeWindow(fTime_us_inTimeWindow, fWindowNumber))
 	  {
@@ -91,22 +101,24 @@ bool JPetGateParser::exec()
 	  fGlobalPosZ_cm = mcEntry->fGlobalPosZ/10.;	// switch to cm
 	  fEnergy_keV = mcEntry->fEnergy*pow(10.,3);	// switch to keV
 
+	  const JPetParamBank& paramBank = getParamBank();
+
       JPetRawMCHit rawHit;
       rawHit.setTime(fTime_ps_inTimeWindow);
       rawHit.setEnergy(fEnergy_keV);
       rawHit.setPosX(fGlobalPosX_cm);
       rawHit.setPosY(fGlobalPosY_cm);
       rawHit.setPosZ(fGlobalPosZ_cm);
-      //rawHit.setScin();	// TODO
+      rawHit.setScin(paramBank.getScin(mapScintillatorFromGate(mcEntry)));
       
-      JPetMCRecoHit recoHit;	// TODO add smearings etc.
+      JPetMCRecoHit recoHit;	// TODO add time, 'z' smearings
       recoHit.setTime(rawHit.getTime());
       recoHit.setEnergy(rawHit.getEnergy());
-      recoHit.setPosX(rawHit.getPosX());
-      recoHit.setPosY(rawHit.getPosY());
+      recoHit.setPosX(rawHit.getScin().getCenterX());
+      recoHit.setPosY(rawHit.getScin().getCenterY());
       recoHit.setPosZ(rawHit.getPosZ());
       
-	  if(fEnergy_keV > fExperimentalThreshold)
+	  if (fEnergy_keV > fExperimentalThreshold)
 	  {
 		fStoredMCHits.push_back(rawHit);
     	fStoredRecoHits.push_back(recoHit);

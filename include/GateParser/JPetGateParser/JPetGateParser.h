@@ -20,6 +20,7 @@
 #include "JPetRawMCHit/JPetRawMCHit.h"
 //#include "JPetSmearingFunctions/JPetSmearingFunctions.h"
 #include "JPetUserTask/JPetUserTask.h"
+#include <JPetTaskIO/JPetInputHandlerGATE.h>
 #include <functional>
 #include <map>
 #include <tuple>
@@ -40,11 +41,12 @@ public:
   virtual bool exec() override;
   virtual bool terminate() override;
 
-  bool checkIfInCurrentTimeWindow(double fTime_us_inTimeWindow, long int fWindowNumber);
+  bool checkIfInCurrentTimeWindow(double fTime_us_inTimeWindow, unsigned long long int fWindowNumber);
+  int mapScintillatorFromGate(JPetGATEData* mcEntry);
 
 protected:
   double fClockWindowTime_us = 20.0;
-  long int fWindowNumber = 0;
+  unsigned long long int fWindowNumber = 0;
   double fTime_us_inTimeWindow = 0.0;
   double fTime_ps_inTimeWindow = 0.0;
   float fEnergy_keV = 0.0;
