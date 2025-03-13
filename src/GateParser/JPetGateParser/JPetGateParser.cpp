@@ -15,7 +15,7 @@
 
 #include <JPetAnalysisTools/JPetAnalysisTools.h>
 #include <JPetGateParser/JPetGateParser.h>
-#include <JPetGeantParser/JPetGeantParserTools.h>
+#include <JPetGateParser/JPetGateParserTools.h>
 #include <JPetOptionsTools/JPetOptionsTools.h>
 #include <JPetScin/JPetScin.h>
 #include <JPetTaskIO/JPetInputHandlerGATE.h>
@@ -47,6 +47,8 @@ bool JPetGateParser::init()
     fExperimentalThreshold = getOptionAsDouble(fParams.getOptions(), kEnergyThresholdParamKey);
   }
 
+  loadSmearingOptionsAndSetupExperimentalParametrizer();
+
   if (fMakeHisto)
   {
     initialiseBasicHistograms();
@@ -57,24 +59,158 @@ bool JPetGateParser::init()
   return true;
 }
 
-int JPetGateParser::mapScintillatorFromGate(JPetGATEData* mcEntry)
+void JPetGateParser::loadSmearingOptionsAndSetupExperimentalParametrizer()
 {
-  if (mcEntry->fRSectorID < 6)
+  std::vector<double> timeSmearingParameters;
+  if (isOptionSet(fParams.getOptions(), kTimeSmearingParametersParamKey))
   {
-	return 266 + mcEntry->fCrystalID - 13*mcEntry->fRSectorID;
+    timeSmearingParameters = getOptionAsVectorOfDoubles(fParams.getOptions(), kTimeSmearingParametersParamKey);
   }
-  return 266 + mcEntry->fCrystalID - 13*mcEntry->fRSectorID + 312;
+
+  std::string timeSmearingFormula;
+  if (isOptionSet(fParams.getOptions(), kTimeSmearingFunctionParamKey))
+  {
+    timeSmearingFormula = getOptionAsString(fParams.getOptions(), kTimeSmearingFunctionParamKey);
+  }
+
+  std::vector<double> timeSmearingLimits;
+  if (isOptionSet(fParams.getOptions(), kTimeSmearingFunctionLimitsParamKey))
+  {
+    timeSmearingLimits = getOptionAsVectorOfDoubles(fParams.getOptions(), kTimeSmearingFunctionLimitsParamKey);
+  }
+
+  std::vector<double> energySmearingParameters;
+  if (isOptionSet(fParams.getOptions(), kEnergySmearingParametersParamKey))
+  {
+    energySmearingParameters = getOptionAsVectorOfDoubles(fParams.getOptions(), kEnergySmearingParametersParamKey);
+  }
+
+  std::string energySmearingFormula;
+  if (isOptionSet(fParams.getOptions(), kEnergySmearingFunctionParamKey))
+  {
+    energySmearingFormula = getOptionAsString(fParams.getOptions(), kEnergySmearingFunctionParamKey);
+  }
+
+  std::vector<double> energySmearingLimits;
+  if (isOptionSet(fParams.getOptions(), kEnergySmearingFunctionLimitsParamKey))
+  {
+    energySmearingLimits = getOptionAsVectorOfDoubles(fParams.getOptions(), kEnergySmearingFunctionLimitsParamKey);
+  }
+
+  std::vector<double> zPositionSmearingParameters;
+  if (isOptionSet(fParams.getOptions(), kZPositionSmearingParametersParamKey))
+  {
+    zPositionSmearingParameters = getOptionAsVectorOfDoubles(fParams.getOptions(), kZPositionSmearingParametersParamKey);
+  }
+
+  std::string zPositionSmearingFormula;
+  if (isOptionSet(fParams.getOptions(), kZPositionSmearingFunctionParamKey))
+  {
+    zPositionSmearingFormula = getOptionAsString(fParams.getOptions(), kZPositionSmearingFunctionParamKey);
+  }
+
+  std::vector<double> zPositionSmearingLimits;
+  if (isOptionSet(fParams.getOptions(), kZPositionSmearingFunctionLimitsParamKey))
+  {
+    zPositionSmearingLimits = getOptionAsVectorOfDoubles(fParams.getOptions(), kZPositionSmearingFunctionLimitsParamKey);
+  }
+
+  if (isOptionSet(fParams.getOptions(), kUseDefaultZSmearingKey))
+  {
+    fUseDefaultZSmearing = getOptionAsDouble(fParams.getOptions(), kUseDefaultZSmearingKey);
+  }
+
+  if (isOptionSet(fParams.getOptions(), kUseDefaultTimeSmearingKey))
+  {
+    fUseDefaultTimeSmearing = getOptionAsDouble(fParams.getOptions(), kUseDefaultTimeSmearingKey);
+  }
+
+  if (isOptionSet(fParams.getOptions(), kUseDefaultEnergySmearingKey))
+  {
+    fUseDefaultEnergySmearing = getOptionAsDouble(fParams.getOptions(), kUseDefaultEnergySmearingKey);
+  }
+
+  if (isOptionSet(fParams.getOptions(), kDefaultZSmearingSigmaKey))
+  {
+    fDefaultZSmearingSigma = getOptionAsDouble(fParams.getOptions(), kDefaultZSmearingSigmaKey);
+  }
+
+  if (isOptionSet(fParams.getOptions(), kDefaultTimeSmearingSigmaKey))
+  {
+    fDefaultTimeSmearingSigma = getOptionAsDouble(fParams.getOptions(), kDefaultTimeSmearingSigmaKey);
+  }
+
+  if (isOptionSet(fParams.getOptions(), kDefaultTimeSmearingThresholdEnergyKey))
+  {
+    fDefaultTimeSmearingThresholdEnergy = getOptionAsDouble(fParams.getOptions(), kDefaultTimeSmearingThresholdEnergyKey);
+  }
+
+  if (isOptionSet(fParams.getOptions(), kDefaultTimeSmearingReferenceEnergyKey))
+  {
+    fDefaultTimeSmearingReferenceEnergy = getOptionAsDouble(fParams.getOptions(), kDefaultTimeSmearingReferenceEnergyKey);
+  }
+
+  if (isOptionSet(fParams.getOptions(), kDefaultEnergySmearingFractionKey))
+  {
+    fDefaultEnergySmearingFraction = getOptionAsDouble(fParams.getOptions(), kDefaultEnergySmearingFractionKey);
+  }
+
+  fExperimentalParametrizer.setSmearingFunctions({{timeSmearingFormula, timeSmearingParameters},
+                                                  {energySmearingFormula, energySmearingParameters},
+                                                  {zPositionSmearingFormula, zPositionSmearingParameters}});
+
+  std::vector<std::pair<double, double>> limits;
+
+  if (timeSmearingLimits.size() == 2)
+  {
+    limits.push_back({timeSmearingLimits[0], timeSmearingLimits[1]});
+  }
+  else
+  {
+    limits.push_back({-1, -1});
+  }
+
+  if (energySmearingLimits.size() == 2)
+  {
+    limits.push_back({energySmearingLimits[0], energySmearingLimits[1]});
+  }
+  else
+  {
+    limits.push_back({-1, -1});
+  }
+
+  if (zPositionSmearingLimits.size() == 2)
+  {
+    limits.push_back({zPositionSmearingLimits[0], zPositionSmearingLimits[1]});
+  }
+  else
+  {
+    limits.push_back({-1, -1});
+  }
+
+  fExperimentalParametrizer.setSmearingFunctionLimits(limits);
+
+  fExperimentalParametrizer.setShouldUseDefaultSmearing(fUseDefaultZSmearing, fUseDefaultTimeSmearing, fUseDefaultEnergySmearing);
+
+  if (fUseDefaultZSmearing)
+  {
+    fExperimentalParametrizer.setDefaultZSmearingSigma(fDefaultZSmearingSigma);
+  }
+
+  if (fUseDefaultTimeSmearing)
+  {
+    fExperimentalParametrizer.setDefaultTimeSmearingSigma(fDefaultTimeSmearingSigma);
+    fExperimentalParametrizer.setDefaultTimeSmearingReferenceEnergy(fDefaultTimeSmearingReferenceEnergy);
+    fExperimentalParametrizer.setDefaultTimeSmearingThresholdEnergy(fDefaultTimeSmearingThresholdEnergy);
+  }
+
+  if (fUseDefaultEnergySmearing)
+  {
+    fExperimentalParametrizer.setDefaultEnergySmearingFraction(fDefaultEnergySmearingFraction);
+  }
 }
 
-bool JPetGateParser::checkIfInCurrentTimeWindow(double fTime_us_inTimeWindow, unsigned long long int fWindowNumber)
-{
-  double timeBasedOnPreviousTimeWindow = fTime_us_inTimeWindow - (double)fWindowNumber*fClockWindowTime_us;
-  if (timeBasedOnPreviousTimeWindow < fClockWindowTime_us)
-  {
-	return true;
-  }
-  return false;
-}
+
 
 bool JPetGateParser::exec()
 {
@@ -82,20 +218,19 @@ bool JPetGateParser::exec()
   {
     if (auto& mcEntry = dynamic_cast<JPetGATEData* const>(fEvent))
     {
-	  fTime_us_inTimeWindow = (mcEntry->fTime)*pow(10.,6);	// switch to us
+	  fTime_ps_inTimeWindow = (mcEntry->fTime)*pow(10.,12);	// switch to ps
 
-	  if (!checkIfInCurrentTimeWindow(fTime_us_inTimeWindow, fWindowNumber) && fStoredMCHits.size() != 0)
+	  if (!JPetGateParserTools::checkIfInCurrentTimeWindow(fTime_ps_inTimeWindow, fWindowNumber, fClockWindowTime_ps) && fStoredMCHits.size() != 0)
 	  {
 		saveHits();
     	fStoredMCHits.clear();
 		fStoredRecoHits.clear();
 	  }
-	  fWindowNumber = (unsigned long long int)(fTime_us_inTimeWindow/fClockWindowTime_us);	// period of 'unsigned long long int' is too long to worry about crossing the limit
+	  fWindowNumber = (unsigned long long int)(fTime_ps_inTimeWindow/fClockWindowTime_ps);	// period of 'unsigned long long int' is too long to worry about crossing the limit
 
-	  if (checkIfInCurrentTimeWindow(fTime_us_inTimeWindow, fWindowNumber))
+	  if (JPetGateParserTools::checkIfInCurrentTimeWindow(fTime_ps_inTimeWindow, fWindowNumber, fClockWindowTime_ps))
 	  {
-	  double timeBasedOnPreviousTimeWindow = fTime_us_inTimeWindow - fWindowNumber*fClockWindowTime_us;
-	  fTime_ps_inTimeWindow = timeBasedOnPreviousTimeWindow*pow(10.,6);	// switch to ps
+	  fTimeInTimeWindow = fTime_ps_inTimeWindow - (double)fWindowNumber*fClockWindowTime_ps;
 	  fGlobalPosX_cm = mcEntry->fGlobalPosX/10.;	// switch to cm
 	  fGlobalPosY_cm = mcEntry->fGlobalPosY/10.;	// switch to cm
 	  fGlobalPosZ_cm = mcEntry->fGlobalPosZ/10.;	// switch to cm
@@ -104,21 +239,23 @@ bool JPetGateParser::exec()
 	  const JPetParamBank& paramBank = getParamBank();
 
       JPetRawMCHit rawHit;
-      rawHit.setTime(fTime_ps_inTimeWindow);
+      rawHit.setTime(fTimeInTimeWindow);
       rawHit.setEnergy(fEnergy_keV);
       rawHit.setPosX(fGlobalPosX_cm);
       rawHit.setPosY(fGlobalPosY_cm);
       rawHit.setPosZ(fGlobalPosZ_cm);
-      rawHit.setScin(paramBank.getScin(mapScintillatorFromGate(mcEntry)));
+      rawHit.setScin(paramBank.getScin(JPetGateParserTools::mapScintillatorFromGate(mcEntry)));
       
-      JPetMCRecoHit recoHit;	// TODO add time, 'z' smearings
+      JPetMCRecoHit recoHit = JPetGateParserTools::reconstructHit(rawHit, fExperimentalParametrizer);
+
+      /*JPetMCRecoHit recoHit;	// TODO add time, 'z' smearings
       recoHit.setTime(rawHit.getTime());
       recoHit.setEnergy(rawHit.getEnergy());
       recoHit.setPosX(rawHit.getScin().getCenterX());
       recoHit.setPosY(rawHit.getScin().getCenterY());
-      recoHit.setPosZ(rawHit.getPosZ());
+      recoHit.setPosZ(rawHit.getPosZ());*/
       
-	  if (fEnergy_keV > fExperimentalThreshold)
+	  if (JPetGateParserTools::isHitReconstructed(recoHit, fExperimentalThreshold))
 	  {
 		fStoredMCHits.push_back(rawHit);
     	fStoredRecoHits.push_back(recoHit);
