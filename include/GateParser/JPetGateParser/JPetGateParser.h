@@ -55,9 +55,9 @@ protected:
 
   double fExperimentalThreshold = 10.0;
 
-  bool fUseDefaultZSmearing = true;
-  bool fUseDefaultTimeSmearing = true;
-  bool fUseDefaultEnergySmearing = true;
+  bool fUseDefaultZSmearing = false;
+  bool fUseDefaultTimeSmearing = false;
+  bool fUseDefaultEnergySmearing = false;
 
   float fDefaultZSmearingSigma = 3.0;
   float fDefaultTimeSmearingSigma = 220.0;
