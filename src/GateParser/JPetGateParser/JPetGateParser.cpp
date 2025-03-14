@@ -244,7 +244,7 @@ bool JPetGateParser::exec()
       rawHit.setPosX(fGlobalPosX_cm);
       rawHit.setPosY(fGlobalPosY_cm);
       rawHit.setPosZ(fGlobalPosZ_cm);
-      rawHit.setScin(paramBank.getScin(JPetGateParserTools::mapScintillatorFromGate(mcEntry)));
+      rawHit.setScin(paramBank.getScin(JPetGateParserTools::mapScintillatorFromGate(mcEntry->fRSectorID, mcEntry->fCrystalID)));
       
       JPetMCRecoHit recoHit = JPetGateParserTools::reconstructHit(rawHit, fExperimentalParametrizer);
 

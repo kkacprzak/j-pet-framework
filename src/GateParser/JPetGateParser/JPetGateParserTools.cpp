@@ -20,13 +20,13 @@
 
 using namespace std;
 
-int JPetGateParserTools::mapScintillatorFromGate(JPetGATEData* mcEntry)
+int JPetGateParserTools::mapScintillatorFromGate(int rSectorID, int crystalID)
 {
-  if (mcEntry->fRSectorID < 6)
+  if (rSectorID < 6)
   {
-	return 266 + mcEntry->fCrystalID - 13*mcEntry->fRSectorID;
+	return 266 + crystalID - 13*rSectorID;
   }
-  return 266 + mcEntry->fCrystalID - 13*mcEntry->fRSectorID + 312;
+  return 266 + crystalID - 13*rSectorID + 312;
 }
 
 bool JPetGateParserTools::checkIfInCurrentTimeWindow(double fTime_ps_inTimeWindow, unsigned long long int fWindowNumber, double fClockWindowTime_ps)
