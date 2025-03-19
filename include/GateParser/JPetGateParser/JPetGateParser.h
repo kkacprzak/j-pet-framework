@@ -42,10 +42,10 @@ public:
   virtual bool terminate() override;
 
 protected:
-  double fClockWindowTime_ps = 20000000.0;
+  double fClockWindowTime = 20000000.0;
   unsigned long long int fWindowNumber = 0;
-  double fTime_ps_inTimeWindow = 0.0;
-  double fTimeInTimeWindow = 0.0;
+  double fTime_ps = 0.0;
+  double fTimeInClockWindow = 0.0;
   float fEnergy_keV = 0.0;
   float fGlobalPosX_cm = 0.0;
   float fGlobalPosY_cm = 0.0;
@@ -67,8 +67,10 @@ protected:
 
   JPetHitExperimentalParametrizer fExperimentalParametrizer;
 
-
   ///< internal variables
+
+  const std::string kClockWindowTime = "GateParser_ClockWindowTimeInps_double";
+
   const std::string kMakeHistogramsParamKey = "GateParser_MakeHistograms_bool";
   const std::string kEnergyThresholdParamKey = "GateParser_EnergyThreshold_double";
 

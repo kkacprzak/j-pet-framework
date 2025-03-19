@@ -33,7 +33,7 @@ class JPetGateParserTools
 public:
   static int mapScintillatorFromGate(int rSectorID, int crystalID);
   
-  static bool checkIfInCurrentTimeWindow(double fTime_ps_inTimeWindow, unsigned long long int fWindowNumber, double fClockWindowTime_ps);
+  static bool checkIfInCurrentTimeWindow(double fTime_ps, unsigned long long int fWindowNumber, double fClockWindowTime);
 
   static JPetMCRecoHit reconstructHit(JPetRawMCHit& hit, JPetHitExperimentalParametrizer& parametrizer);
 

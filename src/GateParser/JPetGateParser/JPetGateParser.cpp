@@ -38,6 +38,10 @@ bool JPetGateParser::init()
   fOutputEvents = new JPetTimeWindowMC("JPetMCRecoHit", "JPetRawMCHit", "JPetMCDecayTree");
   auto opts = getOptions();
 
+  if (isOptionSet(fParams.getOptions(), kClockWindowTime))
+  {
+    fClockWindowTime = getOptionAsDouble(fParams.getOptions(), kClockWindowTime);
+  }
   if (isOptionSet(fParams.getOptions(), kMakeHistogramsParamKey))
   {
     fMakeHisto = getOptionAsBool(fParams.getOptions(), kMakeHistogramsParamKey);
@@ -218,19 +222,19 @@ bool JPetGateParser::exec()
   {
     if (auto& mcEntry = dynamic_cast<JPetGATEData* const>(fEvent))
     {
-	  fTime_ps_inTimeWindow = (mcEntry->fTime)*pow(10.,12);	// switch to ps
+	  fTime_ps = (mcEntry->fTime)*pow(10.,12);	// switch to ps
 
-	  if (!JPetGateParserTools::checkIfInCurrentTimeWindow(fTime_ps_inTimeWindow, fWindowNumber, fClockWindowTime_ps) && fStoredMCHits.size() != 0)
+	  if (!JPetGateParserTools::checkIfInCurrentTimeWindow(fTime_ps, fWindowNumber, fClockWindowTime) && fStoredMCHits.size() != 0)
 	  {
 		saveHits();
     	fStoredMCHits.clear();
 		fStoredRecoHits.clear();
 	  }
-	  fWindowNumber = (unsigned long long int)(fTime_ps_inTimeWindow/fClockWindowTime_ps);	// period of 'unsigned long long int' is too long to worry about crossing the limit
+	  fWindowNumber = (unsigned long long int)(fTime_ps/fClockWindowTime);	// period of 'unsigned long long int' is too long to worry about crossing the limit
 
-	  if (JPetGateParserTools::checkIfInCurrentTimeWindow(fTime_ps_inTimeWindow, fWindowNumber, fClockWindowTime_ps))
+	  if (JPetGateParserTools::checkIfInCurrentTimeWindow(fTime_ps, fWindowNumber, fClockWindowTime))
 	  {
-	  fTimeInTimeWindow = fTime_ps_inTimeWindow - (double)fWindowNumber*fClockWindowTime_ps;
+	  fTimeInClockWindow = fTime_ps - (double)fWindowNumber*fClockWindowTime;
 	  fGlobalPosX_cm = mcEntry->fGlobalPosX/10.;	// switch to cm
 	  fGlobalPosY_cm = mcEntry->fGlobalPosY/10.;	// switch to cm
 	  fGlobalPosZ_cm = mcEntry->fGlobalPosZ/10.;	// switch to cm
@@ -239,7 +243,7 @@ bool JPetGateParser::exec()
 	  const JPetParamBank& paramBank = getParamBank();
 
       JPetRawMCHit rawHit;
-      rawHit.setTime(fTimeInTimeWindow);
+      rawHit.setTime(fTimeInClockWindow);
       rawHit.setEnergy(fEnergy_keV);
       rawHit.setPosX(fGlobalPosX_cm);
       rawHit.setPosY(fGlobalPosY_cm);
@@ -247,13 +251,6 @@ bool JPetGateParser::exec()
       rawHit.setScin(paramBank.getScin(JPetGateParserTools::mapScintillatorFromGate(mcEntry->fRSectorID, mcEntry->fCrystalID)));
       
       JPetMCRecoHit recoHit = JPetGateParserTools::reconstructHit(rawHit, fExperimentalParametrizer);
-
-      /*JPetMCRecoHit recoHit;	// TODO add time, 'z' smearings
-      recoHit.setTime(rawHit.getTime());
-      recoHit.setEnergy(rawHit.getEnergy());
-      recoHit.setPosX(rawHit.getScin().getCenterX());
-      recoHit.setPosY(rawHit.getScin().getCenterY());
-      recoHit.setPosZ(rawHit.getPosZ());*/
       
 	  if (JPetGateParserTools::isHitReconstructed(recoHit, fExperimentalThreshold))
 	  {
@@ -312,23 +309,23 @@ void JPetGateParser::saveHits()
 
 void JPetGateParser::initialiseBasicHistograms()
 {
-  getStatistics().createHistogram(new TH1F("gen_hits_per_time_window", "Number of Hits in Time Window", 101, -0.5, 500.5));
+  getStatistics().createHistogram(new TH1F("gen_hits_per_time_window", "Number of Hits in Time Window;Multiplicity", 101, -0.5, 500.5));
 
-  getStatistics().createHistogram(new TH1F("gen_hits_z_pos", "hits Z position", 100, -60.0, 60.0));
+  getStatistics().createHistogram(new TH1F("gen_hits_z_pos", "Hits 'Z' position;[cm];", 100, -60.0, 60.0));
 
-  getStatistics().createHistogram(new TH2F("gen_hits_xy_pos", "hits XY pos", 121, -60.5, 60.5, 121, -60.5, 60.5));
+  getStatistics().createHistogram(new TH2F("gen_hits_xy_pos", "Hits 'XY' position;[cm];[cm]", 121, -60.5, 60.5, 121, -60.5, 60.5));
 
-  getStatistics().createHistogram(new TH1F("gen_hit_time", "hit time", 20000, 0.0, 20000000.0));
+  getStatistics().createHistogram(new TH1F("gen_hit_time", "Hit time;[ps];", 20000, 0.0, fClockWindowTime));
 
-  getStatistics().createHistogram(new TH1F("gen_hit_eneDepos", "hit energy deposition", 750, 0.0, 1500.0));
+  getStatistics().createHistogram(new TH1F("gen_hit_eneDepos", "Hit energy deposition;[keV];", 750, 0.0, 1500.0));
 
-  getStatistics().createHistogram(new TH1F("rec_hits_per_time_window", "Number of Hits in Time Window", 101, -0.5, 500.5));
+  getStatistics().createHistogram(new TH1F("rec_hits_per_time_window", "Number of Hits in Time Window;Multiplicity", 101, -0.5, 500.5));
 
-  getStatistics().createHistogram(new TH1F("rec_hits_z_pos", "hits Z position", 100, -60.0, 60.0));
+  getStatistics().createHistogram(new TH1F("rec_hits_z_pos", "Hits 'Z' position;[cm];", 100, -60.0, 60.0));
 
-  getStatistics().createHistogram(new TH2F("rec_hits_xy_pos", "hits XY pos", 121, -60.5, 60.5, 121, -60.5, 60.5));
+  getStatistics().createHistogram(new TH2F("rec_hits_xy_pos", "Hits 'XY' position;[cm];[cm]", 121, -60.5, 60.5, 121, -60.5, 60.5));
 
-  getStatistics().createHistogram(new TH1F("rec_hit_time", "hit time", 20000, 0.0, 20000000.0));
+  getStatistics().createHistogram(new TH1F("rec_hit_time", "Hit time;[ps];", 20000, 0.0, fClockWindowTime));
 
-  getStatistics().createHistogram(new TH1F("rec_hit_eneDepos", "hit energy deposition", 750, 0.0, 1500.0));
+  getStatistics().createHistogram(new TH1F("rec_hit_eneDepos", "Hit energy deposition;[keV];", 750, 0.0, 1500.0));
 }

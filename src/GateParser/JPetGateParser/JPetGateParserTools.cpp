@@ -20,6 +20,10 @@
 
 using namespace std;
 
+/* JPetGateParserTools::mapScintillatorFromGate function converts the simulated with GATE ID of scintillators
+to the real mapping of scintilaltors. It takes as arguments IDs of module and scintillator in which the simulated
+interaction was registered. Currently, the function has hardcoded conversion for Modular J-PET hospital version. */
+
 int JPetGateParserTools::mapScintillatorFromGate(int rSectorID, int crystalID)
 {
   if (rSectorID < 6)
@@ -29,10 +33,14 @@ int JPetGateParserTools::mapScintillatorFromGate(int rSectorID, int crystalID)
   return 266 + crystalID - 13*rSectorID + 312;
 }
 
-bool JPetGateParserTools::checkIfInCurrentTimeWindow(double fTime_ps_inTimeWindow, unsigned long long int fWindowNumber, double fClockWindowTime_ps)
+/* JPetGateParserTools::checkIfInCurrentTimeWindow function checks if currently investigated interaction should fall
+into the current electronics time window (dicated by the fClockWindowTime value). It takes as arguments simulated
+time of interaction, number of current electronics time window and length of the electronics time window. */
+
+bool JPetGateParserTools::checkIfInCurrentTimeWindow(double fTime_ps, unsigned long long int fWindowNumber, double fClockWindowTime)
 {
-  double timeBasedOnPreviousTimeWindow = fTime_ps_inTimeWindow - (double)fWindowNumber*fClockWindowTime_ps;
-  if (timeBasedOnPreviousTimeWindow < fClockWindowTime_ps)
+  double timeBasedOnPreviousTimeWindow = fTime_ps - (double)fWindowNumber*fClockWindowTime;
+  if (timeBasedOnPreviousTimeWindow < fClockWindowTime)
   {
 	return true;
   }
