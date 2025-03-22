@@ -20,6 +20,7 @@
 #include "JPetRawMCHit/JPetRawMCHit.h"
 #include "JPetSmearingFunctions/JPetSmearingFunctions.h"
 #include "JPetUserTask/JPetUserTask.h"
+#include <JPetTaskIO/JPetInputHandlerGATE.h>
 #include <functional>
 #include <map>
 #include <tuple>
@@ -40,17 +41,24 @@ public:
   virtual bool exec() override;
   virtual bool terminate() override;
 
-  unsigned long getOriginalSeed() const;
-
 protected:
+  double fClockWindowTime = 20000000.0;
+  unsigned long long int fWindowNumber = 0;
+  double fTime_ps = 0.0;
+  double fTimeInClockWindow = 0.0;
+  float fEnergy_keV = 0.0;
+  float fGlobalPosX_cm = 0.0;
+  float fGlobalPosY_cm = 0.0;
+  float fGlobalPosZ_cm = 0.0;
+
   bool fMakeHisto = true;
 
   double fExperimentalThreshold = 10.0;
-  unsigned long fSeed = 0.0;
 
   bool fUseDefaultZSmearing = false;
   bool fUseDefaultTimeSmearing = false;
   bool fUseDefaultEnergySmearing = false;
+
   float fDefaultZSmearingSigma = 3.0;
   float fDefaultTimeSmearingSigma = 220.0;
   float fDefaultTimeSmearingThresholdEnergy = 200.0;
@@ -60,37 +68,36 @@ protected:
   JPetHitExperimentalParametrizer fExperimentalParametrizer;
 
   ///< internal variables
-  const std::string kMakeHistogramsParamKey = "GeantParser_MakeHistograms_bool";
-  const std::string kEnergyThresholdParamKey = "GeantParser_EnergyThreshold_double";
 
-  const std::string kTimeSmearingParametersParamKey = "GeantParser_TimeSmearingParameters_std::vector<double>";
-  const std::string kTimeSmearingFunctionParamKey = "GeantParser_TimeSmearingFunction_std::string";
-  const std::string kTimeSmearingFunctionLimitsParamKey = "GeantParser_TimeSmearingFunctionLimits_std::vector<double>";
+  const std::string kClockWindowTime = "GateParser_ClockWindowTimeInps_double";
 
-  const std::string kEnergySmearingParametersParamKey = "GeantParser_EnergySmearingParameters_std::vector<double>";
-  const std::string kEnergySmearingFunctionParamKey = "GeantParser_EnergySmearingFunction_std::string";
-  const std::string kEnergySmearingFunctionLimitsParamKey = "GeantParser_EnergySmearingFunctionLimits_std::vector<double>";
+  const std::string kMakeHistogramsParamKey = "GateParser_MakeHistograms_bool";
+  const std::string kEnergyThresholdParamKey = "GateParser_EnergyThreshold_double";
 
-  const std::string kZPositionSmearingParametersParamKey = "GeantParser_ZPositionSmearingParameters_std::vector<double>";
-  const std::string kZPositionSmearingFunctionParamKey = "GeantParser_ZPositionSmearingFunction_std::string";
-  const std::string kZPositionSmearingFunctionLimitsParamKey = "GeantParser_ZPositionSmearingFunctionLimits_std::vector<double>";
+  const std::string kTimeSmearingParametersParamKey = "GateParser_TimeSmearingParameters_std::vector<double>";
+  const std::string kTimeSmearingFunctionParamKey = "GateParser_TimeSmearingFunction_std::string";
+  const std::string kTimeSmearingFunctionLimitsParamKey = "GateParser_TimeSmearingFunctionLimits_std::vector<double>";
 
-  const std::string kUseDefaultZSmearingKey = "GeantParser_UseDefaultZSmearing_bool";
-  const std::string kDefaultZSmearingSigmaKey = "GeantParser_DefaultZSmearingSigma_double";
-  const std::string kUseDefaultTimeSmearingKey = "GeantParser_UseDefaultTimeSmearing_bool";
+  const std::string kEnergySmearingParametersParamKey = "GateParser_EnergySmearingParameters_std::vector<double>";
+  const std::string kEnergySmearingFunctionParamKey = "GateParser_EnergySmearingFunction_std::string";
+  const std::string kEnergySmearingFunctionLimitsParamKey = "GateParser_EnergySmearingFunctionLimits_std::vector<double>";
 
-  const std::string kDefaultTimeSmearingSigmaKey = "GeantParser_DefaultTimeSmearingSigma_double";
-  const std::string kDefaultTimeSmearingThresholdEnergyKey = "GeantParser_DefaultTimeSmearingThresholdEnergy_double";
-  const std::string kDefaultTimeSmearingReferenceEnergyKey = "GeantParser_DefaultTimeSmearingReferenceEnergy_double";
+  const std::string kZPositionSmearingParametersParamKey = "GateParser_ZPositionSmearingParameters_std::vector<double>";
+  const std::string kZPositionSmearingFunctionParamKey = "GateParser_ZPositionSmearingFunction_std::string";
+  const std::string kZPositionSmearingFunctionLimitsParamKey = "GateParser_ZPositionSmearingFunctionLimits_std::vector<double>";
 
-  const std::string kUseDefaultEnergySmearingKey = "GeantParser_UseDefaultEnergySmearing_bool";
-  const std::string kDefaultEnergySmearingFractionKey = "GeantParser_DefaultEnergySmearingFraction_double";
+  const std::string kUseDefaultZSmearingKey = "GateParser_UseDefaultZSmearing_bool";
+  const std::string kDefaultZSmearingSigmaKey = "GateParser_DefaultZSmearingSigma_double";
 
-  const std::string kSeedParamKey = "GeantParser_Seed_int";
+  const std::string kUseDefaultTimeSmearingKey = "GateParser_UseDefaultTimeSmearing_bool";
+  const std::string kDefaultTimeSmearingSigmaKey = "GateParser_DefaultTimeSmearingSigma_double";
+  const std::string kDefaultTimeSmearingThresholdEnergyKey = "GateParser_DefaultTimeSmearingThresholdEnergy_double";
+  const std::string kDefaultTimeSmearingReferenceEnergyKey = "GateParser_DefaultTimeSmearingReferenceEnergy_double";
 
-  ///< MC hits into single time window when it contains enough hits
+  const std::string kUseDefaultEnergySmearingKey = "GateParser_UseDefaultEnergySmearing_bool";
+  const std::string kDefaultEnergySmearingFractionKey = "GateParser_DefaultEnergySmearingFraction_double";
+
   std::vector<JPetRawMCHit> fStoredMCHits;
-  ///< RECONSTRUCTED MC hits into single time window when it contains enough hits
   std::vector<JPetMCRecoHit> fStoredRecoHits;
 
   void loadSmearingOptionsAndSetupExperimentalParametrizer();

@@ -162,6 +162,7 @@ set(SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/GeantParser/JPetGeantScinHits/JPetGeantScinHits.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/GeantParser/JPetSmearingFunctions/JPetSmearingFunctions.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/GateParser/JPetGateParser/JPetGateParser.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/GateParser/JPetGateParser/JPetGateParserTools.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/MC/JPetMCDecayTree/JPetMCDecayTree.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/MC/JPetRawMCHit/JPetRawMCHit.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/MC/JPetTimeWindowMC/JPetTimeWindowMC.cpp
