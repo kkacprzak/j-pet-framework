@@ -41,6 +41,8 @@ public:
   virtual bool exec() override;
   virtual bool terminate() override;
 
+  unsigned long getOriginalSeed() const;
+
 protected:
   double fClockWindowTime = 20000000.0;
   unsigned long long int fWindowNumber = 0;
@@ -54,6 +56,7 @@ protected:
   bool fMakeHisto = true;
 
   double fExperimentalThreshold = 10.0;
+  unsigned long fSeed = 0.0;
 
   bool fUseDefaultZSmearing = false;
   bool fUseDefaultTimeSmearing = false;
@@ -96,6 +99,8 @@ protected:
 
   const std::string kUseDefaultEnergySmearingKey = "GateParser_UseDefaultEnergySmearing_bool";
   const std::string kDefaultEnergySmearingFractionKey = "GateParser_DefaultEnergySmearingFraction_double";
+
+  const std::string kSeedParamKey = "GateParser_Seed_int";
 
   std::vector<JPetRawMCHit> fStoredMCHits;
   std::vector<JPetMCRecoHit> fStoredRecoHits;

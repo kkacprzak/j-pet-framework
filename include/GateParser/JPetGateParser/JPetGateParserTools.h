@@ -38,6 +38,8 @@ public:
   static JPetMCRecoHit reconstructHit(JPetRawMCHit& hit, JPetHitExperimentalParametrizer& parametrizer);
 
   static bool isHitReconstructed(JPetMCRecoHit& hit, const double th);
+
+  static void setSeedTogRandom(unsigned long seed);
 };
 
 #endif /* !JPETGEANTPARSERTOOLS_H */
