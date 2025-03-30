@@ -50,6 +50,13 @@ bool JPetGateParser::init()
   {
     fExperimentalThreshold = getOptionAsDouble(fParams.getOptions(), kEnergyThresholdParamKey);
   }
+  if (isOptionSet(fParams.getOptions(), kSeedParamKey))
+  {
+    fSeed = getOptionAsInt(fParams.getOptions(), kSeedParamKey);
+  }
+
+  JPetGateParserTools::setSeedTogRandom(getOriginalSeed());
+  INFO("Seed value used for resolution smearing of MC simulation data: " << boost::lexical_cast<std::string>(getOriginalSeed()));
 
   loadSmearingOptionsAndSetupExperimentalParametrizer();
 
@@ -328,3 +335,5 @@ void JPetGateParser::initialiseBasicHistograms()
 
   getStatistics().createHistogram(new TH1F("rec_hit_eneDepos", "Hit energy deposition;[keV];", 750, 0.0, 1500.0));
 }
+
+unsigned long JPetGateParser::getOriginalSeed() const { return fSeed; }

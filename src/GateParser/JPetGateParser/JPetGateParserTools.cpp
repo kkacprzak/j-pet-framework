@@ -59,3 +59,15 @@ JPetMCRecoHit JPetGateParserTools::reconstructHit(JPetRawMCHit& mcHit, JPetHitEx
 }
 
 bool JPetGateParserTools::isHitReconstructed(JPetMCRecoHit& recoHit, const double energyThreshold) { return recoHit.getEnergy() >= energyThreshold; }
+
+void JPetGateParserTools::setSeedTogRandom(unsigned long seed)
+{
+  if (!gRandom)
+  {
+    ERROR("gRandom is not set and we cannot set the seed");
+  }
+  else
+  {
+    gRandom->SetSeed(seed);
+  }
+}
