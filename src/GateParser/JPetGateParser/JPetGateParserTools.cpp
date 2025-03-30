@@ -28,9 +28,9 @@ int JPetGateParserTools::mapScintillatorFromGate(int rSectorID, int crystalID)
 {
   if (rSectorID < 6)
   {
-	return 266 + crystalID - 13*rSectorID;
+    return 266 + crystalID - 13 * rSectorID;
   }
-  return 266 + crystalID - 13*rSectorID + 312;
+  return 266 + crystalID - 13 * rSectorID + 312;
 }
 
 /* JPetGateParserTools::checkIfInCurrentTimeWindow function checks if currently investigated interaction should fall
@@ -39,10 +39,10 @@ time of interaction, number of current electronics time window and length of the
 
 bool JPetGateParserTools::checkIfInCurrentTimeWindow(double fTime_ps, unsigned long long int fWindowNumber, double fClockWindowTime)
 {
-  double timeBasedOnPreviousTimeWindow = fTime_ps - (double)fWindowNumber*fClockWindowTime;
+  double timeBasedOnPreviousTimeWindow = fTime_ps - (double)fWindowNumber * fClockWindowTime;
   if (timeBasedOnPreviousTimeWindow < fClockWindowTime)
   {
-	return true;
+    return true;
   }
   return false;
 }
@@ -59,4 +59,3 @@ JPetMCRecoHit JPetGateParserTools::reconstructHit(JPetRawMCHit& mcHit, JPetHitEx
 }
 
 bool JPetGateParserTools::isHitReconstructed(JPetMCRecoHit& recoHit, const double energyThreshold) { return recoHit.getEnergy() >= energyThreshold; }
-

@@ -330,7 +330,7 @@ void JPetGeantParser::processMCEvent(JPetGeantEventPack* evPack)
       fillHistoMCGen(mcHit);
     }
     // create reconstructed hit and add all smearings
-    JPetMCRecoHit recoHit = JPetGeantParserTools::reconstructHit(mcHit, fExperimentalParametrizer);
+    JPetMCRecoHit recoHit = JPetGeantParserTools::reconstructHit(mcHit, fExperimentalParametrizer, getParamBank());
 
     // Add criteria for possible rejection of reconstructed events (e.g. E>50 keV)
     if (JPetGeantParserTools::isHitReconstructed(recoHit, fExperimentalThreshold))

@@ -128,6 +128,7 @@ set(SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/Core/JPetTaskIO/JPetInputHandlerROOT.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/Core/JPetTaskIO/JPetInputHandlerHLD.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/Core/JPetTaskIO/JPetInputHandlerGATE.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/Core/JPetTaskIO/JPetInputHandlerNTU.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/Core/JPetTaskIO/JPetOutputHandler.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/Core/JPetTaskStreamIO/JPetTaskStreamIO.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/Core/JPetTaskIOLoopPerSubTask/JPetTaskIOLoopPerSubTask.cpp

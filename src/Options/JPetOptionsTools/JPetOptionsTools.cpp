@@ -400,8 +400,9 @@ void handleErrorMessage(const std::string& errorMessage, const std::out_of_range
 
 file_type_checker::FileType file_type_checker::getFileType(const std::map<std::string, boost::any>& opts, const std::string& fileTypeName)
 {
-  std::map<std::string, file_type_checker::FileType> fileTypeMap = {{"", kNoType},     {"root", kRoot}, {"mcGeant", kMCGeant}, {"mcGATE", kMCGATE},
-                                                                    {"scope", kScope}, {"hld", kHld},   {"hldRoot", kHldRoot}, {"zip", kZip}};
+  std::map<std::string, file_type_checker::FileType> fileTypeMap = {{"", kNoType},       {"root", kRoot},       {"mcGeant", kMCGeant},
+                                                                    {"mcGATE", kMCGATE}, {"ntu", kNTuple},      {"scope", kScope},
+                                                                    {"hld", kHld},       {"hldRoot", kHldRoot}, {"zip", kZip}};
 
   try
   {

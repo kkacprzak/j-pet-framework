@@ -35,7 +35,7 @@ class JPetGeantParserTools
 public:
   static JPetRawMCHit createJPetRawMCHit(JPetGeantScinHits* geantHit, const JPetParamBank& paramBank, double timeShift);
 
-  static JPetMCRecoHit reconstructHit(JPetRawMCHit& hit, JPetHitExperimentalParametrizer& parametrizer);
+  static JPetMCRecoHit reconstructHit(JPetRawMCHit& hit, JPetHitExperimentalParametrizer& parametrizer, const JPetParamBank& paramBank);
 
   static bool isHitReconstructed(JPetMCRecoHit& hit, const double th);
 
