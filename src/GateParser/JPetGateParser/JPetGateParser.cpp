@@ -221,50 +221,49 @@ void JPetGateParser::loadSmearingOptionsAndSetupExperimentalParametrizer()
   }
 }
 
-
-
 bool JPetGateParser::exec()
 {
   try
   {
     if (auto& mcEntry = dynamic_cast<JPetGATEData* const>(fEvent))
     {
-	  fTime_ps = (mcEntry->fTime)*pow(10.,12);	// switch to ps
+      fTime_ps = (mcEntry->fTime) * pow(10., 12); // switch to ps
 
-	  if (!JPetGateParserTools::checkIfInCurrentTimeWindow(fTime_ps, fWindowNumber, fClockWindowTime) && fStoredMCHits.size() != 0)
-	  {
-		saveHits();
-    	fStoredMCHits.clear();
-		fStoredRecoHits.clear();
-	  }
-	  fWindowNumber = (unsigned long long int)(fTime_ps/fClockWindowTime);	// period of 'unsigned long long int' is too long to worry about crossing the limit
+      if (!JPetGateParserTools::checkIfInCurrentTimeWindow(fTime_ps, fWindowNumber, fClockWindowTime) && fStoredMCHits.size() != 0)
+      {
+        saveHits();
+        fStoredMCHits.clear();
+        fStoredRecoHits.clear();
+      }
+      fWindowNumber =
+          (unsigned long long int)(fTime_ps / fClockWindowTime); // period of 'unsigned long long int' is too long to worry about crossing the limit
 
-	  if (JPetGateParserTools::checkIfInCurrentTimeWindow(fTime_ps, fWindowNumber, fClockWindowTime))
-	  {
-	  fTimeInClockWindow = fTime_ps - (double)fWindowNumber*fClockWindowTime;
-	  fGlobalPosX_cm = mcEntry->fGlobalPosX/10.;	// switch to cm
-	  fGlobalPosY_cm = mcEntry->fGlobalPosY/10.;	// switch to cm
-	  fGlobalPosZ_cm = mcEntry->fGlobalPosZ/10.;	// switch to cm
-	  fEnergy_keV = mcEntry->fEnergy*pow(10.,3);	// switch to keV
+      if (JPetGateParserTools::checkIfInCurrentTimeWindow(fTime_ps, fWindowNumber, fClockWindowTime))
+      {
+        fTimeInClockWindow = fTime_ps - (double)fWindowNumber * fClockWindowTime;
+        fGlobalPosX_cm = mcEntry->fGlobalPosX / 10.;  // switch to cm
+        fGlobalPosY_cm = mcEntry->fGlobalPosY / 10.;  // switch to cm
+        fGlobalPosZ_cm = mcEntry->fGlobalPosZ / 10.;  // switch to cm
+        fEnergy_keV = mcEntry->fEnergy * pow(10., 3); // switch to keV
 
-	  const JPetParamBank& paramBank = getParamBank();
+        const JPetParamBank& paramBank = getParamBank();
 
-      JPetRawMCHit rawHit;
-      rawHit.setTime(fTimeInClockWindow);
-      rawHit.setEnergy(fEnergy_keV);
-      rawHit.setPosX(fGlobalPosX_cm);
-      rawHit.setPosY(fGlobalPosY_cm);
-      rawHit.setPosZ(fGlobalPosZ_cm);
-      rawHit.setScin(paramBank.getScin(JPetGateParserTools::mapScintillatorFromGate(mcEntry->fRSectorID, mcEntry->fCrystalID)));
-      
-      JPetMCRecoHit recoHit = JPetGateParserTools::reconstructHit(rawHit, fExperimentalParametrizer);
-      
-	  if (JPetGateParserTools::isHitReconstructed(recoHit, fExperimentalThreshold))
-	  {
-		fStoredMCHits.push_back(rawHit);
-    	fStoredRecoHits.push_back(recoHit);
-	  }
-	  }
+        JPetRawMCHit rawHit;
+        rawHit.setTime(fTimeInClockWindow);
+        rawHit.setEnergy(fEnergy_keV);
+        rawHit.setPosX(fGlobalPosX_cm);
+        rawHit.setPosY(fGlobalPosY_cm);
+        rawHit.setPosZ(fGlobalPosZ_cm);
+        rawHit.setScin(paramBank.getScin(JPetGateParserTools::mapScintillatorFromGate(mcEntry->fRSectorID, mcEntry->fCrystalID)));
+
+        JPetMCRecoHit recoHit = JPetGateParserTools::reconstructHit(rawHit, fExperimentalParametrizer);
+
+        if (JPetGateParserTools::isHitReconstructed(recoHit, fExperimentalThreshold))
+        {
+          fStoredMCHits.push_back(rawHit);
+          fStoredRecoHits.push_back(recoHit);
+        }
+      }
     }
   }
   catch (std::bad_cast& bc)
@@ -287,27 +286,27 @@ void JPetGateParser::saveHits()
   for (const auto& mcHit : fStoredMCHits)
   {
     dynamic_cast<JPetTimeWindowMC*>(fOutputEvents)->addMCHit<JPetRawMCHit>(mcHit);
-	if (fMakeHisto)
-	{
-	  getStatistics().getHisto1D("gen_hits_per_time_window")->Fill(fStoredMCHits.size());
-	  getStatistics().getHisto1D("gen_hits_z_pos")->Fill(mcHit.getPosZ());
-	  getStatistics().getHisto2D("gen_hits_xy_pos")->Fill(mcHit.getPosX(), mcHit.getPosY());
-	  getStatistics().getHisto1D("gen_hit_time")->Fill(mcHit.getTime());
-	  getStatistics().getHisto1D("gen_hit_eneDepos")->Fill(mcHit.getEnergy());
-	}
+    if (fMakeHisto)
+    {
+      getStatistics().getHisto1D("gen_hits_per_time_window")->Fill(fStoredMCHits.size());
+      getStatistics().getHisto1D("gen_hits_z_pos")->Fill(mcHit.getPosZ());
+      getStatistics().getHisto2D("gen_hits_xy_pos")->Fill(mcHit.getPosX(), mcHit.getPosY());
+      getStatistics().getHisto1D("gen_hit_time")->Fill(mcHit.getTime());
+      getStatistics().getHisto1D("gen_hit_eneDepos")->Fill(mcHit.getEnergy());
+    }
   }
 
   for (const auto& recoHit : fStoredRecoHits)
   {
     dynamic_cast<JPetTimeWindow*>(fOutputEvents)->add<JPetMCRecoHit>(recoHit);
-	if (fMakeHisto)
-	{
-	  getStatistics().getHisto1D("rec_hits_per_time_window")->Fill(fStoredRecoHits.size());
-	  getStatistics().getHisto1D("rec_hits_z_pos")->Fill(recoHit.getPosZ());
-	  getStatistics().getHisto2D("rec_hits_xy_pos")->Fill(recoHit.getPosX(), recoHit.getPosY());
-	  getStatistics().getHisto1D("rec_hit_time")->Fill(recoHit.getTime());
-	  getStatistics().getHisto1D("rec_hit_eneDepos")->Fill(recoHit.getEnergy());
-	}
+    if (fMakeHisto)
+    {
+      getStatistics().getHisto1D("rec_hits_per_time_window")->Fill(fStoredRecoHits.size());
+      getStatistics().getHisto1D("rec_hits_z_pos")->Fill(recoHit.getPosZ());
+      getStatistics().getHisto2D("rec_hits_xy_pos")->Fill(recoHit.getPosX(), recoHit.getPosY());
+      getStatistics().getHisto1D("rec_hit_time")->Fill(recoHit.getTime());
+      getStatistics().getHisto1D("rec_hit_eneDepos")->Fill(recoHit.getEnergy());
+    }
   }
 
   fStoredMCHits.clear();

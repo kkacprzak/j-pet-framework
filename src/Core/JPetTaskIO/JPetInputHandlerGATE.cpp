@@ -85,7 +85,7 @@ bool JPetInputHandlerGATE::nextEntry()
   }
   fEntryRange.currentEntry++;
 
-  // Readint next entry from the GATE tree to an object
+  // Reading next entry from the GATE tree to an object
   int success = fTree->GetEntry(fEntryRange.currentEntry);
 
   if (success == 0 || success == -1)
