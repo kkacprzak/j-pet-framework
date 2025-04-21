@@ -44,11 +44,19 @@ std::vector<TaskGenerator> JPetTaskFactory::createTaskGeneratorChain(const std::
   return generateTaskGeneratorChain(fTasksToUse, fTasksDictionary, options);
 }
 
-bool JPetTaskFactory::addTaskInfo(const std::string& name, const std::string& inputFileType, const std::string& outputFileType, int numIter)
+bool JPetTaskFactory::addTaskInfo(const std::string& name, const std::string& inputFileType, const std::string& outputFileType, int numIter,
+                                  bool toFront)
 {
   if (fTasksDictionary.find(name) != fTasksDictionary.end())
   {
-    fTasksToUse.push_back(TaskInfo(name, inputFileType, outputFileType, numIter));
+    if (toFront)
+    {
+      fTasksToUse.insert(fTasksToUse.begin(), TaskInfo(name, inputFileType, outputFileType, numIter));
+    }
+    else
+    {
+      fTasksToUse.push_back(TaskInfo(name, inputFileType, outputFileType, numIter));
+    }
   }
   else
   {
@@ -72,7 +80,7 @@ TaskGeneratorChain generateTaskGeneratorChain(const std::vector<TaskInfo>& taskI
                                               const std::map<std::string, boost::any>& options)
 {
   TaskGeneratorChain chain;
-  addDefaultTasksFromOptions(options, generatorsMap, chain);
+  addDefaultTasksFromOptions(options, generatorsMap, chain, taskInfoVect);
   for (const auto& taskInfo : taskInfoVect)
   {
     addTaskToChain(generatorsMap, taskInfo, chain);
@@ -85,7 +93,7 @@ TaskGeneratorChain generateDirectTaskGeneratorChain(const std::vector<TaskInfo>&
                                                     const std::map<std::string, boost::any>& options)
 {
   TaskGeneratorChain chain;
-  addDefaultTasksFromOptions(options, generatorsMap, chain);
+  addDefaultTasksFromOptions(options, generatorsMap, chain, taskInfoVect);
 
   auto inT = taskInfoVect.front().inputFileType;
   auto outT = taskInfoVect.back().outputFileType;
@@ -99,7 +107,6 @@ TaskGeneratorChain generateDirectTaskGeneratorChain(const std::vector<TaskInfo>&
         for (const auto& taskInfo : taskInfoVect)
         {
           auto task_name = taskInfo.name;
-
           if (generatorsMap.find(task_name) != generatorsMap.end())
           {
             TaskGenerator userTaskGen = generatorsMap.at(task_name);
@@ -119,9 +126,11 @@ TaskGeneratorChain generateDirectTaskGeneratorChain(const std::vector<TaskInfo>&
 }
 
 void addDefaultTasksFromOptions(const std::map<std::string, boost::any>& options, const std::map<std::string, TaskGenerator>& generatorsMap,
-                                TaskGeneratorChain& outChain)
+                                TaskGeneratorChain& outChain, const std::vector<TaskInfo>& tasksToUse)
 {
   using namespace jpet_options_tools;
+  bool isDirect = jpet_options_tools::isDirectProcessing(options);
+
   auto addDefaultTasksFromOptions = [&](const std::map<std::string, boost::any>& options)
   {
     auto fileType = file_type_checker::getInputFileType(options);
@@ -136,20 +145,6 @@ void addDefaultTasksFromOptions(const std::map<std::string, boost::any>& options
     {
       auto scopeTask = []() { return std::make_unique<JPetScopeLoader>(std::unique_ptr<JPetScopeTask>(new JPetScopeTask("JPetScopeReader"))); };
       outChain.insert(outChain.begin(), scopeTask);
-    }
-
-    // Create Geant Parser task if indicated by filetype
-    if (fileType == file_type_checker::kMCGeant)
-    {
-      auto mcInfo = TaskInfo("JPetGeantParser", "mcGeant", "hits", 1);
-      addTaskToChain(generatorsMap, mcInfo, outChain);
-    }
-
-    // Create GATE Parser task if indicated by filetype
-    if (fileType == file_type_checker::kMCGATE)
-    {
-      auto mcInfo = TaskInfo("JPetGateParser", "mcGATE", "hits", 1);
-      addTaskToChain(generatorsMap, mcInfo, outChain);
     }
 
     // Create task to unzip file if indicated by the filetype

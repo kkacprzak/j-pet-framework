@@ -88,7 +88,8 @@ public:
    *
    * @throws exception in case of errors.
    */
-  void useTask(const std::string& name, const std::string& inputFileType = "", const std::string& outputFileType = "", int numTimes = 1);
+  void useTask(const std::string& name, const std::string& inputFileType = "", const std::string& outputFileType = "", int numTimes = 1,
+               bool toFront = false);
 
   bool areThreadsEnabled() const;
   void setThreadsEnabled(bool enable);
@@ -111,7 +112,7 @@ private:
    * generators in advance. This provate method is intended to register all
    * such tasks in advance of creation of the task generator chain.
    */
-  static void registerDefaultTasks();
+  static void registerAndUseMCTasks(const std::map<std::string, boost::any>& options);
 
   /**
    * @brief Adds any tasks definded in userParams.json
