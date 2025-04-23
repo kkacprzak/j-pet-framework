@@ -80,7 +80,7 @@ TaskGeneratorChain generateTaskGeneratorChain(const std::vector<TaskInfo>& taskI
                                               const std::map<std::string, boost::any>& options)
 {
   TaskGeneratorChain chain;
-  addDefaultTasksFromOptions(options, generatorsMap, chain, taskInfoVect);
+  addDefaultTasksFromOptions(options, generatorsMap, chain);
   for (const auto& taskInfo : taskInfoVect)
   {
     addTaskToChain(generatorsMap, taskInfo, chain);
@@ -93,7 +93,7 @@ TaskGeneratorChain generateDirectTaskGeneratorChain(const std::vector<TaskInfo>&
                                                     const std::map<std::string, boost::any>& options)
 {
   TaskGeneratorChain chain;
-  addDefaultTasksFromOptions(options, generatorsMap, chain, taskInfoVect);
+  addDefaultTasksFromOptions(options, generatorsMap, chain);
 
   auto inT = taskInfoVect.front().inputFileType;
   auto outT = taskInfoVect.back().outputFileType;
@@ -126,7 +126,7 @@ TaskGeneratorChain generateDirectTaskGeneratorChain(const std::vector<TaskInfo>&
 }
 
 void addDefaultTasksFromOptions(const std::map<std::string, boost::any>& options, const std::map<std::string, TaskGenerator>& generatorsMap,
-                                TaskGeneratorChain& outChain, const std::vector<TaskInfo>& tasksToUse)
+                                TaskGeneratorChain& outChain)
 {
   using namespace jpet_options_tools;
   bool isDirect = jpet_options_tools::isDirectProcessing(options);
