@@ -33,7 +33,8 @@ std::shared_ptr<JPetParamManager> JPetParamManager::generateParamManager(const s
       expectMissing.insert(ParamObjectType::kDataSource);
       expectMissing.insert(ParamObjectType::kDataModule);
     }
-    if (file_type_checker::getInputFileType(options) == file_type_checker::kMCGeant)
+    if (file_type_checker::getInputFileType(options) == file_type_checker::kMCGeant ||
+        file_type_checker::getInputFileType(options) == file_type_checker::kMCGATE)
     {
       expectMissing.insert(ParamObjectType::kMatrix);
       expectMissing.insert(ParamObjectType::kPM);

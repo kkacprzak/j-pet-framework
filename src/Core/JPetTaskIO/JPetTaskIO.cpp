@@ -14,7 +14,9 @@
  */
 
 #include "JPetTaskIO/JPetTaskIO.h"
+#include "./JPetTaskIO/JPetInputHandlerGATE.h"
 #include "./JPetTaskIO/JPetInputHandlerHLD.h"
+#include "./JPetTaskIO/JPetInputHandlerNTU.h"
 #include "./JPetTaskIO/JPetInputHandlerROOT.h"
 #include "JPetCommonTools/JPetCommonTools.h"
 #include "JPetData/JPetData.h"
@@ -185,6 +187,14 @@ bool JPetTaskIO::createInputObjects(const char* inputFilename)
   {
     fInputHandler = jpet_common_tools::make_unique<JPetInputHandlerHLD>();
   }
+  else if (file_type_checker::getInputFileType(fParams.getOptions()) == file_type_checker::kMCGATE)
+  {
+    fInputHandler = jpet_common_tools::make_unique<JPetInputHandlerGATE>();
+  }
+  else if (file_type_checker::getInputFileType(fParams.getOptions()) == file_type_checker::kNTuple)
+  {
+    fInputHandler = jpet_common_tools::make_unique<JPetInputHandlerNTU>();
+  }
   else
   {
     fInputHandler = jpet_common_tools::make_unique<JPetInputHandlerROOT>();
@@ -210,9 +220,10 @@ bool JPetTaskIO::createOutputObjects(const char* outputFilename)
   auto options = fParams.getOptions();
 
   if (file_type_checker::getInputFileType(options) == file_type_checker::kHldRoot ||
-      file_type_checker::getInputFileType(options) == file_type_checker::kMCGeant)
+      file_type_checker::getInputFileType(options) == file_type_checker::kMCGeant ||
+      file_type_checker::getInputFileType(options) == file_type_checker::kMCGATE ||
+      file_type_checker::getInputFileType(options) == file_type_checker::kNTuple)
   {
-
     fHeader = new JPetTreeHeader(getRunNumber(options));
     fHeader->setFrameworkVersion(FRAMEWORK_VERSION);
     fHeader->setFrameworkRevision(FRAMEWORK_REVISION);

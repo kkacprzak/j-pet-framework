@@ -19,8 +19,6 @@
 #include "./JPetManager/JPetManager.h"
 #include <boost/test/unit_test.hpp>
 
-// TODO create new test files and use combined_jpet_test.json
-
 BOOST_AUTO_TEST_SUITE(FirstSuite)
 
 BOOST_AUTO_TEST_CASE(create_unique_manager)
@@ -51,83 +49,84 @@ BOOST_AUTO_TEST_CASE(emptyRun)
 BOOST_AUTO_TEST_CASE(goodRootRun)
 {
   // goodRootFile.root needs to be updated
-  // JPetManager& manager = JPetManager::getManager();
-  // const char* args[5] = {
-  //   "test/Path",
-  //   "--file",
-  //   "unitTestData/JPetManagerTest/goodRootFile.root",
-  //   "--type",
-  //   "root"
-  // };
-  // BOOST_REQUIRE_NO_THROW(manager.run(5, args));
+  JPetManager& manager = JPetManager::getManager();
+  const char* args[7] = {"test/Path", "--file", "unitTestData/JPetManagerTest/goodRootFile.hits.root", "--type",
+                         "root",      "-u",     "unitTestData/JPetManagerTest/userParamsDummy.json"};
+  BOOST_REQUIRE_NO_THROW(manager.run(7, args));
 }
 
 BOOST_AUTO_TEST_CASE(goodZipRun)
 {
-  // std::remove("unitTestData/JPetManagerTest/xx14099113231.hld");
-  // JPetManager& manager = JPetManager::getManager();
-  // const char* args[12] = {"test/Path",
-  //                         "--file",
-  //                         "unitTestData/JPetManagerTest/xx14099113231.hld.xz",
-  //                         "--type",
-  //                         "zip",
-  //                         "-r",
-  //                         "0",
-  //                         "10",
-  //                         "-l",
-  //                         "unitTestData/JPetManagerTest/large_barrel.json",
-  //                         "-i",
-  //                         "44"};
-  // BOOST_REQUIRE_NO_THROW(manager.run(12, args));
+  std::remove("unitTestData/JPetManagerTest/xx14099113231.hld");
+  JPetManager& manager = JPetManager::getManager();
+  const char* args[14] = {"test/Path",
+                          "--file",
+                          "unitTestData/JPetManagerTest/xx14099113231.hld.xz",
+                          "--type",
+                          "zip",
+                          "-p",
+                          "unitTestData/JPetManagerTest/conf_trb3.xml",
+                          "-r",
+                          "0",
+                          "10",
+                          "-l",
+                          "unitTestData/JPetManagerTest/modular_setup_clinical_fixed_ds.json",
+                          "-i",
+                          "38"};
+  BOOST_REQUIRE_NO_THROW(manager.run(14, args));
 }
 
 BOOST_AUTO_TEST_CASE(goodMCRun)
 {
-  // JPetManager& manager = JPetManager::getManager();
-  // const char* args[9] = {"test/Path",     "--file", "unitTestData/JPetManagerTest/goodMCFile.mcGeant.root", "--type", "mcGeant", "-l",
-  // "unitTestData/JPetManagerTest/large_barrel.json",       "-i",     "44"};
-  // BOOST_REQUIRE_NO_THROW(manager.run(9, args));
+  JPetManager& manager = JPetManager::getManager();
+  const char* args[16] = {"test/Path",
+                          "--file",
+                          "unitTestData/JPetManagerTest/goodMCFile2.mcGeant.root",
+                          "--type",
+                          "mcGeant",
+                          "-k",
+                          "mod",
+                          "-u",
+                          "unitTestData/JPetManagerTest/userParamsDummy.json",
+                          "-l",
+                          "unitTestData/JPetManagerTest/modular_setup_clinical_fixed_ds.json",
+                          "-i",
+                          "38",
+                          "-r",
+                          "0",
+                          "100"};
+  BOOST_REQUIRE_NO_THROW(manager.run(16, args));
 }
 
-BOOST_AUTO_TEST_CASE(goodControlTasks)
-{
-  // JPetManager& manager = JPetManager::getManager();
-  // std::vector<const char*> args = {
-  //     "test/Path",
-  //     "--file",
-  //     "unitTestData/JPetManagerTest/goodRootFile.root",
-  //     "--type",
-  //     "root",
-  //     "-u",
-  //     "unitTestData/JPetManagerTest/userParamsControlTasksGood.json",
-  // };
-  // manager.registerTask<TestTask>("TestTask");
-  // BOOST_REQUIRE_NO_THROW(manager.run(args.size(), args.data()));
-}
+// BOOST_AUTO_TEST_CASE(goodControlTasks)
+// {
+//   JPetManager& manager = JPetManager::getManager();
+//   std::vector<const char*> args = {
+//       "test/Path", "--file", "unitTestData/JPetManagerTest/goodRootFile.hits.root",          "--type",
+//       "root",      "-u",     "unitTestData/JPetManagerTest/userParamsControlTasksGood.json",
+//   };
+//   manager.registerTask<TestTask>("TestTask");
+//   BOOST_REQUIRE_NO_THROW(manager.run(args.size(), args.data()));
+// }
 
 BOOST_AUTO_TEST_CASE(notRegisteredTask)
 {
-  // JPetManager& manager = JPetManager::getManager();
-  // std::vector<const char*> args = {
-  //     "test/Path",
-  //     "--file",
-  //     "unitTestData/JPetManagerTest/goodRootFile.root",
-  //     "--type",
-  //     "root",
-  //     "-u",
-  //     "unitTestData/JPetManagerTest/userParamsUnregisteredTask.json",
-  // };
-  // BOOST_CHECK_THROW(manager.run(args.size(), args.data()), std::runtime_error);
+  JPetManager& manager = JPetManager::getManager();
+  std::vector<const char*> args = {
+      "test/Path", "--file", "unitTestData/JPetManagerTest/goodRootFile.hits.root",          "--type",
+      "root",      "-u",     "unitTestData/JPetManagerTest/userParamsUnregisteredTask.json",
+  };
+  BOOST_CHECK_THROW(manager.run(args.size(), args.data()), std::runtime_error);
 }
 
 BOOST_AUTO_TEST_CASE(badOptionsTask)
 {
-  // JPetManager& manager = JPetManager::getManager();
-  // std::vector<const char*> args = {
-  //     "test/Path", "--file", "unitTestData/JPetManagerTest/goodRootFile.root",         "--type",
-  //     "root",      "-u",     "unitTestData/JPetManagerTest/userParamsBadOptions.json",
-  // };
-  // BOOST_REQUIRE_NO_THROW(manager.run(11, args));
+  JPetManager& manager = JPetManager::getManager();
+  std::vector<const char*> args = {
+      "test/Path", "--file", "unitTestData/JPetManagerTest/goodRootFile.hits.root",    "--type",
+      "root",      "-u",     "unitTestData/JPetManagerTest/userParamsBadOptions.json",
+  };
+  BOOST_CHECK_THROW(manager.run(args.size(), args.data()), std::runtime_error);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

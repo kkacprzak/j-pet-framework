@@ -34,7 +34,7 @@ JPetRawMCHit JPetGeantParserTools::createJPetRawMCHit(JPetGeantScinHits* geantHi
   return mcHit;
 }
 
-JPetMCRecoHit JPetGeantParserTools::reconstructHit(JPetRawMCHit& mcHit, JPetHitExperimentalParametrizer& parametrizer)
+JPetMCRecoHit JPetGeantParserTools::reconstructHit(JPetRawMCHit& mcHit, JPetHitExperimentalParametrizer& parametrizer, const JPetParamBank& paramBank)
 {
   JPetMCRecoHit recoHit;
   recoHit.setRecoFlag(JPetRecoHit::MC);
@@ -43,6 +43,7 @@ JPetMCRecoHit JPetGeantParserTools::reconstructHit(JPetRawMCHit& mcHit, JPetHitE
   recoHit.setPosZ(parametrizer.addZHitSmearing(mcHit.getScin().getID(), mcHit.getPosZ(), mcHit.getEnergy(), mcHit.getTime()));
   recoHit.setTime(parametrizer.addTimeSmearing(mcHit.getScin().getID(), mcHit.getPosZ(), mcHit.getEnergy(), mcHit.getTime()));
   recoHit.setEnergy(parametrizer.addEnergySmearing(mcHit.getScin().getID(), mcHit.getPosZ(), mcHit.getEnergy(), mcHit.getTime()));
+  recoHit.setScin(paramBank.getScin(mcHit.getScin().getID()));
   return recoHit;
 }
 

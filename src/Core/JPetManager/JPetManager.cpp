@@ -16,6 +16,7 @@
 #include "JPetManager/JPetManager.h"
 #include "JPetCmdParser/JPetCmdParser.h"
 #include "JPetCommonTools/JPetCommonTools.h"
+#include "JPetGateParser/JPetGateParser.h"
 #include "JPetGeantParser/JPetGeantParser.h"
 #include "JPetLoggerInclude.h"
 #include "JPetOptionsGenerator/JPetOptionsGenerator.h"
@@ -49,7 +50,7 @@ void JPetManager::run(int argc, const char** argv)
     throw std::invalid_argument("Error in parsing command line arguments"); /// temporary change to check if the examples are working
   }
 
-  JPetManager::registerDefaultTasks();
+  JPetManager::registerAndUseMCTasks(allValidatedOptions);
   useTasksFromUserParams(allValidatedOptions);  // add userTasks registered in userParams to run
   checkDisableLogRotation(allValidatedOptions); // disable log rotation if enabled
   auto chainOfTasks = fTaskFactory.createTaskGeneratorChain(allValidatedOptions);
@@ -128,9 +129,9 @@ std::pair<bool, std::map<std::string, boost::any>> JPetManager::parseCmdLine(int
 }
 
 // cppcheck-suppress unusedFunction
-void JPetManager::useTask(const std::string& name, const std::string& inputFileType, const std::string& outputFileType, int numTimes)
+void JPetManager::useTask(const std::string& name, const std::string& inputFileType, const std::string& outputFileType, int numTimes, bool toFront)
 {
-  if (!fTaskFactory.addTaskInfo(name, inputFileType, outputFileType, numTimes))
+  if (!fTaskFactory.addTaskInfo(name, inputFileType, outputFileType, numTimes, toFront))
   {
     std::cerr << "Error has occurred while calling useTask! Check the log!" << std::endl;
     throw std::runtime_error("error in addTaskInfo");
@@ -145,7 +146,20 @@ void JPetManager::setThreadsEnabled(bool enable)
   ENABLE_THREADS_INFO(enable);
 }
 
-void JPetManager::registerDefaultTasks() { JPetManager::getManager().registerTask<JPetGeantParser>("JPetGeantParser"); }
+void JPetManager::registerAndUseMCTasks(const std::map<std::string, boost::any>& options)
+{
+  auto fileType = file_type_checker::getInputFileType(options);
+  if (fileType == file_type_checker::kMCGeant)
+  {
+    JPetManager::getManager().registerTask<JPetGeantParser>("JPetGeantParser");
+    JPetManager::getManager().useTask("JPetGeantParser", "mcGeant", "hits", 1, true);
+  }
+  if (fileType == file_type_checker::kMCGATE)
+  {
+    JPetManager::getManager().registerTask<JPetGateParser>("JPetGateParser");
+    JPetManager::getManager().useTask("JPetGateParser", "mcGATE", "hits", 1, true);
+  }
+}
 
 void JPetManager::useTasksFromUserParams(const std::map<std::string, boost::any>& opts)
 {

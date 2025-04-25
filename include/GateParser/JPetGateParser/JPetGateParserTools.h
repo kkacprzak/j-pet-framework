@@ -10,19 +10,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *  @file JPetGeantParserTools.h
+ *  @file JPetGateParserTools.h
  */
 
 #ifndef JPETGEANTPARSERTOOLS_H
 #define JPETGEANTPARSERTOOLS_H
 
 #include "Hits/JPetMCRecoHit/JPetMCRecoHit.h"
-#include "JPetGeantEventPack/JPetGeantEventPack.h"
-#include "JPetGeantScinHits/JPetGeantScinHits.h"
-#include "JPetMCDecayTree/JPetMCDecayTree.h"
 #include "JPetParamBank/JPetParamBank.h"
 #include "JPetRawMCHit/JPetRawMCHit.h"
 #include "JPetSmearingFunctions/JPetSmearingFunctions.h"
+#include <JPetTaskIO/JPetInputHandlerGATE.h>
 #include <TRandom3.h>
 #include <array>
 #include <functional>
@@ -30,23 +28,16 @@
 #include <tuple>
 #include <vector>
 
-class JPetGeantParserTools
+class JPetGateParserTools
 {
 public:
-  static JPetRawMCHit createJPetRawMCHit(JPetGeantScinHits* geantHit, const JPetParamBank& paramBank, double timeShift);
+  static int mapScintillatorFromGate(int rSectorID, int crystalID);
+  
+  static bool checkIfInCurrentTimeWindow(double fTime_ps, unsigned long long int fWindowNumber, double fClockWindowTime);
 
-  static JPetMCRecoHit reconstructHit(JPetRawMCHit& hit, JPetHitExperimentalParametrizer& parametrizer, const JPetParamBank& paramBank);
+  static JPetMCRecoHit reconstructHit(JPetRawMCHit& hit, JPetHitExperimentalParametrizer& parametrizer);
 
   static bool isHitReconstructed(JPetMCRecoHit& hit, const double th);
-
-  static void identifyRecoHits(JPetGeantScinHits* geantHit, JPetMCRecoHit& recoHit, bool& isRecPrompt, std::array<bool, 2>& isSaved2g,
-                               std::array<bool, 3>& isSaved3g, double& enePrompt, std::array<double, 2>& ene2g, std::array<double, 3>& ene3g);
-
-  static double estimateNextDecayTimeExp(double activityMBq);
-
-  static std::tuple<std::vector<double>, std::vector<double>> getTimeDistoOfDecays(double activityMBq, double timeWindowMin, double timeWindowMax);
-
-  static std::pair<double, double> calculateEfficiency(ulong, ulong);
 
   static void setSeedTogRandom(unsigned long seed);
 };

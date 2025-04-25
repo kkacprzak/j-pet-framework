@@ -5,54 +5,54 @@
 #pragma link C++ nestedclasses;
 
 #pragma link C++ function JPetWriter::Write(JPetChannel&);
-#pragma link C++ function JPetWriter::Write(vector <JPetChannel>&);
+#pragma link C++ function JPetWriter::Write(vector<JPetChannel>&);
 #pragma link C++ function JPetWriter::Write(JPetDataModule&);
-#pragma link C++ function JPetWriter::Write(vector <JPetDataModule>&);
+#pragma link C++ function JPetWriter::Write(vector<JPetDataModule>&);
 #pragma link C++ function JPetWriter::Write(JPetDataSource&);
-#pragma link C++ function JPetWriter::Write(vector <JPetDataSource>&);
+#pragma link C++ function JPetWriter::Write(vector<JPetDataSource>&);
 #pragma link C++ function JPetWriter::Write(JPetLayer&);
-#pragma link C++ function JPetWriter::Write(vector <JPetLayer>&);
+#pragma link C++ function JPetWriter::Write(vector<JPetLayer>&);
 #pragma link C++ function JPetWriter::Write(JPetMatrix&);
-#pragma link C++ function JPetWriter::Write(vector <JPetMatrix>&);
+#pragma link C++ function JPetWriter::Write(vector<JPetMatrix>&);
 #pragma link C++ function JPetWriter::Write(JPetPM&);
-#pragma link C++ function JPetWriter::Write(vector <JPetPM>&);
+#pragma link C++ function JPetWriter::Write(vector<JPetPM>&);
 #pragma link C++ function JPetWriter::Write(JPetScin&);
-#pragma link C++ function JPetWriter::Write(vector <JPetScin>&);
+#pragma link C++ function JPetWriter::Write(vector<JPetScin>&);
 #pragma link C++ function JPetWriter::Write(JPetSetup&);
-#pragma link C++ function JPetWriter::Write(vector <JPetSetup>&);
+#pragma link C++ function JPetWriter::Write(vector<JPetSetup>&);
 #pragma link C++ function JPetWriter::Write(JPetSlot&);
-#pragma link C++ function JPetWriter::Write(vector <JPetSlot>&);
+#pragma link C++ function JPetWriter::Write(vector<JPetSlot>&);
 
 #pragma link C++ function JPetWriter::Write(JPetBaseHit);
-#pragma link C++ function JPetWriter::Write(vector <JPetBaseHit>&);
+#pragma link C++ function JPetWriter::Write(vector<JPetBaseHit>&);
 #pragma link C++ function JPetWriter::Write(JPetMCRecoHit&);
-#pragma link C++ function JPetWriter::Write(vector <JPetMCRecoHit>&);
+#pragma link C++ function JPetWriter::Write(vector<JPetMCRecoHit>&);
 #pragma link C++ function JPetWriter::Write(JPetPhysRecoHit&);
-#pragma link C++ function JPetWriter::Write(vector <JPetPhysRecoHit>&);
+#pragma link C++ function JPetWriter::Write(vector<JPetPhysRecoHit>&);
 #pragma link C++ function JPetWriter::Write(JPetRecoHit&);
-#pragma link C++ function JPetWriter::Write(vector <JPetRecoHit>&);
+#pragma link C++ function JPetWriter::Write(vector<JPetRecoHit>&);
 #pragma link C++ function JPetWriter::Write(JPetEvent&);
-#pragma link C++ function JPetWriter::Write(vector <JPetEvent>&);
+#pragma link C++ function JPetWriter::Write(vector<JPetEvent>&);
 #pragma link C++ function JPetWriter::Write(JPetLOR&);
-#pragma link C++ function JPetWriter::Write(vector <JPetLOR>&);
+#pragma link C++ function JPetWriter::Write(vector<JPetLOR>&);
 #pragma link C++ function JPetWriter::Write(JPetTimeWindow&);
-#pragma link C++ function JPetWriter::Write(vector <JPetTimeWindow>&);
+#pragma link C++ function JPetWriter::Write(vector<JPetTimeWindow>&);
 #pragma link C++ function JPetWriter::Write(JPetBaseSignal&);
-#pragma link C++ function JPetWriter::Write(vector <JPetBaseSignal>&);
+#pragma link C++ function JPetWriter::Write(vector<JPetBaseSignal>&);
 #pragma link C++ function JPetWriter::Write(JPetChannelSignal&);
-#pragma link C++ function JPetWriter::Write(vector <JPetChannelSignal>&);
+#pragma link C++ function JPetWriter::Write(vector<JPetChannelSignal>&);
 #pragma link C++ function JPetWriter::Write(JPetMatrixSignal&);
-#pragma link C++ function JPetWriter::Write(vector <JPetMatrixSignal>&);
+#pragma link C++ function JPetWriter::Write(vector<JPetMatrixSignal>&);
 #pragma link C++ function JPetWriter::Write(JPetPhysSignal&);
-#pragma link C++ function JPetWriter::Write(vector <JPetPhysSignal>&);
+#pragma link C++ function JPetWriter::Write(vector<JPetPhysSignal>&);
 #pragma link C++ function JPetWriter::Write(JPetPMSignal&);
-#pragma link C++ function JPetWriter::Write(vector <JPetPMSignal>&);
+#pragma link C++ function JPetWriter::Write(vector<JPetPMSignal>&);
 #pragma link C++ function JPetWriter::Write(JPetRecoSignal&);
-#pragma link C++ function JPetWriter::Write(vector <JPetRecoSignal>&);
+#pragma link C++ function JPetWriter::Write(vector<JPetRecoSignal>&);
 #pragma link C++ function JPetWriter::Write(JPetShapedSignal&);
-#pragma link C++ function JPetWriter::Write(vector <JPetShapedSignal>&);
+#pragma link C++ function JPetWriter::Write(vector<JPetShapedSignal>&);
 #pragma link C++ function JPetWriter::Write(JPetRawMCHit&);
-#pragma link C++ function JPetWriter::Write(vector <JPetRawMCHit>&);
+#pragma link C++ function JPetWriter::Write(vector<JPetRawMCHit>&);
 
 #pragma link C++ class JPetParamBank + ;
 #pragma link C++ class JPetTreeHeader + ;
@@ -108,3 +108,6 @@
 #pragma link C++ enum JPetSlot::Type;
 #pragma link C++ enum JPetMatrix::Side;
 
+#pragma link C++ class std::vector < TVector3> + ;
+
+#endif
