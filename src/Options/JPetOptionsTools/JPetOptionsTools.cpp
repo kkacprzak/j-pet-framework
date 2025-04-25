@@ -435,22 +435,23 @@ file_type_checker::FileType file_type_checker::getOutputFileType(const std::map<
  * if the "-k" option for the is worng or not used, then by default
  * the detector type is the Big Barrel - kBarrel.
  */
-detector_type_checker::DetectorType detector_type_checker::getDetectorType(const std::map<std::string, boost::any>& opts)
+unpacker_type_checker::UnpackerType unpacker_type_checker::getUnpackerType(const std::map<std::string, boost::any>& opts)
 {
-  std::map<std::string, detector_type_checker::DetectorType> detectorTypeMap = {
-      {"bar", kBarrel}, {"barrel", kBarrel}, {"mod", kModular}, {"modular", kModular}};
+  std::map<std::string, unpacker_type_checker::UnpackerType> unpackerTypeMap = {{"bar", kBarrel},  {"barrel", kBarrel},   {"trb", kBarrel},
+                                                                                {"mod", kModular}, {"modular", kModular}, {"ftab", kModular},
+                                                                                {"mtab", kMTAB},   {"tbody", kMTAB},      {"totalbody", kMTAB}};
 
   try
   {
-    auto option = any_cast<std::string>(opts.at("detectorType_std::string"));
+    auto option = any_cast<std::string>(opts.at("unpackerType_std::string"));
     try
     {
-      return detectorTypeMap.at(option);
+      return unpackerTypeMap.at(option);
     }
-    catch (const std::out_of_range& outOfRangeDetectorTypeException)
+    catch (const std::out_of_range& outOfRangeUnpackerTypeException)
     {
-      std::string errorMessage = "Provided detector type option was not found - out of range in getDetectorType() ";
-      handleErrorMessage(errorMessage, outOfRangeDetectorTypeException);
+      std::string errorMessage = "Provided detector type option was not found - out of range in getUnpackerType() ";
+      handleErrorMessage(errorMessage, outOfRangeUnpackerTypeException);
     }
   }
   catch (const std::out_of_range& outOfRangeOptionException)
@@ -458,7 +459,7 @@ detector_type_checker::DetectorType detector_type_checker::getDetectorType(const
     std::string errorMessage = "Provided option was not found - out of range error in options container ";
     handleErrorMessage(errorMessage, outOfRangeOptionException);
   }
-  return detector_type_checker::DetectorType::kBarrel;
+  return unpacker_type_checker::UnpackerType::kBarrel;
 }
 
 } // namespace jpet_options_tools

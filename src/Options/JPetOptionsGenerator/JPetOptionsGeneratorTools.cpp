@@ -32,7 +32,7 @@ std::map<std::string, boost::any> kDefaultOptions = {{"inputFile_std::string", s
                                                      {"progressBar_bool", false},
                                                      {"directProcessing_bool", false},
                                                      {"runID_int", -1},
-                                                     {"detectorType_std::string", std::string("barrel")},
+                                                     {"unpackerType_std::string", std::string("barrel")},
                                                      {"unpackerConfigFile_std::string", std::string("conf_trb3.xml")},
                                                      {"unpackerCalibFile_std::string", std::string("")}};
 
@@ -44,7 +44,7 @@ std::map<std::string, std::string> kOptCmdLineNameToExtendedName = {{"type", "ty
                                                                     {"unpackerCalibFile", "unpackerCalibFile_std::string"},
                                                                     {"runID", "runID_int"},
                                                                     {"directProcessing", "directProcessing_bool"},
-                                                                    {"detector", "detectorType_std::string"},
+                                                                    {"unpacker", "unpackerType_std::string"},
                                                                     {"progressBar", "progressBar_bool"},
                                                                     {"localDB", "localDB_std::string"},
                                                                     {"localDBCreate", "localDBCreate_std::string"},

@@ -16,10 +16,9 @@
 #ifndef JPETINPUTHANDLERHLD_H
 #define JPETINPUTHANDLERHLD_H
 
+#include <TObject.h>
 #include <fstream>
 #include <string>
-
-#include <TObject.h>
 
 #include "JPetOptionsTools/JPetOptionsTools.h"
 #include "JPetParamBank/JPetParamBank.h"
@@ -62,7 +61,7 @@ private:
   std::ifstream fFile;
   JPetHLDdata fEntryData;
   unpacker::tdc_calib_t fTDCCalib;
-  detector_type_checker::DetectorType fDetectorType = detector_type_checker::DetectorType::kModular;
+  unpacker_type_checker::UnpackerType fUnpackerType = unpacker_type_checker::UnpackerType::kModular;
   const std::string kTDCOffsetCalibKey = "Unpacker_TDCnonlinearityCalib_std::string";
   const std::string kTOTOffsetCalibKey = "Unpacker_TOTStrecherCalib_std::string";
 };

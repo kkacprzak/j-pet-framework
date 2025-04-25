@@ -46,9 +46,9 @@ bool JPetInputHandlerHLD::openInput(const char* inputFilename, const JPetParams&
     return false;
   }
 
-  if (detector_type_checker::getDetectorType(options) == detector_type_checker::DetectorType::kBarrel)
+  if (unpacker_type_checker::getUnpackerType(options) == unpacker_type_checker::UnpackerType::kBarrel)
   {
-    fDetectorType = detector_type_checker::DetectorType::kBarrel;
+    fUnpackerType = unpacker_type_checker::UnpackerType::kBarrel;
 
     // Large Barrel needs a TOT strecher and TDC nonlinearity calibration
     if (!loadCalibsBarrel(params))
@@ -56,14 +56,18 @@ bool JPetInputHandlerHLD::openInput(const char* inputFilename, const JPetParams&
       WARNING("Failed to load TOT or TDC calibration. Unpacker will proceed without calibration.");
     }
   }
-  else if (detector_type_checker::getDetectorType(options) == detector_type_checker::DetectorType::kModular)
+  else if (unpacker_type_checker::getUnpackerType(options) == unpacker_type_checker::UnpackerType::kModular)
   {
-    fDetectorType = detector_type_checker::DetectorType::kModular;
+    fUnpackerType = unpacker_type_checker::UnpackerType::kModular;
     // TDC calibrtion is loaded for Modular
     if (!loadCalibModular(params))
     {
       WARNING("Failed to load TDC nonlinearity calibration. Unpacker will proceed without calibration.");
     }
+  }
+  else if (unpacker_type_checker::getUnpackerType(options) == unpacker_type_checker::UnpackerType::kMTAB)
+  {
+    // TODO
   }
 
   return nextEntry(); /// load first entry ready for `get_entry`
@@ -83,15 +87,20 @@ bool JPetInputHandlerHLD::nextEntry()
 
   int success = 0;
 
-  if (fDetectorType == detector_type_checker::DetectorType::kModular)
+  if (fUnpackerType == unpacker_type_checker::UnpackerType::kModular)
   {
-    success = unpacker::get_time_window_modular(fEntryData.fMetaData, fEntryData.fOriginalData, fEntryData.fFilteredData, fEntryData.fPreprocData,
-                                                fFile, fTDCCalib);
+    success = unpacker::get_time_window(unpacker::Digitizers::enFTAB, fEntryData.fMetaData, fEntryData.fOriginalData, fEntryData.fFilteredData,
+                                        fEntryData.fPreprocData, fFile, fTDCCalib);
   }
-  else if (fDetectorType == detector_type_checker::DetectorType::kBarrel)
+  else if (fUnpackerType == unpacker_type_checker::UnpackerType::kBarrel)
   {
-    success = unpacker::get_time_window_barrel(fEntryData.fMetaData, fEntryData.fOriginalData, fEntryData.fFilteredData, fEntryData.fPreprocData,
-                                               fFile, fTDCCalib);
+    success = unpacker::get_time_window(unpacker::Digitizers::enTRB, fEntryData.fMetaData, fEntryData.fOriginalData, fEntryData.fFilteredData,
+                                        fEntryData.fPreprocData, fFile, fTDCCalib);
+  }
+  else if (fUnpackerType == unpacker_type_checker::UnpackerType::kMTAB)
+  {
+    success = unpacker::get_time_window(unpacker::Digitizers::enMTAB, fEntryData.fMetaData, fEntryData.fOriginalData, fEntryData.fFilteredData,
+                                        fEntryData.fPreprocData, fFile, fTDCCalib);
   }
 
   if (success == 0)

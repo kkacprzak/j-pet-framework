@@ -109,5 +109,3 @@
 #pragma link C++ enum JPetMatrix::Side;
 
 #pragma link C++ class std::vector < TVector3> + ;
-
-#endif

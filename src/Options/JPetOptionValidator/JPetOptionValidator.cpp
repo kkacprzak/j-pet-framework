@@ -73,7 +73,7 @@ std::map<std::string, std::vector<bool (*)(std::pair<std::string, boost::any>)>>
   validationMap["file_std::vector<std::string>"].push_back(&areFilesValid);
   validationMap["type_std::string, file_std::vector<std::string>"].push_back(&isFileTypeMatchingExtensions);
   validationMap["runID_int"].push_back(&isRunIDValid);
-  validationMap["detectorType_std::string"].push_back(&isDetectorValid);
+  validationMap["unpackerType_std::string"].push_back(&isUnpackerValid);
   validationMap["localDB_std::string"].push_back(&isLocalDBValid);
   validationMap["outputPath_std::string"].push_back(&isOutputDirectoryValid);
   return validationMap;
@@ -167,7 +167,7 @@ bool JPetOptionValidator::isRunIDValid(std::pair<std::string, boost::any> option
   return true;
 }
 
-bool JPetOptionValidator::isDetectorValid(std::pair<std::string, boost::any> option)
+bool JPetOptionValidator::isUnpackerValid(std::pair<std::string, boost::any> option)
 {
   if (any_cast<std::string>(option.second) == "bar" || any_cast<std::string>(option.second) == "barrel" ||
       any_cast<std::string>(option.second) == "mod" || any_cast<std::string>(option.second) == "modular")

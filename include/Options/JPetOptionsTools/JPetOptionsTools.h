@@ -84,16 +84,17 @@ FileType getInputFileType(const OptsStrAny& opts);
 FileType getOutputFileType(const OptsStrAny& opts);
 } // namespace file_type_checker
 
-namespace detector_type_checker
+namespace unpacker_type_checker
 {
-enum DetectorType
+enum UnpackerType
 {
   kBarrel,
-  kModular
+  kModular,
+  kMTAB
 };
-DetectorType getDetectorType(const OptsStrAny& opts);
+UnpackerType getUnpackerType(const OptsStrAny& opts);
 
-} // namespace detector_type_checker
+} // namespace unpacker_type_checker
 
 }; // namespace jpet_options_tools
 

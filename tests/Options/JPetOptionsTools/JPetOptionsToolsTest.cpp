@@ -244,21 +244,23 @@ BOOST_AUTO_TEST_CASE(getOptionBy)
   BOOST_REQUIRE_EQUAL(getOptionAsBool(opts, "my_bool"), false);
 }
 
-BOOST_AUTO_TEST_CASE(getDetectorTypeTest)
+BOOST_AUTO_TEST_CASE(getUnpackerTypeTest)
 {
-  using namespace detector_type_checker;
-  OptsStrAny opt1 = {{"detectorType_std::string", std::string("bar")}};
-  OptsStrAny opt2 = {{"detectorType_std::string", std::string("barrel")}};
-  OptsStrAny opt3 = {{"detectorType_std::string", std::string("mod")}};
-  OptsStrAny opt4 = {{"detectorType_std::string", std::string("modular")}};
-  OptsStrAny opt5 = {{"detectorType_std::string", std::string("kloe")}};
-  OptsStrAny opt6 = {{"detectorType_std::string", std::string("lhcb")}};
-  BOOST_REQUIRE_EQUAL(getDetectorType(opt1), DetectorType::kBarrel);
-  BOOST_REQUIRE_EQUAL(getDetectorType(opt2), DetectorType::kBarrel);
-  BOOST_REQUIRE_EQUAL(getDetectorType(opt3), DetectorType::kModular);
-  BOOST_REQUIRE_EQUAL(getDetectorType(opt4), DetectorType::kModular);
-  BOOST_REQUIRE_EQUAL(getDetectorType(opt5), DetectorType::kBarrel);
-  BOOST_REQUIRE_EQUAL(getDetectorType(opt6), DetectorType::kBarrel);
+  using namespace unpacker_type_checker;
+  OptsStrAny opt1 = {{"unpackerType_std::string", std::string("bar")}};
+  OptsStrAny opt2 = {{"unpackerType_std::string", std::string("barrel")}};
+  OptsStrAny opt3 = {{"unpackerType_std::string", std::string("mod")}};
+  OptsStrAny opt4 = {{"unpackerType_std::string", std::string("modular")}};
+  OptsStrAny opt5 = {{"unpackerType_std::string", std::string("mtab")}};
+  OptsStrAny opt6 = {{"unpackerType_std::string", std::string("kloe")}};
+  OptsStrAny opt7 = {{"unpackerType_std::string", std::string("lhcb")}};
+  BOOST_REQUIRE_EQUAL(getUnpackerType(opt1), UnpackerType::kBarrel);
+  BOOST_REQUIRE_EQUAL(getUnpackerType(opt2), UnpackerType::kBarrel);
+  BOOST_REQUIRE_EQUAL(getUnpackerType(opt3), UnpackerType::kModular);
+  BOOST_REQUIRE_EQUAL(getUnpackerType(opt4), UnpackerType::kModular);
+  BOOST_REQUIRE_EQUAL(getUnpackerType(opt5), UnpackerType::kMTAB);
+  BOOST_REQUIRE_EQUAL(getUnpackerType(opt6), UnpackerType::kBarrel);
+  BOOST_REQUIRE_EQUAL(getUnpackerType(opt7), UnpackerType::kBarrel);
 }
 
 BOOST_AUTO_TEST_CASE(testBooleanOptions)
