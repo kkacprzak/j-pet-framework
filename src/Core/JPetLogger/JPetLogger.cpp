@@ -15,21 +15,27 @@
 
 #include "JPetLogger/JPetLogger.h"
 
-JPetLogger::JPetLogger() { init(); }
+using namespace jpet_options_tools;
 
-void JPetLogger::init() {
-  backend = boost::make_shared<JPetTextFileBackend>(boost::log::keywords::file_name = "JPet_%Y-%m-%d_%H-%M-%S.%N.log",
-                                                    boost::log::keywords::auto_flush = true, boost::log::keywords::rotation_size = kRotationSize);
-  sink = boost::make_shared<sink_t>(backend);
+JPetLogger::JPetLogger() { init("./"); }
+
+JPetLogger::JPetLogger(std::string logPath) { init(logPath); }
+
+void JPetLogger::init(std::string logPath)
+{
+  auto logPathFileName = logPath + "/" + "JPet_%Y-%m-%d_%H-%M-%S.%N.log";
+
+  fBackend = boost::make_shared<JPetTextFileBackend>(boost::log::keywords::file_name = logPathFileName, boost::log::keywords::auto_flush = true,
+                                                     boost::log::keywords::rotation_size = kRotationSize);
+  sink = boost::make_shared<sink_t>(fBackend);
   sink->set_formatter(&JPetLogger::formatter);
   boost::log::core::get()->add_sink(sink);
   boost::log::add_common_attributes();
-  boost::log::core::get()->set_filter(boost::log::trivial::severity >=
-                                      boost::log::trivial::info);
+  boost::log::core::get()->set_filter(boost::log::trivial::severity >= boost::log::trivial::info);
 }
 
-void JPetLogger::formatter(boost::log::record_view const &rec,
-                           boost::log::formatting_ostream &out_stream) {
+void JPetLogger::formatter(boost::log::record_view const& rec, boost::log::formatting_ostream& out_stream)
+{
   static std::string fLastMessage = "";
   static unsigned int fNumberOfRepetitions = 0u;
 
@@ -44,22 +50,14 @@ void JPetLogger::formatter(boost::log::record_view const &rec,
     fNumberOfRepetitions = 0u;
   }
   fLastMessage = rec[boost::log::expressions::smessage].get();
-  boost::log::value_ref<std::string> fullpath =
-      boost::log::extract<std::string>("File", rec);
-  boost::log::value_ref<std::string> fullfunction =
-      boost::log::extract<std::string>("Function", rec);
+  boost::log::value_ref<std::string> fullpath = boost::log::extract<std::string>("File", rec);
+  boost::log::value_ref<std::string> fullfunction = boost::log::extract<std::string>("Function", rec);
   out_stream << boost::log::extract<unsigned int>("LineID", rec) << ": ";
   out_stream << "<" << rec[boost::log::trivial::severity] << "> ";
   out_stream << rec[boost::log::expressions::smessage];
-  out_stream << " ["
-             << boost::filesystem::path(fullpath.get()).filename().string()
-             << ":";
+  out_stream << " [" << boost::filesystem::path(fullpath.get()).filename().string() << ":";
   out_stream << fullfunction << "@";
   out_stream << boost::log::extract<int>("Line", rec) << "]";
   if (JPetLogger::getInstance().isThreadsEnabled)
-    out_stream << " ThreadID: "
-               << boost::log::extract<
-                      boost::log::attributes::current_thread_id::value_type>(
-                      "ThreadID", rec)
-               << " ";
+    out_stream << " ThreadID: " << boost::log::extract<boost::log::attributes::current_thread_id::value_type>("ThreadID", rec) << " ";
 }

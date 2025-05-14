@@ -110,6 +110,15 @@ std::pair<bool, std::map<std::string, boost::any>> JPetManager::parseCmdLine(int
     JPetCmdParser parser;
     auto optionsFromCmdLine = parser.parseCmdLineArgs(argc, argv);
     allValidatedOptions = optionsGenerator.generateAndValidateOptions(optionsFromCmdLine);
+
+    // Initialise Logger with output path
+    // Log has to initialised with a output path if requested
+    // before any other process calls it
+    if (optionsFromCmdLine.count("outputPath"))
+    {
+      auto logPath = boost::any_cast<std::string>(optionsFromCmdLine.find("outputPath")->second.value());
+      JPetLogger::setLogOutputPath(logPath);
+    }
   }
   catch (std::exception& e)
   {
