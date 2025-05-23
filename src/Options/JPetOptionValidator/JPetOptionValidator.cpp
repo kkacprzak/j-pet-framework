@@ -170,13 +170,16 @@ bool JPetOptionValidator::isRunIDValid(std::pair<std::string, boost::any> option
 bool JPetOptionValidator::isUnpackerValid(std::pair<std::string, boost::any> option)
 {
   if (any_cast<std::string>(option.second) == "bar" || any_cast<std::string>(option.second) == "barrel" ||
-      any_cast<std::string>(option.second) == "mod" || any_cast<std::string>(option.second) == "modular")
+      any_cast<std::string>(option.second) == "trb" || any_cast<std::string>(option.second) == "mod" ||
+      any_cast<std::string>(option.second) == "modular" || any_cast<std::string>(option.second) == "ftab" ||
+      any_cast<std::string>(option.second) == "tbody" || any_cast<std::string>(option.second) == "totalbody" ||
+      any_cast<std::string>(option.second) == "mtab")
   {
     return true;
   }
   else
   {
-    ERROR("Provided detector type not found. Use '-k barrel' or '-k modular'");
+    ERROR("Provided unpacker type not found. Use '-k trb', '-k ftab' or '-k mtab'");
     return false;
   }
 }

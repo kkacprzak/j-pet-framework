@@ -56,6 +56,7 @@ public:
 
   bool loadCalibModular(const JPetParams& params);
   bool loadCalibsBarrel(const JPetParams& params);
+  bool loadCalibMTAB(const JPetParams& params);
 
 private:
   std::ifstream fFile;

@@ -67,7 +67,10 @@ bool JPetInputHandlerHLD::openInput(const char* inputFilename, const JPetParams&
   }
   else if (unpacker_type_checker::getUnpackerType(options) == unpacker_type_checker::UnpackerType::kMTAB)
   {
-    // TODO
+    if (!loadCalibMTAB(params))
+    {
+      WARNING("Failed to load TDC nonlinearity calibration for. MTAB Unpacker will proceed without calibration.");
+    }
   }
 
   return nextEntry(); /// load first entry ready for `get_entry`
@@ -189,7 +192,7 @@ bool JPetInputHandlerHLD::loadCalibModular(const JPetParams& params)
     TH1F* corr_histo = dynamic_cast<TH1F*>(tdcCalibRootFile->FindObjectAny(TString::Format("correction%d", channel_no)));
     if (corr_histo == nullptr)
     {
-      WARNING(TString::Format("Missing TDC correction for channel %d", channel_no));
+      WARNING(Form("Missing TDC correction for channel %d", channel_no));
       continue;
     }
 
@@ -307,5 +310,69 @@ bool JPetInputHandlerHLD::loadCalibsBarrel(const JPetParams& params)
   }
   fTDCCalib[0x3333][0] = vec;
 
+  return true;
+}
+
+bool JPetInputHandlerHLD::loadCalibMTAB(const JPetParams& params)
+{
+  std::string tdcFileName = "";
+  if (isOptionSet(params.getOptions(), kTDCOffsetCalibKey))
+  {
+    tdcFileName = getOptionAsString(params.getOptions(), kTDCOffsetCalibKey);
+  }
+  else
+  {
+    WARNING("Path to file with TDC nonlinearity calibrations was not set. Skipping TDC calibration.");
+    return false;
+  }
+
+  TFile* tdcCalibRootFile = new TFile(tdcFileName.c_str(), "READ");
+  if (!tdcCalibRootFile->IsOpen())
+  {
+    WARNING(Form("Unable to open file: %s. Skipping TDC calibration.", tdcFileName.c_str()));
+    return false;
+  }
+
+  std::vector<uint32_t> mtabs = {
+      0xa110,
+      0xa120,
+  };
+
+  for (const auto& m : mtabs)
+  {
+    for (uint32_t ch = 0; ch < 53; ch++)
+    {
+      TH1F* corr_histo_l = dynamic_cast<TH1F*>(tdcCalibRootFile->FindObjectAny(TString::Format("h_%04x_%d_lead", m, ch)));
+      if (corr_histo_l == nullptr)
+      {
+        WARNING(Form("Missing TDC correction for channel %d lead on %04x", ch, m));
+        continue;
+      }
+
+      std::vector<uint32_t> corr_vec_l(350);
+      for (int i = 1; i < 350; ++i)
+      {
+        corr_vec_l[i - 1] = corr_histo_l->GetBinContent(i) * 1000.;
+      }
+
+      fTDCCalib[m][ch] = corr_vec_l;
+
+      TH1F* corr_histo_t = dynamic_cast<TH1F*>(tdcCalibRootFile->FindObjectAny(TString::Format("h_%04x_%d_trail", m, ch)));
+      if (corr_histo_t == nullptr)
+      {
+        WARNING(Form("Missing TDC correction for channel %d trail on %04x", ch, m));
+        continue;
+      }
+
+      std::vector<uint32_t> corr_vec_t(350);
+      for (int i = 1; i < 350; ++i)
+      {
+        corr_vec_t[i - 1] = corr_histo_t->GetBinContent(i) * 1000.;
+      }
+
+      // MTAB has separate calibrations for lead and trail, to recognize, trail has channel offsets + 100
+      fTDCCalib[m][100 + ch] = corr_vec_t;
+    }
+  }
   return true;
 }
