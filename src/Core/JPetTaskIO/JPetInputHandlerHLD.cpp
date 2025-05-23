@@ -67,6 +67,8 @@ bool JPetInputHandlerHLD::openInput(const char* inputFilename, const JPetParams&
   }
   else if (unpacker_type_checker::getUnpackerType(options) == unpacker_type_checker::UnpackerType::kMTAB)
   {
+    fUnpackerType = unpacker_type_checker::UnpackerType::kMTAB;
+
     if (!loadCalibMTAB(params))
     {
       WARNING("Failed to load TDC nonlinearity calibration for. MTAB Unpacker will proceed without calibration.");
@@ -94,6 +96,7 @@ bool JPetInputHandlerHLD::nextEntry()
   {
     success = unpacker::get_time_window(unpacker::Digitizers::enFTAB, fEntryData.fMetaData, fEntryData.fOriginalData, fEntryData.fFilteredData,
                                         fEntryData.fPreprocData, fFile, fTDCCalib);
+    // std::cout << " size Modular " << fEntryData.fOriginalData.size() << std::endl;
   }
   else if (fUnpackerType == unpacker_type_checker::UnpackerType::kBarrel)
   {
