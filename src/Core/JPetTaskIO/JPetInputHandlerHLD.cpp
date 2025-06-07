@@ -96,7 +96,6 @@ bool JPetInputHandlerHLD::nextEntry()
   {
     success = unpacker::get_time_window(unpacker::Digitizers::enFTAB, fEntryData.fMetaData, fEntryData.fOriginalData, fEntryData.fFilteredData,
                                         fEntryData.fPreprocData, fFile, fTDCCalib);
-    // std::cout << " size Modular " << fEntryData.fOriginalData.size() << std::endl;
   }
   else if (fUnpackerType == unpacker_type_checker::UnpackerType::kBarrel)
   {
