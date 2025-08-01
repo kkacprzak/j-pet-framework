@@ -23,6 +23,7 @@
 #include "JPetTaskIOLoopPerSubTask/JPetTaskIOLoopPerSubTask.h"
 #include "JPetTaskLooper/JPetTaskLooper.h"
 #include "JPetTaskStreamIO/JPetTaskStreamIO.h"
+#include "JPetUnpackTask/JPetUnpackTask.h"
 #include "JPetUnzipTask/JPetUnzipTask.h"
 
 using TaskGenerator = std::function<std::unique_ptr<JPetTaskInterface>()>;
@@ -129,8 +130,6 @@ void addDefaultTasksFromOptions(const std::map<std::string, boost::any>& options
                                 TaskGeneratorChain& outChain)
 {
   using namespace jpet_options_tools;
-  bool isDirect = jpet_options_tools::isDirectProcessing(options);
-
   auto addDefaultTasksFromOptions = [&](const std::map<std::string, boost::any>& options)
   {
     auto fileType = file_type_checker::getInputFileType(options);
@@ -152,6 +151,14 @@ void addDefaultTasksFromOptions(const std::map<std::string, boost::any>& options
     {
       auto unzip = []() { return std::make_unique<JPetUnzipTask>("JPetUnzipTask"); };
       outChain.insert(outChain.end(), unzip);
+    }
+
+    // Create Unpack task if indicated by the filetype and unpacker type - Barrel only
+    if ((fileType == file_type_checker::kHld || fileType == file_type_checker::kZip) &&
+        unpacker_type_checker::getUnpackerType(options) == unpacker_type_checker::UnpackerType::kBarrel)
+    {
+      auto unpack = []() { return std::make_unique<JPetUnpackTask>("JPetUnpackTask"); };
+      outChain.insert(outChain.end(), unpack);
     }
 
     // Create task for Param Bank

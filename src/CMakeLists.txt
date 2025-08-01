@@ -206,7 +206,12 @@ set(SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/Tasks/JPetScopeTask/JPetScopeTask.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/Tasks/JPetSimplePhysSignalReco/JPetSimplePhysSignalReco.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/Tasks/JPetUnzipTask/JPetUnzipTask.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/Tasks/JPetUnpackTask/JPetUnpackTask.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/../j-pet-unpacker/src/unpacker.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/../j-pet-unpacker/src/Unpacker2/EventIII.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/../j-pet-unpacker/src/Unpacker2/TDCChannel.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/../j-pet-unpacker/src/Unpacker2/Unpacker2.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/../j-pet-unpacker/src/Unpacker2/Unpacker2D.cc
 )
 
 foreach(dir ${FOLDERS_WITH_SOURCE})
@@ -252,6 +257,9 @@ set(HEADERS_WITH_DICTIONARY_REQUIRED
   ${PROJECT_SOURCE_DIR}/include/GeantParser/JPetGeantDecayTreeBranch/JPetGeantDecayTreeBranch.h
   ${PROJECT_SOURCE_DIR}/include/GeantParser/JPetGeantEventPack/JPetGeantEventPack.h
   ${PROJECT_SOURCE_DIR}/include/GeantParser/JPetGeantEventInformation/JPetGeantEventInformation.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/../j-pet-unpacker/include/Unpacker2/EventIII.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/../j-pet-unpacker/include/Unpacker2/TDCChannel.h
+
 )
 
 set(LINKDEF_NAME JPetFramework_LinkDef.h)

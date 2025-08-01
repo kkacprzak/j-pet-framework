@@ -109,3 +109,6 @@
 #pragma link C++ enum JPetMatrix::Side;
 
 #pragma link C++ class std::vector < TVector3> + ;
+
+#pragma link C++ class EventIII + ;
+#pragma link C++ class TDCChannel + ;
