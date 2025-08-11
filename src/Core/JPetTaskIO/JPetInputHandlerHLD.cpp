@@ -335,10 +335,7 @@ bool JPetInputHandlerHLD::loadCalibMTAB(const JPetParams& params)
     return false;
   }
 
-  std::vector<uint32_t> mtabs = {
-      0xa110,
-      0xa120,
-  };
+  std::vector<uint32_t> mtabs = {0xa110, 0xa120, 0xa130, 0xa140, 0xa150, 0xa160, 0xa170, 0xa180};
 
   for (const auto& m : mtabs)
   {
