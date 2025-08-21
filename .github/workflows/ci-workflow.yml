@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-22.04, ubuntu-20.04, ubuntu-18.04]
-   
+
     steps:
     - uses: actions/checkout@v2
     - name: system update
@@ -34,6 +34,8 @@ jobs:
     - name: cmake
       run: |
         source root/bin/thisroot.sh
+        git submodule init
+        git submodule update
         mkdir build
         cd build
         cmake ..
