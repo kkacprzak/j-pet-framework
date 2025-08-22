@@ -38,8 +38,8 @@ BOOST_AUTO_TEST_CASE(testCmd)
   BOOST_REQUIRE_EQUAL(any_cast<std::string>(result.at("type").value()), "hld");
   BOOST_REQUIRE(result.find("runID") != result.end());
   BOOST_REQUIRE_EQUAL(any_cast<int>(result.at("runID").value()), 10);
-  BOOST_REQUIRE(result.find("detector") != result.end());
-  BOOST_REQUIRE_EQUAL(any_cast<std::string>(result.at("detector").value()), "barrel");
+  BOOST_REQUIRE(result.find("unpacker") != result.end());
+  BOOST_REQUIRE_EQUAL(any_cast<std::string>(result.at("unpacker").value()), "barrel");
   BOOST_REQUIRE(result.find("file") != result.end());
   auto vectOfFiles = any_cast<std::vector<std::string>>(result.at("file").value());
   BOOST_REQUIRE_EQUAL(vectOfFiles.size(), 1u);
@@ -58,8 +58,8 @@ BOOST_AUTO_TEST_CASE(testCmd2)
   BOOST_REQUIRE_EQUAL(any_cast<std::string>(result.at("type").value()), "hld");
   BOOST_REQUIRE(result.find("runID") != result.end());
   BOOST_REQUIRE_EQUAL(any_cast<int>(result.at("runID").value()), 10);
-  BOOST_REQUIRE(result.find("detector") != result.end());
-  BOOST_REQUIRE_EQUAL(any_cast<std::string>(result.at("detector").value()), "modular");
+  BOOST_REQUIRE(result.find("unpacker") != result.end());
+  BOOST_REQUIRE_EQUAL(any_cast<std::string>(result.at("unpacker").value()), "modular");
   BOOST_REQUIRE(result.find("file") != result.end());
   auto vectOfFiles = any_cast<std::vector<std::string>>(result.at("file").value());
   BOOST_REQUIRE_EQUAL(vectOfFiles.size(), 2u);

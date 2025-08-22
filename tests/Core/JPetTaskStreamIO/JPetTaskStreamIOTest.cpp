@@ -36,7 +36,7 @@ public:
 protected:
   bool init()
   {
-    fOutputEvents = new JPetTimeWindow("JPetSigCh");
+    fOutputEvents = new JPetTimeWindow("JPetEvent");
     return true;
   }
   bool exec()
@@ -61,7 +61,7 @@ public:
 protected:
   bool init()
   {
-    fOutputEvents = new JPetTimeWindow("JPetSigCh");
+    fOutputEvents = new JPetTimeWindow("JPetEvent");
     return false;
   }
   bool exec()
@@ -79,7 +79,7 @@ BOOST_AUTO_TEST_SUITE( FirstSuite )
 BOOST_AUTO_TEST_CASE(Run_ok)
 {
   auto opts = jpet_options_generator_tools::getDefaultOptions();
-  opts["inputFile_std::string"] = std::string("unitTestData/JPetTaskChainExecutorTest/dabc_17025151847.unk.evt.root");
+  opts["inputFile_std::string"] = std::string("unitTestData/JPetTaskChainExecutorTest/goodRootFile.unk.evt.root");
   auto mgr = std::make_shared<JPetParamManager>(new JPetParamManager);
   JPetParams params(opts, mgr);
   JPetTaskStreamIO taskStreamIO("myTestIO", "unk.evt", "out");
@@ -95,7 +95,7 @@ BOOST_AUTO_TEST_CASE(Run_ok)
 BOOST_AUTO_TEST_CASE(Any_subtask_init_failed)
 {
   auto opts = jpet_options_generator_tools::getDefaultOptions();
-  opts["inputFile_std::string"] = std::string("unitTestData/JPetTaskChainExecutorTest/dabc_17025151847.unk.evt.root");
+  opts["inputFile_std::string"] = std::string("unitTestData/JPetTaskChainExecutorTest/goodRootFile.unk.evt.root");
   auto mgr = std::make_shared<JPetParamManager>(new JPetParamManager);
   JPetParams params(opts, mgr);
   JPetTaskStreamIO taskStreamIO("myTestIO", "unk.evt", "out");

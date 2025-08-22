@@ -56,8 +56,8 @@ std::string exec(std::string cmd)
 BOOST_AUTO_TEST_CASE(check_same_data)
 {
   std::string haddedFileName;
-  std::string firstFileName = "unitTestData/JPetHaddTest/single_link_def/dabc_17237091818.hadd.test.root";
-  std::string secondFileName = "unitTestData/JPetHaddTest/single_link_def/dabc_17237093844.hadd.test.root";
+  std::string firstFileName = "unitTestData/JPetHaddTest/dabc_25058173505.hadd.test.root";
+  std::string secondFileName = "unitTestData/JPetHaddTest/dabc_25058173734.hadd.test.root";
 #if ROOT_VERSION_CODE < ROOT_VERSION(6, 0, 0)
   haddedFileName = "unitTestData/JPetHaddTest/hadded_root5.hadd.test.root";
 #else
@@ -90,6 +90,7 @@ BOOST_AUTO_TEST_CASE(check_same_data)
     const auto& compareTimeWindow = i < firstFileNumberOfEntries ? static_cast<const JPetTimeWindow&>(readerFirstFile.getCurrentEntry())
                                                                  : static_cast<const JPetTimeWindow&>(readerSecondFile.getCurrentEntry());
     BOOST_REQUIRE_EQUAL(haddedTimeWindow.getNumberOfEvents(), compareTimeWindow.getNumberOfEvents());
+
     BOOST_CHECK_PREDICATE(std::not_equal_to<size_t>(), (haddedTimeWindow.getNumberOfEvents())(0));
     for (size_t i = 0; i < haddedTimeWindow.getNumberOfEvents(); i++)
     {
@@ -122,8 +123,9 @@ BOOST_AUTO_TEST_CASE(check_same_data)
 BOOST_AUTO_TEST_CASE(check_param_bank)
 {
   std::string haddedFileName;
-  std::string firstFileName = "unitTestData/JPetHaddTest/single_link_def/dabc_17237091818.hadd.test.root";
-  std::string secondFileName = "unitTestData/JPetHaddTest/single_link_def/dabc_17237093844.hadd.test.root";
+  std::string firstFileName = "unitTestData/JPetHaddTest/dabc_25058173505.hadd.test.root";
+  std::string secondFileName = "unitTestData/JPetHaddTest/dabc_25058173734.hadd.test.root";
+
 #if ROOT_VERSION_CODE < ROOT_VERSION(6, 0, 0)
   haddedFileName = "unitTestData/JPetHaddTest/hadded_parambank_root5.hadd.test.root";
 #else

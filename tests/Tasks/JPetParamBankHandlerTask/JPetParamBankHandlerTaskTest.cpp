@@ -33,7 +33,7 @@ BOOST_AUTO_TEST_CASE(goodRootFile)
   auto options = jpet_options_generator_tools::getDefaultOptions();
   options["runID_int"] = -1;
   options["inputFileType_std::string"] = std::string("root");
-  options["inputFile_std::string"] = std::string("unitTestData/JPetTaskChainExecutorTest/dabc_17025151847.unk.evt.root");
+  options["inputFile_std::string"] = std::string("unitTestData/JPetTaskChainExecutorTest/goodRootFile.unk.evt.root");
   std::shared_ptr<JPetParamManager> manager = std::make_shared<JPetParamManager>();
   JPetParams params(options, manager);
   auto& bank = manager->getParamBank();
@@ -79,7 +79,7 @@ BOOST_AUTO_TEST_CASE(goodUnknownFileFromFile)
 {
   JPetParamBankHandlerTask task;
   auto options = jpet_options_generator_tools::getDefaultOptions();
-  options["inputFile_std::string"] = std::string("unitTestData/JPetTaskChainExecutorTest/dabc_17025151847.unk.evt.root");
+  options["inputFile_std::string"] = std::string("unitTestData/JPetTaskChainExecutorTest/goodRootFile.unk.evt.root");
   options["inputFileType_std::string"] = std::string("unknown");
   std::shared_ptr<JPetParamManager> manager = std::make_shared<JPetParamManager>();
   JPetParams params(options, manager);

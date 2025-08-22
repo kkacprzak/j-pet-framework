@@ -66,7 +66,7 @@ BOOST_AUTO_TEST_CASE(bad_file)
 
 BOOST_AUTO_TEST_CASE(good_file_with_constructor)
 {
-  JPetReader reader("unitTestData/JPetReaderTest/timewindows_v2.root", "tree");
+  JPetReader reader("unitTestData/JPetReaderTest/goodRootFile.evt.root", "T");
   BOOST_REQUIRE(reader.isOpen());
   BOOST_REQUIRE_EQUAL(std::string(reader.getCurrentEntry().GetName()), std::string("JPetTimeWindow"));
   BOOST_REQUIRE_EQUAL(reader.getCurrentEntryNumber(), 0);
@@ -77,26 +77,26 @@ BOOST_AUTO_TEST_CASE(good_file_with_constructor)
   BOOST_REQUIRE(reader.firstEntry());
   BOOST_REQUIRE_EQUAL(reader.getCurrentEntryNumber(), 0);
   BOOST_REQUIRE(reader.lastEntry());
-  BOOST_REQUIRE_EQUAL(reader.getCurrentEntryNumber(), 9);
+  BOOST_REQUIRE_EQUAL(reader.getCurrentEntryNumber(), 999);
   BOOST_REQUIRE(reader.nthEntry(0));
   BOOST_REQUIRE_EQUAL(reader.getCurrentEntryNumber(), 0);
   BOOST_REQUIRE(reader.nthEntry(5));
   BOOST_REQUIRE_EQUAL(reader.getCurrentEntryNumber(), 5);
-  BOOST_REQUIRE_EQUAL(reader.getNbOfAllEntries(), 10);
+  BOOST_REQUIRE_EQUAL(reader.getNbOfAllEntries(), 1000);
   BOOST_REQUIRE(reader.getHeaderClone());
 }
 
 BOOST_AUTO_TEST_CASE(good_file_getObject)
 {
-  JPetReader reader("unitTestData/JPetReaderTest/timewindows_v2.root", "tree");
+  JPetReader reader("unitTestData/JPetReaderTest/goodRootFile.evt.root", "T");
   BOOST_REQUIRE(!reader.getObjectFromFile("nonExistentObj"));
-  BOOST_REQUIRE(reader.getObjectFromFile("tree"));
+  BOOST_REQUIRE(reader.getObjectFromFile("T"));
 }
 
 BOOST_AUTO_TEST_CASE(good_file_openFileAndLoadData)
 {
   JPetReader reader;
-  BOOST_REQUIRE(reader.openFileAndLoadData("unitTestData/JPetReaderTest/timewindows_v2.root", "tree"));
+  BOOST_REQUIRE(reader.openFileAndLoadData("unitTestData/JPetReaderTest/goodRootFile.evt.root", "T"));
   BOOST_REQUIRE(reader.isOpen());
   BOOST_REQUIRE_EQUAL(std::string(reader.getCurrentEntry().GetName()), std::string("JPetTimeWindow"));
   BOOST_REQUIRE(reader.firstEntry());
@@ -105,14 +105,14 @@ BOOST_AUTO_TEST_CASE(good_file_openFileAndLoadData)
   BOOST_REQUIRE(reader.nthEntry(0));
   BOOST_REQUIRE(reader.nthEntry(5));
   BOOST_REQUIRE_EQUAL(reader.getCurrentEntryNumber(), 5);
-  BOOST_REQUIRE_EQUAL(reader.getNbOfAllEntries(), 10);
+  BOOST_REQUIRE_EQUAL(reader.getNbOfAllEntries(), 1000);
   BOOST_REQUIRE(reader.getHeaderClone());
 }
 
 BOOST_AUTO_TEST_CASE(good_file_closeFile)
 {
   JPetReader reader;
-  BOOST_REQUIRE(reader.openFileAndLoadData("unitTestData/JPetReaderTest/timewindows_v2.root", "tree"));
+  BOOST_REQUIRE(reader.openFileAndLoadData("unitTestData/JPetReaderTest/goodRootFile.evt.root", "T"));
   BOOST_REQUIRE(reader.isOpen());
   reader.closeFile();
   BOOST_REQUIRE(!reader.isOpen());

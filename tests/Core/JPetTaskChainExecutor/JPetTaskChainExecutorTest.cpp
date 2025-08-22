@@ -46,15 +46,10 @@ public:
 
 BOOST_AUTO_TEST_SUITE(JPetTaskChainExecutorTestSuite)
 
-BOOST_AUTO_TEST_CASE(test0)
-{
-  // TODO restore tests with files with new structures
-}
-
 BOOST_AUTO_TEST_CASE(test1)
 {
   auto opt = jpet_options_generator_tools::getDefaultOptions();
-  opt["inputFile_std::string"] = std::string("unitTestData/JPetTaskChainExecutorTest/dabc_17025151847.unk.evt.root");
+  opt["inputFile_std::string"] = std::string("unitTestData/JPetTaskChainExecutorTest/goodRootFile.unk.evt.root");
   opt["inputFileType_std::string"] = std::string("root");
   opt["outputFile_std::string"] = std::string("JPetTaskChainExecutorTest1.root");
   auto taskGenerator1 = []() { return jpet_common_tools::make_unique<JPetTaskIOLoopPerSubTask>("test1", "unk.evt", "test.file"); };
@@ -69,7 +64,7 @@ BOOST_AUTO_TEST_CASE(test2)
   auto opt = jpet_options_generator_tools::getDefaultOptions();
   opt["firstEvent_int"] = 0;
   opt["lastEvent_int"] = 10;
-  opt["inputFile_std::string"] = std::string("unitTestData/JPetTaskChainExecutorTest/dabc_17025151847.unk.evt.root");
+  opt["inputFile_std::string"] = std::string("unitTestData/JPetTaskChainExecutorTest/goodRootFile.unk.evt.root ");
   opt["inputFileType_std::string"] = std::string("root");
   opt["outputFile_std::string"] = std::string("JPetTaskChainExecutorTest2Chain2.root");
   auto taskGenerator1 = []() {
