@@ -57,7 +57,7 @@ private:
   unsigned int fHitIndex;
   unsigned int fMCDecayTreesIndex;
 
-  ClassDef(JPetGeantEventPack, 3)
+  ClassDef(JPetGeantEventPack, 4)
 };
 
 #endif /* !JPETGEANTEVENTPACK_H */

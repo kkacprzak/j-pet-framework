@@ -32,14 +32,18 @@ BOOST_AUTO_TEST_CASE(constructor_test)
   BOOST_REQUIRE_CLOSE(signal.getDelay(), 0.0, epsilon);
 }
 
-// signal.setAmplitude(43.f);
-// signal.setCharge(44.f);
-// signal.setDelay(45.f);
-// signal.setOffset(46.f);
-// BOOST_CHECK_CLOSE(signal.getAmplitude(), 43.f, epsilon);
-// BOOST_CHECK_CLOSE(signal.getCharge(), 44.f, epsilon);
-// BOOST_CHECK_CLOSE(signal.getDelay(), 45.f, epsilon);
-// BOOST_CHECK_CLOSE(signal.getOffset(), 46.f, epsilon);
+BOOST_AUTO_TEST_CASE(setter_test)
+{
+  JPetShapedSignal signal;
+  signal.setAmplitude(43.f);
+  signal.setCharge(44.f);
+  signal.setDelay(45.f);
+  signal.setOffset(46.f);
+  BOOST_CHECK_CLOSE(signal.getAmplitude(), 43.f, epsilon);
+  BOOST_CHECK_CLOSE(signal.getCharge(), 44.f, epsilon);
+  BOOST_CHECK_CLOSE(signal.getDelay(), 45.f, epsilon);
+  BOOST_CHECK_CLOSE(signal.getOffset(), 46.f, epsilon);
+}
 
 BOOST_AUTO_TEST_CASE(SignalShapePointsTest)
 {

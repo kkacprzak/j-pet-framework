@@ -322,6 +322,7 @@ target_link_libraries(JPetFramework PUBLIC
    ROOT::HistPainter
    ROOT::Tree
    ROOT::Flags_CXX
+   ROOT::TMVA
    Threads::Threads
    )
 

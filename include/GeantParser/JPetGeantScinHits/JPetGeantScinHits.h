@@ -97,7 +97,7 @@ private:
   TVector3 fMomentumIn;
   TVector3 fMomentumOut;
 
-  ClassDef(JPetGeantScinHits, 2)
+  ClassDef(JPetGeantScinHits, 4)
 };
 
 #endif /* !JPETGEANTSCINHITS_H */

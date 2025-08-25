@@ -17,8 +17,7 @@
 
 ClassImp(JPetGeantDecayTree)
 
-    JPetGeantDecayTree::JPetGeantDecayTree()
-    : fDecayTreeBranches("JPetGeantDecayTreeBranch", 1000)
+JPetGeantDecayTree::JPetGeantDecayTree() : fDecayTreeBranches("JPetGeantDecayTreeBranch", 1000)
 {
 }
 
@@ -26,7 +25,7 @@ JPetGeantDecayTree::~JPetGeantDecayTree()
 {
   fEventID = 0;
   fDecayTreeBranchesIndex = 0;
-  fDecayChannel = DecayChannel::kUnknown;
+  fDecayChannel = DecayChannel::kUnknownDecayChannel;
   fDecayTreeBranches.Clear("C");
   fTrackBranchConnection.clear();
 }
@@ -35,7 +34,7 @@ void JPetGeantDecayTree::Clear(Option_t*)
 {
   fEventID = 0;
   fDecayTreeBranchesIndex = 0;
-  fDecayChannel = DecayChannel::kUnknown;
+  fDecayChannel = DecayChannel::kUnknownDecayChannel;
   fDecayTreeBranches.Clear("C");
   fTrackBranchConnection.clear();
 }

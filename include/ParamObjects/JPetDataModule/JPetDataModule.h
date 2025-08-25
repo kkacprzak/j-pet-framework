@@ -52,7 +52,7 @@ public:
 
   friend class JPetParamManager;
 
-  ClassDef(JPetDataModule, 1);
+  ClassDef(JPetDataModule, 2);
 };
 
 #endif /* JPET_DATA_MODULE_H */

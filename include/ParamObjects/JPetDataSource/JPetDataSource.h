@@ -45,7 +45,7 @@ public:
 
   friend class JPetParamManager;
 
-  ClassDef(JPetDataSource, 1);
+  ClassDef(JPetDataSource, 2);
 };
 
 #endif /* JPET_DATA_SOURCE_H */

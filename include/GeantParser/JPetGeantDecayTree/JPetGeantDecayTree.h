@@ -35,7 +35,7 @@ enum DecayChannel
   kPara3G,
   kDirect3G,
   kOrtho3G,
-  kUnknown
+  kUnknownDecayChannel
 };
 
 class JPetGeantDecayTree : public TObject
@@ -66,12 +66,12 @@ public:
 
 private:
   int fEventID = 0;
-  DecayChannel fDecayChannel = DecayChannel::kUnknown;
+  DecayChannel fDecayChannel = DecayChannel::kUnknownDecayChannel;
   std::map<int, int> fTrackBranchConnection = {};
   TClonesArray fDecayTreeBranches;
   unsigned int fDecayTreeBranchesIndex = 0;
 
-  ClassDef(JPetGeantDecayTree, 3)
+  ClassDef(JPetGeantDecayTree, 4)
 };
 
 #endif /* !JPETGEANTDECAYTREE_H */

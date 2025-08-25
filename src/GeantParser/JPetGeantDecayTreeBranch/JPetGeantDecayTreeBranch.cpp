@@ -17,7 +17,7 @@
 
 ClassImp(JPetGeantDecayTreeBranch)
 
-    JPetGeantDecayTreeBranch::~JPetGeantDecayTreeBranch()
+JPetGeantDecayTreeBranch::~JPetGeantDecayTreeBranch()
 {
   fNodeIDs.clear();
   fInteractionType.clear();
@@ -37,6 +37,11 @@ void JPetGeantDecayTreeBranch::AddNodeID(int nodeID, InteractionType interaction
 
 int JPetGeantDecayTreeBranch::GetPreviousNodeID(int nodeID) const
 {
+  if (fNodeIDs.size() == 1)
+  {
+    return fNodeIDs[0];
+  }
+
   if (fNodeIDs.size() > 1)
   {
     for (unsigned i = fNodeIDs.size(); i > 1; i--)
@@ -45,7 +50,8 @@ int JPetGeantDecayTreeBranch::GetPreviousNodeID(int nodeID) const
         return fNodeIDs[i - 2];
     }
   }
-  return fNodeIDs[0];
+
+  return -1;
 }
 
 InteractionType JPetGeantDecayTreeBranch::GetInteractionType(int nodeID) const
