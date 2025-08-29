@@ -8,7 +8,7 @@ pipeline {
                 axes {
                     axis {
                         name 'ROOT'
-                        values 'root612', 'root618'
+                        values 'root636', 'root624'
                     }
                     axis {
                         name 'GCC'
@@ -20,7 +20,7 @@ pipeline {
                     }
                     axis {
                         name 'OS'
-                        values 'ubuntu16'
+                        values 'ubuntu24'
                     }
                     axis {
                         name 'CMAKE'
@@ -31,21 +31,21 @@ pipeline {
                     exclude {
                         axis {
                             name 'ROOT'
-                            values 'root612'
+                            values 'root636'
                         }
                         axis {
                             name 'CMAKE'
-                            values 'cmake315'
+                            values 'default_cmake'
                         }
                     }
                     exclude {
                         axis {
                             name 'ROOT'
-                            values 'root618'
+                            values 'root624'
                         }
                         axis {
                             name 'CMAKE'
-                            values 'cmake351'
+                            values 'default_cmake'
                         }
                     }
                 }

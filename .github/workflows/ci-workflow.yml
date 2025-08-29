@@ -18,8 +18,8 @@ jobs:
 
     - name: download  ROOT (for ubuntu 24.04)
       run: |
-        wget https://root.cern/download/root_v6.32.06.Linux-ubuntu24.04-x86_64-gcc13.2.tar.gz
-        tar xzf root_v6.32.06.Linux-ubuntu24.04-x86_64-gcc13.2.tar.gz
+        wget https://root.cern/download/root_v6.36.04.Linux-ubuntu24.04-x86_64-gcc13.3.tar.gz
+        tar xzf root_v6.36.04.Linux-ubuntu24.04-x86_64-gcc13.3.tar.gz
       if: matrix.os == 'ubuntu-24.04'
 
     - name: download  ROOT (for ubuntu 22.04)
