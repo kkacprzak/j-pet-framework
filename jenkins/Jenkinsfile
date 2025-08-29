@@ -20,11 +20,11 @@ pipeline {
                     }
                     axis {
                         name 'OS'
-                        values 'ubuntu24'
+                        values 'ubuntu24', 'ubuntu20'
                     }
                     axis {
                         name 'CMAKE'
-                        values 'cmake351', 'cmake315'
+                        values 'cmake'
                     }
                 }
                 excludes {
@@ -35,7 +35,7 @@ pipeline {
                         }
                         axis {
                             name 'CMAKE'
-                            values 'default_cmake'
+                            values 'cmake'
                         }
                     }
                     exclude {
@@ -45,7 +45,7 @@ pipeline {
                         }
                         axis {
                             name 'CMAKE'
-                            values 'default_cmake'
+                            values 'cmake'
                         }
                     }
                 }

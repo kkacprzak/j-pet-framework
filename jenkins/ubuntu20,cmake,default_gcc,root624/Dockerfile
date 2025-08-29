@@ -1,5 +1,5 @@
 FROM ubuntu:20.04
-LABEL MAINTAINER Kamil Rakoczy <kamil.rakoczy@student.uj.edu.pl>
+LABEL MAINTAINER Krzysztof Kacprzak <k.kacprzak@alumni.uj.edu.pl>
 RUN apt-get update \
   && apt-get -y install \
   ccache \
