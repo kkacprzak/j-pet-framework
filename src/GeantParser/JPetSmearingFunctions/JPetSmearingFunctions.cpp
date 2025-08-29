@@ -222,7 +222,8 @@ std::map<SmearingType, SmearingFunctionLimits> JPetHitExperimentalParametrizer::
 /// function is randomize in the range [lowLim + timeIn, highLim + timeIn]
 double JPetHitExperimentalParametrizer::addTimeSmearing(int scinID, double zIn, double eneIn, double timeIn)
 {
-  if(fUseDefaultTimeSmearing) {
+  if (fUseDefaultTimeSmearing)
+  {
     return defaultTimeSmearing(zIn, eneIn, timeIn);
   }
   /// We cannot use setParameters(...) cause if there are more then 4 parameters
@@ -238,7 +239,8 @@ double JPetHitExperimentalParametrizer::addTimeSmearing(int scinID, double zIn, 
 /// function is randomize in the range [lowLim + eneIn, highLim + eneIn]
 double JPetHitExperimentalParametrizer::addEnergySmearing(int scinID, double zIn, double eneIn, double timeIn)
 {
-  if(fUseDefaultEnergySmearing) {
+  if (fUseDefaultEnergySmearing)
+  {
     return defaultEnergySmearing(zIn, eneIn, timeIn);
   }
 
@@ -253,7 +255,8 @@ double JPetHitExperimentalParametrizer::addEnergySmearing(int scinID, double zIn
 /// function is randomize in the range [lowLim + zIn, highLim + zIn]
 double JPetHitExperimentalParametrizer::addZHitSmearing(int scinID, double zIn, double eneIn, double timeIn)
 {
-  if(fUseDefaultZSmearing) {
+  if (fUseDefaultZSmearing)
+  {
     return defaultZHitSmearing(zIn, eneIn, timeIn);
   }
 
@@ -271,7 +274,8 @@ double JPetHitExperimentalParametrizer::defaultTimeSmearing(double /* zIn */, do
 {
   double random_norm_gaus = gRandom->Gaus(0.0, 1.0);
   double sigma = fDefaultTimeSmearingSigma;
-  if (eneIn < fDefaultTimeSmearingThresholdEnergy){
+  if (eneIn < fDefaultTimeSmearingThresholdEnergy)
+  {
     sigma /= sqrt(eneIn / fDefaultTimeSmearingReferenceEnergy);
   }
   return timeIn + random_norm_gaus * sigma;

@@ -13,17 +13,17 @@
  *  @file JPetTaskChainExecutor.cpp
  */
 
-#include "JPetTaskChainExecutor/JPetTaskChainExecutor.h"
-#include "JPetLoggerInclude.h"
 #include "JPetOptionsGenerator/JPetOptionsGeneratorTools.h"
+#include "JPetTaskChainExecutor/JPetTaskChainExecutor.h"
 #include "JPetParamsFactory/JPetParamsFactory.h"
-
+#include "JPetLoggerInclude.h"
 #include <cassert>
 #include <memory>
 
-JPetTaskChainExecutor::JPetTaskChainExecutor(const TaskGeneratorChain& taskGeneratorChain, int processedFileId,
-                                             const jpet_options_tools::OptsStrAny& opts)
-    : fInputSeqId(processedFileId), ftaskGeneratorChain(taskGeneratorChain)
+JPetTaskChainExecutor::JPetTaskChainExecutor(
+  const TaskGeneratorChain& taskGeneratorChain, int processedFileID,
+ const jpet_options_tools::OptsStrAny& opts):
+ fInputSeqID(processedFileID), ftaskGeneratorChain(taskGeneratorChain)
 {
   /// ParamManager is generated and added to fParams
   fParams = jpet_params_factory::generateParams(opts);
@@ -83,7 +83,7 @@ void* JPetTaskChainExecutor::processProxy(void* runner)
 
 TThread* JPetTaskChainExecutor::run()
 {
-  TThread* thread = new TThread(std::to_string(fInputSeqId).c_str(), processProxy, (void*)this);
+  TThread* thread = new TThread(std::to_string(fInputSeqID).c_str(), processProxy, (void*)this);
   assert(thread);
   thread->Run();
   return thread;

@@ -55,7 +55,6 @@ std::map<std::string, std::string> JPetOptionsTypeHandler::anyMapToStringMap(con
     case JPetOptionsTypeHandler::kAllowedTypes::kVectorString:
       newOptionsMap[option.first] = [&option]() -> std::string {
         std::string result = "[";
-
         for (const auto& s : any_cast<std::vector<std::string>>(option.second))
         {
           result += "\"" + s + "\", ";

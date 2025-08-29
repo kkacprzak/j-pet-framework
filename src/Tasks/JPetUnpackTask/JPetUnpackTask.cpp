@@ -73,7 +73,7 @@ bool JPetUnpackTask::init(const JPetParams& inParams)
 
 bool JPetUnpackTask::run(const JPetDataInterface&)
 {
-  if (detector_type_checker::getDetectorType(fOptions) == detector_type_checker::DetectorType::kBarrel)
+  if (unpacker_type_checker::getUnpackerType(fOptions) == unpacker_type_checker::UnpackerType::kBarrel)
   {
 
     int refChannelOffset = 65;
@@ -84,7 +84,7 @@ bool JPetUnpackTask::run(const JPetDataInterface&)
     unpacker2.UnpackSingleStep(fInputFile, fInputFilePath, fOutputFilePath, fXMLConfFile, fEventsToProcess, refChannelOffset, fTOTOffsetCalibFile,
                                fTDCnonlinearityCalibFile);
   }
-  else if (detector_type_checker::getDetectorType(fOptions) == detector_type_checker::DetectorType::kModular)
+  else if (unpacker_type_checker::getUnpackerType(fOptions) == unpacker_type_checker::UnpackerType::kModular)
   {
 
     int refChannelOffset = 105;

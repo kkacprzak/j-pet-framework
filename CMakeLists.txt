@@ -18,8 +18,7 @@ endif()
 # MAJOR version when you make incompatible API changes,
 # MINOR version when you add functionality in a backwards-compatible manner, and
 # PATCH version when you make backwards-compatible bug fixes.
-project(JPetFramework VERSION 10.0.0
-                  LANGUAGES CXX)
+project(JPetFramework VERSION 11.0.0 LANGUAGES CXX)
 set(PROJECT_DESCRIPTION "JPetFramework module")
 
 message(STATUS "")
@@ -39,7 +38,7 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_PLATFORM_INDEPENDENT_CODE ON)

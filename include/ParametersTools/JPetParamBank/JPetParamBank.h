@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2020 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2021 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -16,23 +16,22 @@
 #ifndef JPETPARAMBANK_H
 #define JPETPARAMBANK_H
 
-#include "JPetParamGetter/JPetParamConstants.h"
-#include "JPetTOMBChannel/JPetTOMBChannel.h"
-#include "JPetBarrelSlot/JPetBarrelSlot.h"
-#include "JPetDataSource/JPetDataSource.h"
+#include "JPetChannel/JPetChannel.h"
 #include "JPetDataModule/JPetDataModule.h"
-#include "JPetFrame/JPetFrame.h"
+#include "JPetDataSource/JPetDataSource.h"
 #include "JPetLayer/JPetLayer.h"
 #include "JPetLoggerInclude.h"
-#include "JPetScin/JPetScin.h"
-#include "JPetFEB/JPetFEB.h"
-#include "JPetTRB/JPetTRB.h"
+#include "JPetMatrix/JPetMatrix.h"
 #include "JPetPM/JPetPM.h"
-
+#include "JPetParamGetter/JPetParamConstants.h"
+#include "JPetScin/JPetScin.h"
+#include "JPetSetup/JPetSetup.h"
+#include "JPetSlot/JPetSlot.h"
 #include <cassert>
 #include <map>
 
-class JPetParamBank : public TObject {
+class JPetParamBank : public TObject
+{
 public:
   JPetParamBank();
   JPetParamBank(const JPetParamBank& paramBank);
@@ -43,77 +42,29 @@ public:
   int getSize(ParamObjectType type) const;
 
   /**
-   * Adds scintillator to Param Bank. If the scintillator with the same ID
+   * Adds a Setup to Param Bank. If a Setup with the same ID
    * already exists in the Param Bank, the new element will not be added.
    */
-  inline void addScintillator(JPetScin scintillator) {
-    if (fScintillators.insert(std::make_pair(scintillator.getID(), new JPetScin(scintillator))).second == false) {
-      WARNING("the scintillator with this id already exists in the ParamBank. It will not be added.");
+  inline void addSetup(JPetSetup setup)
+  {
+    if (!fSetups.insert(std::make_pair(setup.getID(), new JPetSetup(setup))).second)
+    {
+      WARNING("A Setup with this ID already exists in the ParamBank. It will not be added.");
     }
   }
-  inline const std::map<int, JPetScin*>& getScintillators() const { return fScintillators; }
-  inline JPetScin& getScintillator(int i) const { return *(fScintillators.at(i)); }
-  inline int getScintillatorsSize() const { return fScintillators.size(); }
+  inline const std::map<int, JPetSetup*>& getSetups() const { return fSetups; }
+  inline JPetSetup& getSetup(int i) const { return *(fSetups.at(i)); }
+  inline int getSetupsSize() const { return fSetups.size(); }
 
   /**
-   * Adds photomultipliers (PM) to Param Bank. If the PM with the same ID
+   * Adds a Layer to Param Bank. If a Layer with the same ID
    * already exists in the Param Bank, the new element will not be added.
    */
-  inline void addPM(JPetPM pm) {
-    if (fPMs.insert(std::make_pair(pm.getID(), new JPetPM(pm))).second == false) {
-      WARNING("the pm with this id already exists in the ParamBank. It will not be added.");
-    }
-  }
-  inline const std::map<int, JPetPM*>& getPMs() const { return fPMs; }
-  inline JPetPM& getPM(int id) const { return *(fPMs.at(id)); }
-  int getPMsSize() const { return fPMs.size(); }
-
-  /**
-   * Adds FEB to Param Bank. If the FEB with the same ID
-   * already exists in the Param Bank, the new element will not be added.
-   */
-  inline void addFEB(JPetFEB feb) {
-    if (fFEBs.insert(std::make_pair(feb.getID(), new JPetFEB(feb))).second == false) {
-      WARNING("the feb with this id already exists in the ParamBank. It will not be added.");
-    }
-  }
-  inline const std::map<int, JPetFEB*>& getFEBs() const { return fFEBs; }
-  inline JPetFEB& getFEB(int i) const { return *(fFEBs.at(i)); }
-  inline int getFEBsSize() const { return fFEBs.size(); }
-
-  /**
-   * Adds TRB to Param Bank. If the TRB with the same ID
-   * already exists in the Param Bank, the new element will not be added.
-   */
-  inline void addTRB(JPetTRB trb) {
-    if (fTRBs.insert(std::make_pair(trb.getID(), new JPetTRB(trb))).second == false) {
-      WARNING("the trb with this id already exists in the ParamBank. It will not be added.");
-    }
-  }
-  inline const std::map<int, JPetTRB*>& getTRBs() const { return fTRBs; }
-  inline JPetTRB& getTRB(int i) const { return *(fTRBs.at(i)); }
-  inline int getTRBsSize() const { return fTRBs.size(); }
-
-  /**
-   * Adds BarrelSlot to Param Bank. If the slot with the same ID
-   * already exists in the Param Bank, the new element will not be added.
-   */
-  inline void addBarrelSlot(JPetBarrelSlot slot) {
-    if (fBarrelSlots.insert(std::make_pair(slot.getID(), new JPetBarrelSlot(slot))).second == false) {
-      WARNING("the barrelslot with this id already exists in the ParamBank. It will not be added.");
-    }
-  }
-  inline const std::map<int, JPetBarrelSlot*>& getBarrelSlots() const { return fBarrelSlots; }
-  inline JPetBarrelSlot& getBarrelSlot(int i) const { return *(fBarrelSlots.at(i)); }
-  inline int getBarrelSlotsSize() const { return fBarrelSlots.size(); }
-
-  /**
-   * Adds Layer to Param Bank. If the Layer with the same ID
-   * already exists in the Param Bank, the new element will not be added.
-   */
-  inline void addLayer(JPetLayer layer) {
-    if (fLayers.insert(std::make_pair(layer.getID(), new JPetLayer(layer))).second == false) {
-      WARNING("the layer with this id already exists in the ParamBank. It will not be added.");
+  inline void addLayer(JPetLayer layer)
+  {
+    if (!fLayers.insert(std::make_pair(layer.getID(), new JPetLayer(layer))).second)
+    {
+      WARNING("A Layer with this ID already exists in the ParamBank. It will not be added.");
     }
   }
   inline const std::map<int, JPetLayer*>& getLayers() const { return fLayers; }
@@ -121,37 +72,91 @@ public:
   inline int getLayersSize() const { return fLayers.size(); }
 
   /**
-   * Adds Frame to Param Bank. If the Frame with the same ID
+   * Adds a Slot to Param Bank. If a Slot with the same ID
    * already exists in the Param Bank, the new element will not be added.
    */
-  inline void addFrame(JPetFrame frame) {
-    if (fFrames.insert(std::make_pair(frame.getID(), new JPetFrame(frame))).second == false) {
-      WARNING("the frame with this id already exists in the ParamBank. It will not be added.");
+  inline void addSlot(JPetSlot slot)
+  {
+    if (!fSlots.insert(std::make_pair(slot.getID(), new JPetSlot(slot))).second)
+    {
+      WARNING("A Slot with this ID already exists in the ParamBank. It will not be added.");
     }
   }
-  inline const std::map<int, JPetFrame*>& getFrames() const { return fFrames; }
-  inline JPetFrame& getFrame(int i) const { return *(fFrames.at(i)); }
-  inline int getFramesSize() const { return fFrames.size(); }
+  inline const std::map<int, JPetSlot*>& getSlots() const { return fSlots; }
+  inline JPetSlot& getSlot(int i) const { return *(fSlots.at(i)); }
+  inline int getSlotsSize() const { return fSlots.size(); }
 
   /**
-   * Adds TOMB to Param Bank. If the TOMB Channel with the same ID
+   * Adds a Scin to Param Bank. If a Scin with the same ID
    * already exists in the Param Bank, the new element will not be added.
    */
-  inline void addTOMBChannel(JPetTOMBChannel tombchannel) {
-    if (fTOMBChannels.insert(std::make_pair(tombchannel.getChannel(), new JPetTOMBChannel(tombchannel))).second == false) {
-      WARNING("the tombchannel with this id already exists in the ParamBank. It will not be added.");
+  inline void addScin(JPetScin scin)
+  {
+    if (!fScins.insert(std::make_pair(scin.getID(), new JPetScin(scin))).second)
+    {
+      WARNING("A Scin with this ID already exists in the ParamBank. It will not be added.");
     }
   }
-  inline const std::map<int, JPetTOMBChannel*>& getTOMBChannels() const { return fTOMBChannels; }
-  inline JPetTOMBChannel& getTOMBChannel(int i) const { return *(fTOMBChannels.at(i)); }
-  inline int getTOMBChannelsSize() const { return fTOMBChannels.size(); }
+  inline const std::map<int, JPetScin*>& getScins() const { return fScins; }
+  inline JPetScin& getScin(int i) const { return *(fScins.at(i)); }
+  inline int getScinsSize() const { return fScins.size(); }
+
+  /**
+   * Adds a Matrix of photomultipiers to Param Bank. If a Matrix with the same ID
+   * already exists in the Param Bank, the new element will not be added.
+   */
+  inline void addMatrix(JPetMatrix mtx)
+  {
+    if (!fMatrices.insert(std::make_pair(mtx.getID(), new JPetMatrix(mtx))).second)
+    {
+      WARNING("A Matrix with this ID already exists in the ParamBank. It will not be added.");
+    }
+  }
+  inline const std::map<int, JPetMatrix*>& getMatrices() const { return fMatrices; }
+  inline JPetMatrix& getMatrix(int id) const { return *(fMatrices.at(id)); }
+  int getMatricesSize() const { return fMatrices.size(); }
+
+  /**
+   * Adds a PM to Param Bank. If a PM with the same ID
+   * already exists in the Param Bank, the new element will not be added.
+   */
+  inline void addPM(JPetPM pm)
+  {
+    if (!fPMs.insert(std::make_pair(pm.getID(), new JPetPM(pm))).second)
+    {
+      WARNING("A PM with this ID already exists in the ParamBank. It will not be added.");
+    }
+  }
+  inline const std::map<int, JPetPM*>& getPMs() const { return fPMs; }
+  inline JPetPM& getPM(int id) const { return *(fPMs.at(id)); }
+  int getPMsSize() const { return fPMs.size(); }
+
+  /**
+   * Adds a Channel to Param Bank. If a Channel with the same ID
+   * already exists in the Param Bank, the new element will not be added.
+   */
+  inline void addChannel(JPetChannel channel)
+  {
+    if (!fChannels.insert(std::make_pair(channel.getID(), new JPetChannel(channel))).second)
+    {
+      WARNING("A Channel with this ID already exists in the ParamBank. It will not be added.");
+    }
+  }
+  inline const std::map<int, JPetChannel*>& getChannels() const { return fChannels; }
+  inline JPetChannel& getChannel(int i) const { return *(fChannels.at(i)); }
+  inline int getChannelsSize() const { return fChannels.size(); }
+
+  Int_t Write(const char* name, Int_t option, Int_t bufsize) const { return TObject::Write(name, option, bufsize); }
+  Int_t Write(const char* name, Int_t option, Int_t bufsize) { return ((const JPetParamBank*)this)->Write(name, option, bufsize); }
 
   /**
    * Adds Data Source to Param Bank. If the data source with the same ID
    * already exists in the Param Bank, the new element will not be added.
    */
-  inline void addDataSource(JPetDataSource dataSource) {
-    if (fDataSources.insert(std::make_pair(dataSource.getID(), new JPetDataSource(dataSource))).second == false) {
+  inline void addDataSource(JPetDataSource dataSource)
+  {
+    if (fDataSources.insert(std::make_pair(dataSource.getID(), new JPetDataSource(dataSource))).second == false)
+    {
       WARNING("The Data Source with this id already exists in the ParamBank. It will not be added.");
     }
   }
@@ -163,8 +168,10 @@ public:
    * Adds Data Module to Param Bank. If the data source with the same ID
    * already exists in the Param Bank, the new element will not be added.
    */
-  inline void addDataModule(JPetDataModule dataModule) {
-    if (fDataModules.insert(std::make_pair(dataModule.getID(), new JPetDataModule(dataModule))).second == false) {
+  inline void addDataModule(JPetDataModule dataModule)
+  {
+    if (fDataModules.insert(std::make_pair(dataModule.getID(), new JPetDataModule(dataModule))).second == false)
+    {
       WARNING("The Data Module with this id already exists in the ParamBank. It will not be added.");
     }
   }
@@ -172,32 +179,29 @@ public:
   inline JPetDataModule& getDataModule(int i) const { return *(fDataModules.at(i)); }
   inline int getDataModulesSize() const { return fDataModules.size(); }
 
-  Int_t Write(const char* name, Int_t option, Int_t bufsize) const { return TObject::Write(name, option, bufsize); }
-
-  Int_t Write(const char* name, Int_t option, Int_t bufsize) { return ((const JPetParamBank*)this)->Write(name, option, bufsize); }
-
 private:
   void operator=(const JPetParamBank&);
   bool fDummy;
-
-  std::map<int, JPetTOMBChannel*> fTOMBChannels;
+  std::map<int, JPetSetup*> fSetups;
+  std::map<int, JPetLayer*> fLayers;
+  std::map<int, JPetSlot*> fSlots;
+  std::map<int, JPetScin*> fScins;
+  std::map<int, JPetMatrix*> fMatrices;
+  std::map<int, JPetPM*> fPMs;
+  std::map<int, JPetChannel*> fChannels;
   std::map<int, JPetDataSource*> fDataSources;
   std::map<int, JPetDataModule*> fDataModules;
-  std::map<int, JPetBarrelSlot*> fBarrelSlots;
-  std::map<int, JPetScin*> fScintillators;
-  std::map<int, JPetLayer*> fLayers;
-  std::map<int, JPetFrame*> fFrames;
-  std::map<int, JPetFEB*> fFEBs;
-  std::map<int, JPetTRB*> fTRBs;
-  std::map<int, JPetPM*> fPMs;
 
-  template <typename T> void copyMapValues(std::map<int, T*>& target, const std::map<int, T*>& source) {
-    for (auto& c : source) {
+  template <typename T>
+  void copyMapValues(std::map<int, T*>& target, const std::map<int, T*>& source)
+  {
+    for (auto& c : source)
+    {
       target[c.first] = new T(*c.second);
     }
   }
 
-  ClassDef(JPetParamBank, 7);
+  ClassDef(JPetParamBank, 8);
 };
 
 #endif /* !JPETPARAMBANK_H */

@@ -17,7 +17,6 @@
 #define BOOST_TEST_MODULE JPetOptionValidatorTest
 
 #include "JPetOptionValidator/JPetOptionValidator.h"
-
 #include <boost/test/unit_test.hpp>
 #include <string>
 
@@ -62,7 +61,9 @@ BOOST_AUTO_TEST_CASE(wrongOptions)
       {"localDB_std::string", std::string("ble/ble/ble.hld")},
       {"outputPath_std::string", std::string("ble/ble/ble")},
       {"runID_int", -1},
-      {"detectorType_std::string", std::string("squirrel")}};
+      {"unpackerType_std::string", std::string("squirrel")}};
+  BOOST_REQUIRE_EQUAL(JPetOptionValidator::isRangeOfEventsValid(std::make_pair("range_std::vector<int>", options.at("range_std::vector<int>"))),
+                      false);
   BOOST_REQUIRE_EQUAL(JPetOptionValidator::isRangeOfEventsValid(std::make_pair("range_std::vector<int>", options.at("range_std::vector<int>"))),
                       false);
   BOOST_REQUIRE_EQUAL(
@@ -71,7 +72,7 @@ BOOST_AUTO_TEST_CASE(wrongOptions)
                       false);
   BOOST_REQUIRE_EQUAL(JPetOptionValidator::isLocalDBValid(std::make_pair("localDB_std::string", options.at("localDB_std::string"))), false);
   BOOST_REQUIRE_EQUAL(JPetOptionValidator::isRunIDValid(std::make_pair("runID_int", options.at("runID_int"))), false);
-  BOOST_REQUIRE_EQUAL(JPetOptionValidator::isDetectorValid(std::make_pair("detectorType_std::string", options.at("detectorType_std::string"))),
+  BOOST_REQUIRE_EQUAL(JPetOptionValidator::isUnpackerValid(std::make_pair("unpackerType_std::string", options.at("unpackerType_std::string"))),
                       false);
   BOOST_REQUIRE_EQUAL(
       JPetOptionValidator::areFilesValid(std::make_pair("file_std::vector<std::string>", options.at("file_std::vector<std::string>"))), false);
@@ -95,7 +96,7 @@ BOOST_AUTO_TEST_CASE(areCorrectAllOptionsWork)
                                                {"localDB_std::string", std::string("unitTestData/JPetCmdParserTest/data.hld")},
                                                {"outputPath_std::string", std::string("unitTestData/JPetCmdParserTest")},
                                                {"runID_int", 3},
-                                               {"detectorType_std::string", std::string("barrel")}};
+                                               {"unpackerType_std::string", std::string("barrel")}};
   JPetOptionValidator validator;
   std::vector<std::string> v;
   for (auto& opt : options)
@@ -116,7 +117,6 @@ BOOST_AUTO_TEST_CASE(areCorrectSomeOptionsWork)
       {"localDB_std::string", std::string("unitTestData/JPetCmdParserTest/data.hld")},
       {"runID_int", 3},
   };
-
   JPetOptionValidator validator;
   std::vector<std::string> v;
   for (auto& opt : options)

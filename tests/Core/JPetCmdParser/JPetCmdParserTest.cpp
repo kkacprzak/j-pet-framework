@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2018 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2019 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -15,9 +15,9 @@
 
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE JPetCmdParserTest
+
 #include "JPetCmdParser/JPetCmdParser.h"
 #include "JPetCommonTools/JPetCommonTools.h"
-
 #include <boost/any.hpp>
 #include <boost/test/unit_test.hpp>
 #include <cstdlib>
@@ -38,8 +38,8 @@ BOOST_AUTO_TEST_CASE(testCmd)
   BOOST_REQUIRE_EQUAL(any_cast<std::string>(result.at("type").value()), "hld");
   BOOST_REQUIRE(result.find("runID") != result.end());
   BOOST_REQUIRE_EQUAL(any_cast<int>(result.at("runID").value()), 10);
-  BOOST_REQUIRE(result.find("detector") != result.end());
-  BOOST_REQUIRE_EQUAL(any_cast<std::string>(result.at("detector").value()), "barrel");
+  BOOST_REQUIRE(result.find("unpacker") != result.end());
+  BOOST_REQUIRE_EQUAL(any_cast<std::string>(result.at("unpacker").value()), "barrel");
   BOOST_REQUIRE(result.find("file") != result.end());
   auto vectOfFiles = any_cast<std::vector<std::string>>(result.at("file").value());
   BOOST_REQUIRE_EQUAL(vectOfFiles.size(), 1u);
@@ -58,8 +58,8 @@ BOOST_AUTO_TEST_CASE(testCmd2)
   BOOST_REQUIRE_EQUAL(any_cast<std::string>(result.at("type").value()), "hld");
   BOOST_REQUIRE(result.find("runID") != result.end());
   BOOST_REQUIRE_EQUAL(any_cast<int>(result.at("runID").value()), 10);
-  BOOST_REQUIRE(result.find("detector") != result.end());
-  BOOST_REQUIRE_EQUAL(any_cast<std::string>(result.at("detector").value()), "modular");
+  BOOST_REQUIRE(result.find("unpacker") != result.end());
+  BOOST_REQUIRE_EQUAL(any_cast<std::string>(result.at("unpacker").value()), "modular");
   BOOST_REQUIRE(result.find("file") != result.end());
   auto vectOfFiles = any_cast<std::vector<std::string>>(result.at("file").value());
   BOOST_REQUIRE_EQUAL(vectOfFiles.size(), 2u);
@@ -87,8 +87,7 @@ BOOST_AUTO_TEST_CASE(testCmd3)
 
 BOOST_AUTO_TEST_CASE(testCmd4)
 {
-  auto cmdLine = "main.x -f unitTestData/JPetCmdParserTest/data.hld -t hld -r 2 4 -p unitTestData/JPetCmdParserTest/conf.xml -c "
-                 "unitTestData/JPetUnpackerTest/calib.root -i 231 -L output.json";
+  auto cmdLine = "main.x -f unitTestData/JPetCmdParserTest/data.hld -t hld -r 2 4 -c unitTestData/JPetUnpackerTest/calib.root -i 231 -L output.json";
   auto args_char = JPetCommonTools::createArgs(cmdLine);
   auto argc = args_char.size();
   auto argv = args_char.data();
@@ -107,9 +106,6 @@ BOOST_AUTO_TEST_CASE(testCmd4)
   BOOST_REQUIRE_EQUAL(vectRange.size(), 2u);
   BOOST_REQUIRE_EQUAL(vectRange.at(0), 2);
   BOOST_REQUIRE_EQUAL(vectRange.at(1), 4);
-
-  BOOST_REQUIRE(result.find("unpackerConfigFile") != result.end());
-  BOOST_REQUIRE_EQUAL(any_cast<std::string>(result.at("unpackerConfigFile").value()), "unitTestData/JPetCmdParserTest/conf.xml");
 
   BOOST_REQUIRE(result.find("unpackerCalibFile") != result.end());
   BOOST_REQUIRE_EQUAL(any_cast<std::string>(result.at("unpackerCalibFile").value()), "unitTestData/JPetUnpackerTest/calib.root");
@@ -146,5 +142,4 @@ BOOST_AUTO_TEST_CASE(testCmd5_userCfgScope)
   BOOST_REQUIRE(result.find("unpackerCalibFile") == result.end());
   BOOST_REQUIRE(result.find("localDBCreate") == result.end());
 }
-
 BOOST_AUTO_TEST_SUITE_END()

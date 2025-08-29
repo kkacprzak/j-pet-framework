@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2018 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2022 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -17,13 +17,13 @@
 #include <JPetGeantParser/JPetGeantParser.h>
 #include <JPetGeantParser/JPetGeantParserTools.h>
 #include <JPetOptionsTools/JPetOptionsTools.h>
-#include <JPetWriter/JPetWriter.h>
-#include <iostream>
-
 #include <JPetScin/JPetScin.h>
+#include <JPetWriter/JPetWriter.h>
+
 #include <TMath.h>
 #include <array>
 #include <cmath>
+#include <iostream>
 #include <string>
 
 using namespace jpet_options_tools;
@@ -34,10 +34,7 @@ JPetGeantParser::~JPetGeantParser() {}
 
 bool JPetGeantParser::init()
 {
-  // create detector map
-  std::unique_ptr<JPetGeomMapping> fDetectorMap(new JPetGeomMapping(getParamBank()));
-
-  fOutputEvents = new JPetTimeWindowMC("JPetHit", "JPetMCHit", "JPetMCDecayTree");
+  fOutputEvents = new JPetTimeWindowMC("JPetMCRecoHit", "JPetRawMCHit", "JPetMCDecayTree");
   auto opts = getOptions();
 
   if (isOptionSet(fParams.getOptions(), kMaxTimeWindowParamKey))
@@ -80,11 +77,15 @@ bool JPetGeantParser::init()
   loadSmearingOptionsAndSetupExperimentalParametrizer();
 
   if (fMakeHisto)
+  {
     bookBasicHistograms();
+  }
   if (fMakeEffiHisto)
+  {
     bookEfficiencyHistograms();
+  }
 
-  // make distribution of decays in time window
+  // Make distribution of decays in time window
   // needed to adjust simulation times into time window scheme
   std::tie(fTimeDistroOfDecays, fTimeDiffDistro) = JPetGeantParserTools::getTimeDistoOfDecays(fSimulatedActivity, fMinTime, fMaxTime);
 
@@ -164,30 +165,30 @@ void JPetGeantParser::loadSmearingOptionsAndSetupExperimentalParametrizer()
   {
     fUseDefaultEnergySmearing = getOptionAsDouble(fParams.getOptions(), kUseDefaultEnergySmearingKey);
   }
-  
+
   if (isOptionSet(fParams.getOptions(), kDefaultZSmearingSigmaKey))
   {
-   fDefaultZSmearingSigma = getOptionAsDouble(fParams.getOptions(), kDefaultZSmearingSigmaKey);
+    fDefaultZSmearingSigma = getOptionAsDouble(fParams.getOptions(), kDefaultZSmearingSigmaKey);
   }
 
   if (isOptionSet(fParams.getOptions(), kDefaultTimeSmearingSigmaKey))
   {
-   fDefaultTimeSmearingSigma = getOptionAsDouble(fParams.getOptions(), kDefaultTimeSmearingSigmaKey);
+    fDefaultTimeSmearingSigma = getOptionAsDouble(fParams.getOptions(), kDefaultTimeSmearingSigmaKey);
   }
-  
+
   if (isOptionSet(fParams.getOptions(), kDefaultTimeSmearingThresholdEnergyKey))
   {
-   fDefaultTimeSmearingThresholdEnergy = getOptionAsDouble(fParams.getOptions(), kDefaultTimeSmearingThresholdEnergyKey);
+    fDefaultTimeSmearingThresholdEnergy = getOptionAsDouble(fParams.getOptions(), kDefaultTimeSmearingThresholdEnergyKey);
   }
 
   if (isOptionSet(fParams.getOptions(), kDefaultTimeSmearingReferenceEnergyKey))
   {
-   fDefaultTimeSmearingReferenceEnergy = getOptionAsDouble(fParams.getOptions(), kDefaultTimeSmearingReferenceEnergyKey);
+    fDefaultTimeSmearingReferenceEnergy = getOptionAsDouble(fParams.getOptions(), kDefaultTimeSmearingReferenceEnergyKey);
   }
-  
+
   if (isOptionSet(fParams.getOptions(), kDefaultEnergySmearingFractionKey))
   {
-   fDefaultEnergySmearingFraction = getOptionAsDouble(fParams.getOptions(), kDefaultEnergySmearingFractionKey);
+    fDefaultEnergySmearingFraction = getOptionAsDouble(fParams.getOptions(), kDefaultEnergySmearingFractionKey);
   }
 
   fExperimentalParametrizer.setSmearingFunctions({{timeSmearingFormula, timeSmearingParameters},
@@ -227,17 +228,20 @@ void JPetGeantParser::loadSmearingOptionsAndSetupExperimentalParametrizer()
 
   fExperimentalParametrizer.setShouldUseDefaultSmearing(fUseDefaultZSmearing, fUseDefaultTimeSmearing, fUseDefaultEnergySmearing);
 
-  if(fUseDefaultZSmearing){
+  if (fUseDefaultZSmearing)
+  {
     fExperimentalParametrizer.setDefaultZSmearingSigma(fDefaultZSmearingSigma);
   }
 
-  if(fUseDefaultTimeSmearing){
+  if (fUseDefaultTimeSmearing)
+  {
     fExperimentalParametrizer.setDefaultTimeSmearingSigma(fDefaultTimeSmearingSigma);
     fExperimentalParametrizer.setDefaultTimeSmearingReferenceEnergy(fDefaultTimeSmearingReferenceEnergy);
     fExperimentalParametrizer.setDefaultTimeSmearingThresholdEnergy(fDefaultTimeSmearingThresholdEnergy);
   }
 
-  if(fUseDefaultEnergySmearing){
+  if (fUseDefaultEnergySmearing)
+  {
     fExperimentalParametrizer.setDefaultEnergySmearingFraction(fDefaultEnergySmearingFraction);
   }
 }
@@ -245,28 +249,34 @@ void JPetGeantParser::loadSmearingOptionsAndSetupExperimentalParametrizer()
 bool JPetGeantParser::exec()
 {
 
-  if (auto& mcEventPack = dynamic_cast<JPetGeantEventPack* const>(fEvent))
+  try
   {
-
-    processMCEvent(mcEventPack);
-
-    if (fProcessSingleEventinWindow)
+    if (auto& mcEventPack = dynamic_cast<JPetGeantEventPack* const>(fEvent))
     {
-      saveHits();
+      processMCEvent(mcEventPack);
+
+      if (fProcessSingleEventinWindow)
+      {
+        saveHits();
+      }
+      else
+      {
+        if (isTimeWindowFull())
+        {
+          saveHits();
+          clearTimeDistoOfDecays();
+          std::tie(fTimeDistroOfDecays, fTimeDiffDistro) = JPetGeantParserTools::getTimeDistoOfDecays(fSimulatedActivity, fMinTime, fMaxTime);
+        }
+      }
     }
     else
     {
-      if (isTimeWindowFull())
-      {
-        saveHits();
-        clearTimeDistoOfDecays();
-        std::tie(fTimeDistroOfDecays, fTimeDiffDistro) = JPetGeantParserTools::getTimeDistoOfDecays(fSimulatedActivity, fMinTime, fMaxTime);
-      }
+      return false;
     }
   }
-  else
+  catch (std::bad_cast& bc)
   {
-    return false;
+    std::cerr << "bad_cast caught: " << bc.what() << std::endl;
   }
 
   return true;
@@ -275,8 +285,8 @@ bool JPetGeantParser::exec()
 bool JPetGeantParser::terminate()
 {
   INFO("MC events processing ended");
-  float effi;
-  float err_effi;
+  double effi;
+  double err_effi;
   std::tie(effi, err_effi) = JPetGeantParserTools::calculateEfficiency(nPromptGen, nPromptRec);
   INFO(" Efficiency for prompt gamma registration: " << boost::lexical_cast<std::string>(effi) << " pm "
                                                      << boost::lexical_cast<std::string>(err_effi));
@@ -302,34 +312,37 @@ void JPetGeantParser::processMCEvent(JPetGeantEventPack* evPack)
   bool isRec2g = false;
   bool isRec3g = false;
 
-  float enePrompt = 0;
-  std::array<float, 2> ene2g{0., 0.};
-  std::array<float, 3> ene3g{0., 0., 0.};
+  double enePrompt = 0;
+  std::array<double, 2> ene2g{0., 0.};
+  std::array<double, 3> ene3g{0., 0., 0.};
 
   bool isGenPrompt = evPack->GetEventInformation()->GetPromptGammaGen();
   bool isGen2g = evPack->GetEventInformation()->GetTwoGammaGen();
   bool isGen3g = evPack->GetEventInformation()->GetThreeGammaGen();
 
-  float timeShift = getNextTimeShift();
+  double timeShift = getNextTimeShift();
   for (unsigned int i = 0; i < evPack->GetNumberOfHits(); i++)
   {
-
-    // translate geantHit -> JPetMCHit
-    JPetMCHit mcHit = JPetGeantParserTools::createJPetMCHit(evPack->GetHit(i), getParamBank(), timeShift);
+    // translate geantHit -> JPetRawMCHit
+    auto mcHit = JPetGeantParserTools::createJPetRawMCHit(evPack->GetHit(i), getParamBank(), timeShift);
 
     if (fMakeHisto)
-      fillHistoMCGen(mcHit);
-    // create reconstructed hit and add all smearings
-    JPetHit recHit = JPetGeantParserTools::reconstructHit(mcHit, getParamBank(), fExperimentalParametrizer);
-
-    // add criteria for possible rejection of reconstructed events (e.g. E>50 keV)
-    if (JPetGeantParserTools::isHitReconstructed(recHit, fExperimentalThreshold))
     {
-      saveReconstructedHit(recHit);
-      JPetGeantParserTools::identifyRecoHits(evPack->GetHit(i), recHit, isRecPrompt, isSaved2g, isSaved3g, enePrompt, ene2g, ene3g);
+      fillHistoMCGen(mcHit);
+    }
+    // create reconstructed hit and add all smearings
+    JPetMCRecoHit recoHit = JPetGeantParserTools::reconstructHit(mcHit, fExperimentalParametrizer, getParamBank());
+
+    // Add criteria for possible rejection of reconstructed events (e.g. E>50 keV)
+    if (JPetGeantParserTools::isHitReconstructed(recoHit, fExperimentalThreshold))
+    {
+      saveReconstructedHit(recoHit);
+      JPetGeantParserTools::identifyRecoHits(evPack->GetHit(i), recoHit, isRecPrompt, isSaved2g, isSaved3g, enePrompt, ene2g, ene3g);
 
       if (fMakeHisto)
-        fillHistoMCRec(recHit);
+      {
+        fillHistoMCRec(recoHit);
+      }
     }
     fStoredMCHits.push_back(mcHit);
   }
@@ -338,10 +351,11 @@ void JPetGeantParser::processMCEvent(JPetGeantEventPack* evPack)
   isRec3g = isSaved3g[0] && isSaved3g[1] && isSaved3g[2];
 
   if (fMakeHisto)
+  {
     fillHistoGenInfo(evPack->GetEventInformation());
+  }
 
   // fill efficiency histograms
-
   if (isGenPrompt && fMakeEffiHisto)
   {
     double x = evPack->GetEventInformation()->GetVtxPromptPositionX();
@@ -370,30 +384,35 @@ void JPetGeantParser::processMCEvent(JPetGeantEventPack* evPack)
   {
     nPromptGen++;
     if (isRecPrompt)
+    {
       nPromptRec++;
+    }
   }
 
   if (isGen2g)
   {
     n2gGen++;
     if (isRec2g)
+    {
       n2gRec++;
+    }
   }
 
   if (isGen3g)
   {
     n3gGen++;
     if (isRec3g)
+    {
       n3gRec++;
+    }
   }
-
-  //    // add loop processing DecayTree
+  // add loop processing DecayTree
 }
 
-void JPetGeantParser::saveReconstructedHit(JPetHit recHit)
+void JPetGeantParser::saveReconstructedHit(JPetMCRecoHit recoHit)
 {
-  recHit.setMCindex(fStoredMCHits.size());
-  fStoredHits.push_back(recHit);
+  recoHit.setMCindex(fStoredMCHits.size());
+  fStoredRecoHits.push_back(recoHit);
 }
 
 void JPetGeantParser::fillHistoGenInfo(JPetGeantEventInformation* evInfo)
@@ -435,20 +454,19 @@ void JPetGeantParser::fillHistoGenInfo(JPetGeantEventInformation* evInfo)
 
 void JPetGeantParser::saveHits()
 {
-
-  for (const auto& hit : fStoredHits)
-  {
-    fOutputEvents->add<JPetHit>(hit);
-  }
-
   for (const auto& mcHit : fStoredMCHits)
   {
-    dynamic_cast<JPetTimeWindowMC*>(fOutputEvents)->addMCHit<JPetMCHit>(mcHit);
+    dynamic_cast<JPetTimeWindowMC*>(fOutputEvents)->addMCHit<JPetRawMCHit>(mcHit);
+  }
+
+  for (const auto& recoHit : fStoredRecoHits)
+  {
+    dynamic_cast<JPetTimeWindow*>(fOutputEvents)->add<JPetMCRecoHit>(recoHit);
   }
 
   if (fMakeHisto)
   {
-    getStatistics().getHisto1D("hits_per_time_window")->Fill(fStoredHits.size());
+    getStatistics().getHisto1D("hits_per_time_window")->Fill(fStoredRecoHits.size());
     for (const auto i : fTimeDiffDistro)
     {
       getStatistics().getHisto1D("time_diff_bw_decays")->Fill(i);
@@ -456,10 +474,10 @@ void JPetGeantParser::saveHits()
   }
 
   fStoredMCHits.clear();
-  fStoredHits.clear();
+  fStoredRecoHits.clear();
 }
 
-void JPetGeantParser::fillHistoMCGen(JPetMCHit& mcHit)
+void JPetGeantParser::fillHistoMCGen(JPetRawMCHit& mcHit)
 {
   getStatistics().getHisto1D("gen_hits_z_pos")->Fill(mcHit.getPosZ());
   getStatistics().getHisto2D("gen_hits_xy_pos")->Fill(mcHit.getPosX(), mcHit.getPosY());
@@ -467,24 +485,22 @@ void JPetGeantParser::fillHistoMCGen(JPetMCHit& mcHit)
   getStatistics().getHisto1D("gen_hit_eneDepos")->Fill(mcHit.getEnergy());
 }
 
-void JPetGeantParser::fillHistoMCRec(JPetHit& recHit)
+void JPetGeantParser::fillHistoMCRec(JPetMCRecoHit& recoHit)
 {
-  getStatistics().getHisto1D("hits_z_pos")->Fill(recHit.getPosZ());
-  getStatistics().getHisto2D("hits_xy_pos")->Fill(recHit.getPosX(), recHit.getPosY());
-  getStatistics().getHisto1D("rec_hit_time")->Fill(recHit.getTime());
-  getStatistics().getHisto1D("rec_hit_eneDepos")->Fill(recHit.getEnergy());
+  getStatistics().getHisto1D("hits_z_pos")->Fill(recoHit.getPosZ());
+  getStatistics().getHisto2D("hits_xy_pos")->Fill(recoHit.getPosX(), recoHit.getPosY());
+  getStatistics().getHisto1D("rec_hit_time")->Fill(recoHit.getTime());
+  getStatistics().getHisto1D("rec_hit_eneDepos")->Fill(recoHit.getEnergy());
 }
 
 void JPetGeantParser::bookBasicHistograms()
 {
   // HISTOGRAMS FROM STANDARD HITFINDER
-
   getStatistics().createHistogram(new TH1F("hits_per_time_window", "Number of Hits in Time Window", 101, -0.5, 500.5));
 
   getStatistics().createHistogram(new TH1F("time_diff_bw_decays", "Time difference between decays", 101, -0.5, (fMaxTime - fMinTime) / 50.));
 
   // GENERATED HISTOGRAMS
-
   getStatistics().createHistogram(new TH1F("gen_hits_z_pos", "Gen hits Z position", 100, -60.0, 60.0));
 
   getStatistics().createHistogram(new TH2F("gen_hits_xy_pos", "GEN hits XY pos", 121, -60.5, 60.5, 121, -60.5, 60.5));
@@ -510,7 +526,6 @@ void JPetGeantParser::bookBasicHistograms()
   getStatistics().createHistogram(new TH1F("gen_lifetime", "Gen lifetime", 100, 0.0, 1500.0));
 
   // RECONSTRUCTED HISTOGRAMS
-
   getStatistics().createHistogram(new TH1F("hits_z_pos", "hits Z position", 100, -60.0, 60.0));
 
   getStatistics().createHistogram(new TH2F("hits_xy_pos", "hits XY pos", 121, -60.5, 60.5, 121, -60.5, 60.5));
@@ -522,7 +537,6 @@ void JPetGeantParser::bookBasicHistograms()
 
 void JPetGeantParser::bookEfficiencyHistograms()
 {
-
   getStatistics().createHistogram(new TEfficiency("effi_3g_in_rho_z", "effi for 1g as function of rho and z of vtx", 100, 0., 50., 100, -25., 25.));
 
   getStatistics().createHistogram(new TEfficiency("effi_2g_in_rho_z", "effi for 2g as function of rho and z of vtx", 100, 0., 50., 100, -25., 25.));
@@ -533,9 +547,9 @@ void JPetGeantParser::bookEfficiencyHistograms()
 
 unsigned int JPetGeantParser::getNumberOfDecaysInWindow() const { return fTimeDistroOfDecays.size(); }
 
-float JPetGeantParser::getNextTimeShift()
+double JPetGeantParser::getNextTimeShift()
 {
-  float t = fTimeDistroOfDecays[fCurrentIndexTimeShift];
+  double t = fTimeDistroOfDecays[fCurrentIndexTimeShift];
   fCurrentIndexTimeShift++;
   return t;
 }

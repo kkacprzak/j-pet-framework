@@ -14,7 +14,6 @@
  */
 
 #include "JPetOptionValidator/JPetAdditionalValidators.h"
-
 #include <boost/any.hpp>
 
 using boost::any_cast;

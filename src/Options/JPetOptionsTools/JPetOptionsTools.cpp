@@ -337,34 +337,40 @@ std::map<std::string, boost::any> createOptionsFromConfigFile(const std::string&
           mapOptions.insert(std::make_pair(key, item.second.get_value<bool>()));
           break;
         case JPetOptionsTypeHandler::kAllowedTypes::kVectorString:
-          mapOptions.insert(std::make_pair(key, [&optionsTree, &key]() -> std::vector<std::string> {
-            std::vector<std::string> values;
-            for (pt::ptree::value_type& value : optionsTree.get_child(key))
-            {
-              values.push_back(value.second.get_value<std::string>());
-            }
-            return values;
-          }()));
+          mapOptions.insert(std::make_pair(key,
+                                           [&optionsTree, &key]() -> std::vector<std::string>
+                                           {
+                                             std::vector<std::string> values;
+                                             for (pt::ptree::value_type& value : optionsTree.get_child(key))
+                                             {
+                                               values.push_back(value.second.get_value<std::string>());
+                                             }
+                                             return values;
+                                           }()));
           break;
         case JPetOptionsTypeHandler::kAllowedTypes::kVectorInt:
-          mapOptions.insert(std::make_pair(key, [&optionsTree, &key]() -> std::vector<int> {
-            std::vector<int> values;
-            for (pt::ptree::value_type& value : optionsTree.get_child(key))
-            {
-              values.push_back(value.second.get_value<int>());
-            }
-            return values;
-          }()));
+          mapOptions.insert(std::make_pair(key,
+                                           [&optionsTree, &key]() -> std::vector<int>
+                                           {
+                                             std::vector<int> values;
+                                             for (pt::ptree::value_type& value : optionsTree.get_child(key))
+                                             {
+                                               values.push_back(value.second.get_value<int>());
+                                             }
+                                             return values;
+                                           }()));
           break;
         case JPetOptionsTypeHandler::kAllowedTypes::kVectorDouble:
-          mapOptions.insert(std::make_pair(key, [&optionsTree, &key]() -> std::vector<double> {
-            std::vector<double> values;
-            for (pt::ptree::value_type& value : optionsTree.get_child(key))
-            {
-              values.push_back(value.second.get_value<double>());
-            }
-            return values;
-          }()));
+          mapOptions.insert(std::make_pair(key,
+                                           [&optionsTree, &key]() -> std::vector<double>
+                                           {
+                                             std::vector<double> values;
+                                             for (pt::ptree::value_type& value : optionsTree.get_child(key))
+                                             {
+                                               values.push_back(value.second.get_value<double>());
+                                             }
+                                             return values;
+                                           }()));
           break;
         default:
           WARNING("Unknow option type: " + typeOfOption + " skipping option: " + key);
@@ -394,8 +400,9 @@ void handleErrorMessage(const std::string& errorMessage, const std::out_of_range
 
 file_type_checker::FileType file_type_checker::getFileType(const std::map<std::string, boost::any>& opts, const std::string& fileTypeName)
 {
-  std::map<std::string, file_type_checker::FileType> fileTypeMap = {{"", kNoType}, {"root", kRoot},       {"mcGeant", kMCGeant}, {"scope", kScope},
-                                                                    {"hld", kHld}, {"hldRoot", kHldRoot}, {"zip", kZip}};
+  std::map<std::string, file_type_checker::FileType> fileTypeMap = {{"", kNoType},       {"root", kRoot},       {"mcGeant", kMCGeant},
+                                                                    {"mcGATE", kMCGATE}, {"ntu", kNTuple},      {"scope", kScope},
+                                                                    {"hld", kHld},       {"hldRoot", kHldRoot}, {"zip", kZip}};
 
   try
   {
@@ -433,22 +440,23 @@ file_type_checker::FileType file_type_checker::getOutputFileType(const std::map<
  * if the "-k" option for the is worng or not used, then by default
  * the detector type is the Big Barrel - kBarrel.
  */
-detector_type_checker::DetectorType detector_type_checker::getDetectorType(const std::map<std::string, boost::any>& opts)
+unpacker_type_checker::UnpackerType unpacker_type_checker::getUnpackerType(const std::map<std::string, boost::any>& opts)
 {
-  std::map<std::string, detector_type_checker::DetectorType> detectorTypeMap = {
-      {"bar", kBarrel}, {"barrel", kBarrel}, {"mod", kModular}, {"modular", kModular}};
+  std::map<std::string, unpacker_type_checker::UnpackerType> unpackerTypeMap = {{"bar", kBarrel},  {"barrel", kBarrel},   {"trb", kBarrel},
+                                                                                {"mod", kModular}, {"modular", kModular}, {"ftab", kModular},
+                                                                                {"mtab", kMTAB},   {"tbody", kMTAB},      {"totalbody", kMTAB}};
 
   try
   {
-    auto option = any_cast<std::string>(opts.at("detectorType_std::string"));
+    auto option = any_cast<std::string>(opts.at("unpackerType_std::string"));
     try
     {
-      return detectorTypeMap.at(option);
+      return unpackerTypeMap.at(option);
     }
-    catch (const std::out_of_range& outOfRangeDetectorTypeException)
+    catch (const std::out_of_range& outOfRangeUnpackerTypeException)
     {
-      std::string errorMessage = "Provided detector type option was not found - out of range in getDetectorType() ";
-      handleErrorMessage(errorMessage, outOfRangeDetectorTypeException);
+      std::string errorMessage = "Provided detector type option was not found - out of range in getUnpackerType() ";
+      handleErrorMessage(errorMessage, outOfRangeUnpackerTypeException);
     }
   }
   catch (const std::out_of_range& outOfRangeOptionException)
@@ -456,7 +464,7 @@ detector_type_checker::DetectorType detector_type_checker::getDetectorType(const
     std::string errorMessage = "Provided option was not found - out of range error in options container ";
     handleErrorMessage(errorMessage, outOfRangeOptionException);
   }
-  return detector_type_checker::DetectorType::kBarrel;
+  return unpacker_type_checker::UnpackerType::kBarrel;
 }
 
 } // namespace jpet_options_tools

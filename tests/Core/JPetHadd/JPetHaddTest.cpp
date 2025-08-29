@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2018 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2021 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -15,12 +15,12 @@
 
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE JPetHaddTest
-#include "JPetBarrelSlot/JPetBarrelSlot.h"
+
 #include "JPetEvent/JPetEvent.h"
 #include "JPetReader/JPetReader.h"
 #include "JPetScin/JPetScin.h"
+#include "JPetSlot/JPetSlot.h"
 #include "JPetTimeWindow/JPetTimeWindow.h"
-
 #include <boost/test/unit_test.hpp>
 #include <iostream>
 #include <stdexcept>
@@ -56,8 +56,8 @@ std::string exec(std::string cmd)
 BOOST_AUTO_TEST_CASE(check_same_data)
 {
   std::string haddedFileName;
-  std::string firstFileName = "unitTestData/JPetHaddTest/single_link_def/dabc_17237091818.hadd.test.root";
-  std::string secondFileName = "unitTestData/JPetHaddTest/single_link_def/dabc_17237093844.hadd.test.root";
+  std::string firstFileName = "unitTestData/JPetHaddTest/dabc_25058173505.hadd.test.root";
+  std::string secondFileName = "unitTestData/JPetHaddTest/dabc_25058173734.hadd.test.root";
 #if ROOT_VERSION_CODE < ROOT_VERSION(6, 0, 0)
   haddedFileName = "unitTestData/JPetHaddTest/hadded_root5.hadd.test.root";
 #else
@@ -90,6 +90,7 @@ BOOST_AUTO_TEST_CASE(check_same_data)
     const auto& compareTimeWindow = i < firstFileNumberOfEntries ? static_cast<const JPetTimeWindow&>(readerFirstFile.getCurrentEntry())
                                                                  : static_cast<const JPetTimeWindow&>(readerSecondFile.getCurrentEntry());
     BOOST_REQUIRE_EQUAL(haddedTimeWindow.getNumberOfEvents(), compareTimeWindow.getNumberOfEvents());
+
     BOOST_CHECK_PREDICATE(std::not_equal_to<size_t>(), (haddedTimeWindow.getNumberOfEvents())(0));
     for (size_t i = 0; i < haddedTimeWindow.getNumberOfEvents(); i++)
     {
@@ -100,17 +101,12 @@ BOOST_AUTO_TEST_CASE(check_same_data)
       BOOST_REQUIRE_EQUAL(haddedHits.size(), compareHits.size());
       for (unsigned int i = 0; i < haddedHits.size(); i++)
       {
-        BOOST_REQUIRE_EQUAL(haddedHits[i].getPosX(), compareHits[i].getPosX());
-        BOOST_REQUIRE_EQUAL(haddedHits[i].getPosY(), compareHits[i].getPosY());
-        BOOST_REQUIRE_EQUAL(haddedHits[i].getPosZ(), compareHits[i].getPosZ());
-        BOOST_REQUIRE_EQUAL(haddedHits[i].getEnergy(), compareHits[i].getEnergy());
-        BOOST_REQUIRE_EQUAL(haddedHits[i].getQualityOfEnergy(), compareHits[i].getQualityOfEnergy());
-        BOOST_REQUIRE_EQUAL(haddedHits[i].getTime(), compareHits[i].getTime());
-        BOOST_REQUIRE_EQUAL(haddedHits[i].getTimeDiff(), compareHits[i].getTimeDiff());
-        BOOST_REQUIRE_EQUAL(haddedHits[i].getQualityOfTime(), compareHits[i].getQualityOfTime());
-        BOOST_REQUIRE_EQUAL(haddedHits[i].getQualityOfTimeDiff(), compareHits[i].getQualityOfTimeDiff());
-        BOOST_REQUIRE(haddedHits[i].getScintillator() == compareHits[i].getScintillator());
-        BOOST_REQUIRE(haddedHits[i].getBarrelSlot() == compareHits[i].getBarrelSlot());
+        BOOST_REQUIRE_EQUAL(haddedHits[i]->getPosX(), compareHits[i]->getPosX());
+        BOOST_REQUIRE_EQUAL(haddedHits[i]->getPosY(), compareHits[i]->getPosY());
+        BOOST_REQUIRE_EQUAL(haddedHits[i]->getPosZ(), compareHits[i]->getPosZ());
+        BOOST_REQUIRE_EQUAL(haddedHits[i]->getEnergy(), compareHits[i]->getEnergy());
+        BOOST_REQUIRE_EQUAL(haddedHits[i]->getTime(), compareHits[i]->getTime());
+        BOOST_REQUIRE(haddedHits[i]->getScin() == compareHits[i]->getScin());
       }
     }
     readerHaddedFile.nextEntry();
@@ -127,8 +123,9 @@ BOOST_AUTO_TEST_CASE(check_same_data)
 BOOST_AUTO_TEST_CASE(check_param_bank)
 {
   std::string haddedFileName;
-  std::string firstFileName = "unitTestData/JPetHaddTest/single_link_def/dabc_17237091818.hadd.test.root";
-  std::string secondFileName = "unitTestData/JPetHaddTest/single_link_def/dabc_17237093844.hadd.test.root";
+  std::string firstFileName = "unitTestData/JPetHaddTest/dabc_25058173505.hadd.test.root";
+  std::string secondFileName = "unitTestData/JPetHaddTest/dabc_25058173734.hadd.test.root";
+
 #if ROOT_VERSION_CODE < ROOT_VERSION(6, 0, 0)
   haddedFileName = "unitTestData/JPetHaddTest/hadded_parambank_root5.hadd.test.root";
 #else
@@ -153,7 +150,7 @@ BOOST_AUTO_TEST_CASE(check_param_bank)
       const auto& haddedHits = haddedEvent.getHits();
       for (unsigned int i = 0; i < haddedHits.size(); i++)
       {
-        BOOST_CHECK_PREDICATE(std::not_equal_to<size_t>(), (haddedHits[i].getScintillator().getID())(0));
+        BOOST_CHECK_PREDICATE(std::not_equal_to<size_t>(), (haddedHits[i]->getScin().getID())(0));
       }
     }
     readerHaddedFile.nextEntry();

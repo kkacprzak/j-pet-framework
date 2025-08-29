@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2019 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2021 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -16,7 +16,7 @@
 #ifndef JPETMANAGER_H
 #define JPETMANAGER_H
 
-#include "JPetTaskFactory/JPetTaskFactory.h"
+#include "./JPetTaskFactory/JPetTaskFactory.h"
 #include <boost/any.hpp>
 #include <map>
 #include <string>
@@ -88,15 +88,14 @@ public:
    *
    * @throws exception in case of errors.
    */
-  void useTask(
-    const std::string& name, const std::string& inputFileType = "",
-    const std::string& outputFileType = "", int numTimes = 1
-  );
+  void useTask(const std::string& name, const std::string& inputFileType = "", const std::string& outputFileType = "", int numTimes = 1,
+               bool toFront = false);
 
   bool areThreadsEnabled() const;
   void setThreadsEnabled(bool enable);
 
 private:
+  JPetManager();
   JPetManager(const JPetManager&);
   void operator=(const JPetManager&);
 
@@ -113,7 +112,7 @@ private:
    * generators in advance. This provate method is intended to register all
    * such tasks in advance of creation of the task generator chain.
    */
-  static void registerDefaultTasks();
+  static void registerAndUseMCTasks(const std::map<std::string, boost::any>& options);
 
   /**
    * @brief Adds any tasks definded in userParams.json
@@ -132,7 +131,6 @@ private:
    **/
   void checkDisableLogRotation(const std::map<std::string, boost::any>& opts);
 
-  JPetManager();
   bool fThreadsEnabled = false;
   jpet_task_factory::JPetTaskFactory fTaskFactory;
   const std::string kUseTasksFromParamsKey = "JPetManager_useTasks_std::vector<std::string>";

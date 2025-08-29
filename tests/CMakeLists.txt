@@ -6,7 +6,6 @@ enable_testing()
 set(UNIT_TEST_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Core/JPetAnalysisTools/JPetAnalysisToolsTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/Core/JPetCmdParser/JPetCmdParserTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/Core/JPetCommonTools/JPetCommonToolsTest.cpp
-                      ${CMAKE_CURRENT_SOURCE_DIR}/Core/JPetGeomMapping/JPetGeomMappingTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/Core/JPetHadd/JPetHaddTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/Core/JPetManager/JPetManagerTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/Core/JPetProgressBarManager/JPetProgressBarTest.cpp
@@ -23,26 +22,29 @@ set(UNIT_TEST_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Core/JPetAnalysisTools/JPetAna
                       ${CMAKE_CURRENT_SOURCE_DIR}/Core/JPetTreeHeader/JPetTreeHeaderTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/Core/JPetWriter/JPetWriterTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/Core/JPetCachedFunction/JPetCachedFunctionTest.cpp
-                      ${CMAKE_CURRENT_SOURCE_DIR}/DataObjects/JPetBaseSignal/JPetBaseSignalTest.cpp
+                      ${CMAKE_CURRENT_SOURCE_DIR}/DataObjects/Hits/JPetBaseHit/JPetBaseHitTest.cpp
+                      ${CMAKE_CURRENT_SOURCE_DIR}/DataObjects/Hits/JPetMCRecoHit/JPetMCRecoHitTest.cpp
+                      ${CMAKE_CURRENT_SOURCE_DIR}/DataObjects/Hits/JPetPhysRecoHit/JPetPhysRecoHitTest.cpp
+                      ${CMAKE_CURRENT_SOURCE_DIR}/DataObjects/Hits/JPetRecoHit/JPetRecoHitTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/DataObjects/JPetEvent/JPetEventTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/DataObjects/JPetEventType/JPetEventTypeTest.cpp
-                      ${CMAKE_CURRENT_SOURCE_DIR}/DataObjects/JPetBaseHit/JPetBaseHitTest.cpp
-                      ${CMAKE_CURRENT_SOURCE_DIR}/DataObjects/JPetRecoHit/JPetRecoHitTest.cpp
-                      ${CMAKE_CURRENT_SOURCE_DIR}/DataObjects/JPetPhysRecoHit/JPetPhysRecoHitTest.cpp
-                      ${CMAKE_CURRENT_SOURCE_DIR}/DataObjects/JPetMCRecoHit/JPetMCRecoHitTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/DataObjects/JPetLOR/JPetLORTest.cpp
-                      ${CMAKE_CURRENT_SOURCE_DIR}/DataObjects/JPetPhysSignal/JPetPhysSignalTest.cpp
-                      ${CMAKE_CURRENT_SOURCE_DIR}/DataObjects/JPetRawSignal/JPetRawSignalTest.cpp
-                      ${CMAKE_CURRENT_SOURCE_DIR}/DataObjects/JPetRecoSignal/JPetRecoSignalTest.cpp
-                      ${CMAKE_CURRENT_SOURCE_DIR}/DataObjects/JPetSigCh/JPetSigChTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/DataObjects/JPetTimeWindow/JPetTimeWindowTest.cpp
+                      ${CMAKE_CURRENT_SOURCE_DIR}/DataObjects/Signals/JPetBaseSignal/JPetBaseSignalTest.cpp
+                      ${CMAKE_CURRENT_SOURCE_DIR}/DataObjects/Signals/JPetChannelSignal/JPetChannelSignalTest.cpp
+                      ${CMAKE_CURRENT_SOURCE_DIR}/DataObjects/Signals/JPetMatrixSignal/JPetMatrixSignalTest.cpp
+                      ${CMAKE_CURRENT_SOURCE_DIR}/DataObjects/Signals/JPetPhysSignal/JPetPhysSignalTest.cpp
+                      ${CMAKE_CURRENT_SOURCE_DIR}/DataObjects/Signals/JPetPMSignal/JPetPMSignalTest.cpp
+                      ${CMAKE_CURRENT_SOURCE_DIR}/DataObjects/Signals/JPetRecoSignal/JPetRecoSignalTest.cpp
+                      ${CMAKE_CURRENT_SOURCE_DIR}/DataObjects/Signals/JPetShapedSignal/JPetShapedSignalTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/GeantParser/JPetGeantEventInformation/JPetGeantEventInformationTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/GeantParser/JPetGeantEventPack/JPetGeantEventPackTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/GeantParser/JPetGeantParser/JPetGeantParserToolsTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/GeantParser/JPetGeantScinHits/JPetGeantScinHitsTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/GeantParser/JPetSmearingFunctions/JPetSmearingFunctionsTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/GeantParser/JPetGeantDecayTree/JPetGeantDecayTreeTest.cpp
-                      ${CMAKE_CURRENT_SOURCE_DIR}/MC/JPetMCHit/JPetMCHitTest.cpp
+                      ${CMAKE_CURRENT_SOURCE_DIR}/GeantParser/JPetGeantDecayTreeBranch/JPetGeantDecayTreeBranchTest.cpp
+                      ${CMAKE_CURRENT_SOURCE_DIR}/GateParser/JPetGateParser/JPetGateParserToolsTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/MC/JPetRawMCHit/JPetRawMCHitTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/Options/JPetOptionValidator/JPetOptionValidatorTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/Options/JPetOptionsGenerator/JPetOptionsGeneratorTest.cpp
@@ -50,27 +52,24 @@ set(UNIT_TEST_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Core/JPetAnalysisTools/JPetAna
                       ${CMAKE_CURRENT_SOURCE_DIR}/Options/JPetOptionsGenerator/JPetOptionsTypeHandlerTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/Options/JPetOptionsTools/JPetOptionsToolsTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/Options/JPetOptionsTools/JPetOptionsTransformatorsTest.cpp
-                      ${CMAKE_CURRENT_SOURCE_DIR}/ParamObjects/JPetBarrelSlot/JPetBarrelSlotTest.cpp
-                      ${CMAKE_CURRENT_SOURCE_DIR}/ParamObjects/JPetFEB/JPetFEBTest.cpp
-                      ${CMAKE_CURRENT_SOURCE_DIR}/ParamObjects/JPetFrame/JPetFrameTest.cpp
+                      ${CMAKE_CURRENT_SOURCE_DIR}/ParamObjects/JPetChannel/JPetChannelTest.cpp
+                      ${CMAKE_CURRENT_SOURCE_DIR}/ParamObjects/JPetDataModule/JPetDataModuleTest.cpp
+                      ${CMAKE_CURRENT_SOURCE_DIR}/ParamObjects/JPetDataSource/JPetDataSourceTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/ParamObjects/JPetLayer/JPetLayerTest.cpp
+                      ${CMAKE_CURRENT_SOURCE_DIR}/ParamObjects/JPetMatrix/JPetMatrixTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/ParamObjects/JPetPM/JPetPMTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/ParamObjects/JPetScin/JPetScinTest.cpp
-                      ${CMAKE_CURRENT_SOURCE_DIR}/ParamObjects/JPetTOMBChannel/JPetTOMBChannelTest.cpp
-                      ${CMAKE_CURRENT_SOURCE_DIR}/ParamObjects/JPetTRB/JPetTRBTest.cpp
-                      ${CMAKE_CURRENT_SOURCE_DIR}/ParamObjects/JPetDataSource/JPetDataSourceTest.cpp
-                      ${CMAKE_CURRENT_SOURCE_DIR}/ParamObjects/JPetDataModule/JPetDataModuleTest.cpp
+                      ${CMAKE_CURRENT_SOURCE_DIR}/ParamObjects/JPetSetup/JPetSetupTest.cpp
+                      ${CMAKE_CURRENT_SOURCE_DIR}/ParamObjects/JPetSlot/JPetSlotTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/ParametersTools/JPetParamBank/JPetParamBankTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/ParametersTools/JPetParamGetterAscii/JPetParamGetterAsciiTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/ParametersTools/JPetParamManager/JPetParamManagerTest.cpp
-                      ${CMAKE_CURRENT_SOURCE_DIR}/ParametersTools/JPetParamUtils/JPetParamUtilsTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/ParametersTools/JPetParams/JPetParamsTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/ParametersTools/JPetParamsFactory/JPetParamsFactoryTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/Tasks/JPetParamBankHandlerTask/JPetParamBankHandlerTaskTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/Tasks/JPetScopeConfigParser/JPetScopeConfigParserTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/Tasks/JPetScopeLoader/JPetScopeLoaderTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/Tasks/JPetSimplePhysSignalReco/HelperMathFunctionsTest.cpp
-                      ${CMAKE_CURRENT_SOURCE_DIR}/Tasks/JPetUnpackTask/JPetUnpackTaskTest.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/Tasks/JPetUnzipTask/JPetUnzipTaskTest.cpp
 )
 

@@ -24,14 +24,14 @@
 JPetCmdParser::JPetCmdParser() : fOptionsDescriptions("Allowed options")
 {
   fOptionsDescriptions.add_options()("help,h", "Displays this help message.")("type,t", po::value<std::string>()->required(),
-                                                                              "Type of file: hld, zip, mcGeant, root or scope.")(
+                                                                              "Type of file: hld, zip, mcGeant, mcGATE, root, ntu or scope.")(
       "file,f", po::value<std::vector<std::string>>()->required()->multitoken(),
       "File(s) to open.")("outputPath,o", po::value<std::string>(), "Location to which the outputFiles will be saved.")(
       "range,r", po::value<std::vector<int>>()->multitoken()->default_value({-1, -1}, ""), "Range of events to process e.g. -r 1 1000 .")(
       "unpackerConfigFile,p", po::value<std::string>(), "xml file with TRB settings used by the unpacker program.")(
       "unpackerCalibFile,c", po::value<std::string>(), "ROOT file with TRB calibration used by the unpacker program.")(
-      "runID,i", po::value<int>(), "Run ID.")("detector,k", po::value<std::string>()->default_value("barrel"),
-                                              "Detector type: barrel (default) or modular")(
+      "runID,i", po::value<int>(), "Run ID.")("unpacker,k", po::value<std::string>()->default_value("barrel"),
+                                              "Unpacker type: barrel-TRB (default), modular-FTAB, modlar or total body MTAB")(
       "progressBar,b", po::bool_switch()->default_value(false), "Progress bar.")("localDB,l", po::value<std::string>(),
                                                                                  "The file to use as the parameter database.")(
       "localDBCreate,L", po::value<std::string>(),

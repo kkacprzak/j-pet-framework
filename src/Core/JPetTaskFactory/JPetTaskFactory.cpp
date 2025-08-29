@@ -14,10 +14,12 @@
  */
 
 #include "JPetTaskFactory/JPetTaskFactory.h"
+#include "JPetGateParser/JPetGateParser.h"
 #include "JPetGeantParser/JPetGeantParser.h"
 #include "JPetOptionsTools/JPetOptionsTools.h"
 #include "JPetParamBankHandlerTask/JPetParamBankHandlerTask.h"
 #include "JPetScopeLoader/JPetScopeLoader.h"
+#include "JPetTaskFactory/JPetTaskFactory.h"
 #include "JPetTaskIOLoopPerSubTask/JPetTaskIOLoopPerSubTask.h"
 #include "JPetTaskLooper/JPetTaskLooper.h"
 #include "JPetTaskStreamIO/JPetTaskStreamIO.h"
@@ -43,11 +45,19 @@ std::vector<TaskGenerator> JPetTaskFactory::createTaskGeneratorChain(const std::
   return generateTaskGeneratorChain(fTasksToUse, fTasksDictionary, options);
 }
 
-bool JPetTaskFactory::addTaskInfo(const std::string& name, const std::string& inputFileType, const std::string& outputFileType, int numIter)
+bool JPetTaskFactory::addTaskInfo(const std::string& name, const std::string& inputFileType, const std::string& outputFileType, int numIter,
+                                  bool toFront)
 {
   if (fTasksDictionary.find(name) != fTasksDictionary.end())
   {
-    fTasksToUse.push_back(TaskInfo(name, inputFileType, outputFileType, numIter));
+    if (toFront)
+    {
+      fTasksToUse.insert(fTasksToUse.begin(), TaskInfo(name, inputFileType, outputFileType, numIter));
+    }
+    else
+    {
+      fTasksToUse.push_back(TaskInfo(name, inputFileType, outputFileType, numIter));
+    }
   }
   else
   {
@@ -90,27 +100,28 @@ TaskGeneratorChain generateDirectTaskGeneratorChain(const std::vector<TaskInfo>&
   auto outT = taskInfoVect.back().outputFileType;
   std::string name = "Direct Task Chain";
 
-  chain.push_back([name, inT, outT, generatorsMap, taskInfoVect]() {
-    auto task = jpet_common_tools::make_unique<JPetTaskStreamIO>(name.c_str(), inT.c_str(), outT.c_str());
-
-    for (const auto& taskInfo : taskInfoVect)
-    {
-      auto task_name = taskInfo.name;
-
-      if (generatorsMap.find(task_name) != generatorsMap.end())
+  chain.push_back(
+      [name, inT, outT, generatorsMap, taskInfoVect]()
       {
-        TaskGenerator userTaskGen = generatorsMap.at(task_name);
+        auto task = jpet_common_tools::make_unique<JPetTaskStreamIO>(name.c_str(), inT.c_str(), outT.c_str());
 
-        task->addSubTask(std::unique_ptr<JPetTaskInterface>(userTaskGen()));
-      }
-      else
-      {
-        ERROR(Form("The requested task %s is not registered! The output chain might be broken!", name.c_str()));
+        for (const auto& taskInfo : taskInfoVect)
+        {
+          auto task_name = taskInfo.name;
+          if (generatorsMap.find(task_name) != generatorsMap.end())
+          {
+            TaskGenerator userTaskGen = generatorsMap.at(task_name);
+
+            task->addSubTask(std::unique_ptr<JPetTaskInterface>(userTaskGen()));
+          }
+          else
+          {
+            ERROR(Form("The requested task %s is not registered! The output chain might be broken!", name.c_str()));
+            return task;
+          }
+        }
         return task;
-      }
-    }
-    return task;
-  });
+      });
 
   return chain;
 }
@@ -119,7 +130,8 @@ void addDefaultTasksFromOptions(const std::map<std::string, boost::any>& options
                                 TaskGeneratorChain& outChain)
 {
   using namespace jpet_options_tools;
-  auto addDefaultTasksFromOptions = [&](const std::map<std::string, boost::any>& options) {
+  auto addDefaultTasksFromOptions = [&](const std::map<std::string, boost::any>& options)
+  {
     auto fileType = file_type_checker::getInputFileType(options);
     if (fileType == file_type_checker::kUndefinedFileType)
     {
@@ -134,13 +146,6 @@ void addDefaultTasksFromOptions(const std::map<std::string, boost::any>& options
       outChain.insert(outChain.begin(), scopeTask);
     }
 
-    // Create Geant Parser task if indicated by filetype
-    if (fileType == file_type_checker::kMCGeant)
-    {
-      auto mcInfo = TaskInfo("JPetGeantParser", "mcGeant", "hits", 1);
-      addTaskToChain(generatorsMap, mcInfo, outChain);
-    }
-
     // Create task to unzip file if indicated by the filetype
     if (fileType == file_type_checker::kZip)
     {
@@ -148,8 +153,9 @@ void addDefaultTasksFromOptions(const std::map<std::string, boost::any>& options
       outChain.insert(outChain.end(), unzip);
     }
 
-    // Create Unpack task if indicated by the filetype
-    if (fileType == file_type_checker::kHld || fileType == file_type_checker::kZip)
+    // Create Unpack task if indicated by the filetype and unpacker type - Barrel only
+    if ((fileType == file_type_checker::kHld || fileType == file_type_checker::kZip) &&
+        unpacker_type_checker::getUnpackerType(options) == unpacker_type_checker::UnpackerType::kBarrel)
     {
       auto unpack = []() { return std::make_unique<JPetUnpackTask>("JPetUnpackTask"); };
       outChain.insert(outChain.end(), unpack);
@@ -174,33 +180,39 @@ void addTaskToChain(const std::map<std::string, TaskGenerator>& generatorsMap, c
     TaskGenerator userTaskGen = generatorsMap.at(name);
     if (numOfIterations == 1)
     {
-      outChain.push_back([name, inT, outT, userTaskGen]() {
-        auto task = std::make_unique<JPetTaskIOLoopPerSubTask>(name.c_str(), inT.c_str(), outT.c_str());
-        task->addSubTask(std::unique_ptr<JPetTaskInterface>(userTaskGen()));
-        return task;
-      });
+      outChain.push_back(
+          [name, inT, outT, userTaskGen]()
+          {
+            auto task = std::make_unique<JPetTaskIOLoopPerSubTask>(name.c_str(), inT.c_str(), outT.c_str());
+            task->addSubTask(std::unique_ptr<JPetTaskInterface>(userTaskGen()));
+            return task;
+          });
     }
     else
     {
       if (numOfIterations < 0)
       {
-        outChain.push_back([name, inT, outT, userTaskGen]() {
-          auto task = std::make_unique<JPetTaskIOLoopPerSubTask>(name.c_str(), inT.c_str(), outT.c_str());
-          task->addSubTask(std::unique_ptr<JPetTaskInterface>(userTaskGen()));
-          auto looperTask =
-              std::make_unique<JPetTaskLooper>(name.c_str(), std::move(task), JPetTaskLooper::getStopOnOptionPredicate(kStopIterationOptionName));
-          return looperTask;
-        });
+        outChain.push_back(
+            [name, inT, outT, userTaskGen]()
+            {
+              auto task = std::make_unique<JPetTaskIOLoopPerSubTask>(name.c_str(), inT.c_str(), outT.c_str());
+              task->addSubTask(std::unique_ptr<JPetTaskInterface>(userTaskGen()));
+              auto looperTask =
+                  std::make_unique<JPetTaskLooper>(name.c_str(), std::move(task), JPetTaskLooper::getStopOnOptionPredicate(kStopIterationOptionName));
+              return looperTask;
+            });
       }
       else
       {
-        outChain.push_back([name, inT, outT, numOfIterations, userTaskGen]() {
-          auto task = std::make_unique<JPetTaskIOLoopPerSubTask>(name.c_str(), inT.c_str(), outT.c_str());
-          task->addSubTask(std::unique_ptr<JPetTaskInterface>(userTaskGen()));
-          auto looperTask =
-              std::make_unique<JPetTaskLooper>(name.c_str(), std::move(task), JPetTaskLooper::getMaxIterationPredicate(numOfIterations));
-          return looperTask;
-        });
+        outChain.push_back(
+            [name, inT, outT, numOfIterations, userTaskGen]()
+            {
+              auto task = std::make_unique<JPetTaskIOLoopPerSubTask>(name.c_str(), inT.c_str(), outT.c_str());
+              task->addSubTask(std::unique_ptr<JPetTaskInterface>(userTaskGen()));
+              auto looperTask =
+                  std::make_unique<JPetTaskLooper>(name.c_str(), std::move(task), JPetTaskLooper::getMaxIterationPredicate(numOfIterations));
+              return looperTask;
+            });
       }
     }
   }

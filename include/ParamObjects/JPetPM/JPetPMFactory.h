@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2018 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2021 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -16,11 +16,9 @@
 #ifndef JPET_PM_FACTORY_H
 #define JPET_PM_FACTORY_H
 
-#include "./JPetBarrelSlot/JPetBarrelSlotFactory.h"
-#include "./JPetParamGetter/JPetParamGetter.h"
-#include "./JPetScin/JPetScinFactory.h"
-#include "./JPetFEB/JPetFEBFactory.h"
-#include "JPetPM.h"
+#include "JPetMatrix/JPetMatrixFactory.h"
+#include "JPetPM/JPetPM.h"
+#include "JPetParamGetter/JPetParamGetter.h"
 #include <map>
 
 /**
@@ -31,24 +29,20 @@
 class JPetPMFactory
 {
 public:
-  JPetPMFactory(JPetParamGetter& paramGetter, int runId,
-    JPetFEBFactory& febFactory, JPetScinFactory& scinFactory,
-    JPetBarrelSlotFactory& barrelSlotFactory):
-      paramGetter(paramGetter), runId(runId), febFactory(febFactory),
-      scinFactory(scinFactory), barrelSlotFactory(barrelSlotFactory),
-      fInitialized(false) {}
-  std::map<int, JPetPM *> & getPMs();
+  JPetPMFactory(JPetParamGetter& paramGetter, int runID, JPetMatrixFactory& martixFactory)
+      : fParamGetter(paramGetter), fRunID(runID), fMartixFactory(martixFactory), fInitialized(false)
+  {
+  }
+  std::map<int, JPetPM*>& getPMs();
 
 private:
-  JPetParamGetter &paramGetter;
-  const int runId;
-  JPetFEBFactory &febFactory;
-  JPetScinFactory &scinFactory;
-  JPetBarrelSlotFactory &barrelSlotFactory;
+  JPetParamGetter& fParamGetter;
+  const int fRunID;
+  JPetMatrixFactory& fMartixFactory;
   bool fInitialized;
   std::map<int, JPetPM*> fPMs;
   void initialize();
   JPetPM* build(ParamObjectDescription data);
 };
 
-#endif // JPET_PM_FACTORY_H
+#endif /* !JPET_PM_FACTORY_H */

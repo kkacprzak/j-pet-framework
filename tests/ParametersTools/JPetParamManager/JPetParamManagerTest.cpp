@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2018 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2021 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -17,15 +17,15 @@
 #define BOOST_TEST_MODULE JPetParamManagerTest
 
 #include "JPetParamManager/JPetParamManager.h"
+#include "JPetOptionsTools/JPetOptionsTools.h"
 #include "JPetParamGetterAscii/JPetParamGetterAscii.h"
-
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
 #include <cstddef>
 #include <string>
 
 const std::string dataDir = "unitTestData/JPetParamManagerTest/";
-const std::string dataFileName = dataDir + "data.json";
+const std::string dataFileName = dataDir + "DBv10.json";
 
 BOOST_AUTO_TEST_SUITE(JPetParamManagerTestSuite)
 
@@ -39,60 +39,56 @@ BOOST_AUTO_TEST_CASE(generateParamManager)
 
 BOOST_AUTO_TEST_CASE(generateParamManagerForScopeCase)
 {
+  using namespace jpet_options_tools;
   std::map<std::string, boost::any> opts;
   opts["inputFileType_std::string"] = std::string("scope");
-  opts["localDB_std::string"] = std::string("unitTestData/JPetScopeLoaderTest/test_params.json");
-  opts["runId_int"] = int(1);
+  opts["localDB_std::string"] = std::string("unitTestData/JPetScopeLoaderTest/test_params_v10.json");
+  opts["runID_int"] = int(1);
   std::shared_ptr<JPetParamManager> paramMgr = JPetParamManager::generateParamManager(opts);
   BOOST_REQUIRE(paramMgr);
   BOOST_REQUIRE(!paramMgr->isNullObject());
   BOOST_REQUIRE(!paramMgr->getExpectMissing().empty());
   paramMgr->fillParameterBank(1);
   BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().isDummy(), false);
-  BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().getTOMBChannelsSize(), 0);
-  BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().getTRBsSize(), 0);
-  BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().getFEBsSize(), 0);
-  BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().getDataSourcesSize(), 0);
   BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().getDataModulesSize(), 0);
-  BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().getScintillatorsSize(), 2);
+  BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().getDataSourcesSize(), 0);
+  BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().getChannelsSize(), 0);
   BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().getPMsSize(), 4);
-  BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().getBarrelSlotsSize(), 2);
+  BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().getMatricesSize(), 2);
+  BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().getScinsSize(), 2);
+  BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().getSlotsSize(), 2);
 }
 
 BOOST_AUTO_TEST_CASE(generateParamManagerForMCGeantCase)
 {
   std::map<std::string, boost::any> opts;
   opts["inputFileType_std::string"] = std::string("mcGeant");
-  opts["localDB_std::string"] = std::string("unitTestData/JPetParamManagerTest/test_mcGeant_setup.json");
-  opts["runId_int"] = int(95);
+  opts["localDB_std::string"] = dataFileName;
+  opts["runID_int"] = int(1);
   std::shared_ptr<JPetParamManager> paramMgr = JPetParamManager::generateParamManager(opts);
   BOOST_REQUIRE(paramMgr);
   BOOST_REQUIRE(!paramMgr->isNullObject());
   BOOST_REQUIRE(!paramMgr->getExpectMissing().empty());
-  paramMgr->fillParameterBank(95);
+  paramMgr->fillParameterBank(1);
   BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().isDummy(), false);
-  // These object are absent in setups generated from Geant4 package
-  BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().getFEBsSize(), 0);
-  BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().getTRBsSize(), 0);
-  BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().getPMsSize(), 0);
-  BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().getTOMBChannelsSize(), 0);
-  BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().getDataSourcesSize(), 0);
   BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().getDataModulesSize(), 0);
-  // other objects from generated setup
-  BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().getFramesSize(), 1);
-  BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().getLayersSize(), 4);
-  BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().getBarrelSlotsSize(), 504);
-  BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().getScintillatorsSize(), 504);
+  BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().getDataSourcesSize(), 0);
+  BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().getChannelsSize(), 0);
+  BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().getPMsSize(), 0);
+  BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().getMatricesSize(), 0);
+  BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().getScinsSize(), 1);
+  BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().getSlotsSize(), 1);
+  BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().getLayersSize(), 1);
+  BOOST_REQUIRE_EQUAL(paramMgr->getParamBank().getSetupsSize(), 1);
 }
 
 void checkContainersSize(const JPetParamBank& bank)
 {
-  BOOST_REQUIRE_EQUAL(bank.getScintillatorsSize(), 2);
-  BOOST_REQUIRE_EQUAL(bank.getPMsSize(), 4);
-  BOOST_REQUIRE_EQUAL(bank.getFEBsSize(), 1);
-  BOOST_REQUIRE_EQUAL(bank.getTRBsSize(), 1);
-  BOOST_REQUIRE_EQUAL(bank.getBarrelSlotsSize(), 2);
-  BOOST_REQUIRE_EQUAL(bank.getTOMBChannelsSize(), 4);
+  BOOST_REQUIRE_EQUAL(bank.getSlotsSize(), 1);
+  BOOST_REQUIRE_EQUAL(bank.getScinsSize(), 1);
+  BOOST_REQUIRE_EQUAL(bank.getMatricesSize(), 1);
+  BOOST_REQUIRE_EQUAL(bank.getPMsSize(), 1);
+  BOOST_REQUIRE_EQUAL(bank.getChannelsSize(), 1);
 }
 
 BOOST_AUTO_TEST_CASE(default_constructor)
@@ -127,12 +123,10 @@ BOOST_AUTO_TEST_CASE(some_Test_that_had_no_name)
   BOOST_REQUIRE_EQUAL(l_paramManagerInstance.getParamBank().isDummy(), false);
   checkContainersSize(l_paramManagerInstance.getParamBank());
   l_paramManagerInstance.clearParameters();
-  BOOST_REQUIRE_EQUAL(l_paramManagerInstance.getParamBank().getScintillatorsSize(), 0);
+  BOOST_REQUIRE_EQUAL(l_paramManagerInstance.getParamBank().getScinsSize(), 0);
   BOOST_REQUIRE_EQUAL(l_paramManagerInstance.getParamBank().getPMsSize(), 0);
-  BOOST_REQUIRE_EQUAL(l_paramManagerInstance.getParamBank().getFEBsSize(), 0);
-  BOOST_REQUIRE_EQUAL(l_paramManagerInstance.getParamBank().getTRBsSize(), 0);
-  BOOST_REQUIRE_EQUAL(l_paramManagerInstance.getParamBank().getBarrelSlotsSize(), 0);
-  BOOST_REQUIRE_EQUAL(l_paramManagerInstance.getParamBank().getTOMBChannelsSize(), 0);
+  BOOST_REQUIRE_EQUAL(l_paramManagerInstance.getParamBank().getSlotsSize(), 0);
+  BOOST_REQUIRE_EQUAL(l_paramManagerInstance.getParamBank().getChannelsSize(), 0);
 }
 
 BOOST_AUTO_TEST_CASE(getParamBankTest)
@@ -146,22 +140,18 @@ BOOST_AUTO_TEST_CASE(getParamBankTest)
 BOOST_AUTO_TEST_CASE(getParamBankTestWithScopeSettings)
 {
   std::set<ParamObjectType> expectMissing;
-  expectMissing.insert(ParamObjectType::kTRB);
-  expectMissing.insert(ParamObjectType::kFEB);
-  expectMissing.insert(ParamObjectType::kFrame);
+  expectMissing.insert(ParamObjectType::kSetup);
   expectMissing.insert(ParamObjectType::kLayer);
-  expectMissing.insert(ParamObjectType::kTOMBChannel);
-  const std::string dataFileNameWithScope("unitTestData/JPetScopeLoaderTest/test_params.json");
+  expectMissing.insert(ParamObjectType::kChannel);
+  const std::string dataFileNameWithScope("unitTestData/JPetScopeLoaderTest/test_params_v10.json");
   JPetParamManager l_paramManagerInstance(new JPetParamGetterAscii(dataFileNameWithScope), expectMissing);
   l_paramManagerInstance.fillParameterBank(1);
   BOOST_REQUIRE_EQUAL(l_paramManagerInstance.getParamBank().isDummy(), false);
   BOOST_REQUIRE(!l_paramManagerInstance.getExpectMissing().empty());
-  BOOST_REQUIRE_EQUAL(l_paramManagerInstance.getParamBank().getScintillatorsSize(), 2);
+  BOOST_REQUIRE_EQUAL(l_paramManagerInstance.getParamBank().getScinsSize(), 2);
   BOOST_REQUIRE_EQUAL(l_paramManagerInstance.getParamBank().getPMsSize(), 4);
-  BOOST_REQUIRE_EQUAL(l_paramManagerInstance.getParamBank().getFEBsSize(), 0);
-  BOOST_REQUIRE_EQUAL(l_paramManagerInstance.getParamBank().getTRBsSize(), 0);
-  BOOST_REQUIRE_EQUAL(l_paramManagerInstance.getParamBank().getBarrelSlotsSize(), 2);
-  BOOST_REQUIRE_EQUAL(l_paramManagerInstance.getParamBank().getTOMBChannelsSize(), 0);
+  BOOST_REQUIRE_EQUAL(l_paramManagerInstance.getParamBank().getSlotsSize(), 2);
+  BOOST_REQUIRE_EQUAL(l_paramManagerInstance.getParamBank().getChannelsSize(), 0);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

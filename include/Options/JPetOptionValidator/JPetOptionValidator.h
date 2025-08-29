@@ -37,7 +37,7 @@ public:
   static bool isCorrectFileType(std::pair<std::string, boost::any> option);
   static bool isFileTypeMatchingExtensions(std::pair<std::string, boost::any> option);
   static bool isRunIDValid(std::pair<std::string, boost::any> option);
-  static bool isDetectorValid(std::pair<std::string, boost::any> option);
+  static bool isUnpackerValid(std::pair<std::string, boost::any> option);
   static bool isLocalDBValid(std::pair<std::string, boost::any> option);
   static bool areFilesValid(std::pair<std::string, boost::any> option);
   static bool isOutputDirectoryValid(std::pair<std::string, boost::any> option);

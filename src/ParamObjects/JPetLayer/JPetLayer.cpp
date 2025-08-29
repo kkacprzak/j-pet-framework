@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2018 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2021 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -14,60 +14,61 @@
  */
 
 #include "JPetLayer/JPetLayer.h"
+#include "JPetLoggerInclude.h"
+
+ClassImp(JPetLayer);
 
 JPetLayer::JPetLayer() { SetName("JPetLayer"); }
 
-JPetLayer::JPetLayer(int id, bool isActive, std::string name, float radius)
-    : fId(id), fIsActive(isActive), fName(name), fRadius(radius), fTRefFrame(NULL)
-{
-  SetName("JPetLayer");
-}
+JPetLayer::JPetLayer(int id, std::string name, float radius) : fID(id), fName(name), fRadius(radius) { SetName("JPetLayer"); }
+
+JPetLayer::JPetLayer(const JPetLayer& layer) : fID(layer.getID()), fName(layer.getName()), fRadius(layer.getRadius()) { SetName("JPetLayer"); }
 
 JPetLayer::JPetLayer(bool isNull) : fIsNullObject(isNull) { SetName("JPetLayer"); }
 
-bool JPetLayer::operator==(const JPetLayer& layer) const
-{
-  if (getID() == layer.getID())
-  {
-    assert(getRadius() == layer.getRadius());
-    assert(getName() == layer.getName());
-    assert(getIsActive() == layer.getIsActive());
-    return true;
-  }
-  return false;
-}
+JPetLayer::~JPetLayer() {}
 
-bool JPetLayer::operator!=(const JPetLayer& layer) const { return !(*this == layer); }
+void JPetLayer::setID(int id) { fID = id; }
 
-int JPetLayer::getID() const { return fId; }
+void JPetLayer::setName(std::string name) { fName = name; }
 
-bool JPetLayer::getIsActive() const { return fIsActive; }
+void JPetLayer::setRaduis(float radius) { fRadius = radius; }
+
+void JPetLayer::setSetup(JPetSetup& setup) { fTRefSetup = &setup; }
+
+int JPetLayer::getID() const { return fID; }
 
 std::string JPetLayer::getName() const { return fName; }
 
 float JPetLayer::getRadius() const { return fRadius; }
 
-const JPetFrame& JPetLayer::getFrame() const
+const JPetSetup& JPetLayer::getSetup() const
 {
-  if (fTRefFrame.GetObject())
-    return static_cast<JPetFrame&>(*(fTRefFrame.GetObject()));
+  if (fTRefSetup.GetObject())
+  {
+    return static_cast<JPetSetup&>(*(fTRefSetup.GetObject()));
+  }
   else
   {
-    ERROR("No JPetFrame slot set, Null object will be returned");
-    return JPetFrame::getDummyResult();
+    ERROR("No JPetSetup set, Null object will be returned");
+    return JPetSetup::getDummyResult();
   }
 }
 
-void JPetLayer::setFrame(JPetFrame& frame) { fTRefFrame = &frame; }
+bool JPetLayer::operator==(const JPetLayer& layer) const
+{
+  return this->getID() == layer.getID() && this->getName() == layer.getName() && this->getRadius() == layer.getRadius() &&
+         this->getSetup() == layer.getSetup();
+}
+
+bool JPetLayer::operator!=(const JPetLayer& layer) const { return !(*this == layer); }
 
 bool JPetLayer::isNullObject() const { return fIsNullObject; }
 
 JPetLayer& JPetLayer::getDummyResult()
 {
-  static JPetLayer DummyResult(true);
-  return DummyResult;
+  static JPetLayer dummyResult(true);
+  return dummyResult;
 }
 
-void JPetLayer::clearTRefFrame() { fTRefFrame = NULL; }
-
-ClassImp(JPetLayer);
+void JPetLayer::clearTRefSetup() { fTRefSetup = nullptr; }

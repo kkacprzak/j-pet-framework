@@ -79,31 +79,22 @@ public:
 
   void setSmearingFunctionLimits(const std::vector<std::pair<double, double>>& limits);
 
-  void setShouldUseDefaultSmearing(bool defaultZ, bool defaultTime, bool defaultEnergy){
+  void setShouldUseDefaultSmearing(bool defaultZ, bool defaultTime, bool defaultEnergy)
+  {
     fUseDefaultZSmearing = defaultZ;
     fUseDefaultTimeSmearing = defaultTime;
     fUseDefaultEnergySmearing = defaultEnergy;
   }
 
-  void setDefaultZSmearingSigma(double sigma){
-    fDefaultZSmearingSigma = sigma;
-  } 
+  void setDefaultZSmearingSigma(double sigma) { fDefaultZSmearingSigma = sigma; }
 
-  void setDefaultTimeSmearingSigma(double sigma){
-    fDefaultTimeSmearingSigma = sigma;
-  }
+  void setDefaultTimeSmearingSigma(double sigma) { fDefaultTimeSmearingSigma = sigma; }
 
-  void setDefaultTimeSmearingThresholdEnergy(double thresholdEnergy){
-    fDefaultTimeSmearingThresholdEnergy = thresholdEnergy;
-  }
+  void setDefaultTimeSmearingThresholdEnergy(double thresholdEnergy) { fDefaultTimeSmearingThresholdEnergy = thresholdEnergy; }
 
-  void setDefaultTimeSmearingReferenceEnergy(double referenceEnergy){
-    fDefaultTimeSmearingReferenceEnergy = referenceEnergy;
-  }
+  void setDefaultTimeSmearingReferenceEnergy(double referenceEnergy) { fDefaultTimeSmearingReferenceEnergy = referenceEnergy; }
 
-  void setDefaultEnergySmearingFraction(double fraction){
-    fDefaultEnergySmearingFraction = fraction;
-  }
+  void setDefaultEnergySmearingFraction(double fraction) { fDefaultEnergySmearingFraction = fraction; }
 
 private:
   double defaultTimeSmearing(double zIn, double eneIn, double timeIn);
@@ -117,11 +108,11 @@ private:
   bool fUseDefaultTimeSmearing = false;
   bool fUseDefaultEnergySmearing = false;
 
-  double fDefaultZSmearingSigma = 3.0; // cm
-  double fDefaultTimeSmearingSigma = 220.0; // ps
+  double fDefaultZSmearingSigma = 3.0;                // cm
+  double fDefaultTimeSmearingSigma = 220.0;           // ps
   double fDefaultTimeSmearingThresholdEnergy = 200.0; // keV
   double fDefaultTimeSmearingReferenceEnergy = 270.0; // keV
   double fDefaultEnergySmearingFraction = 0.044;
 };
 
-#endif
+#endif /* !JPETSMEARINGFUNCTIONS_H */

@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2020 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2021 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -16,7 +16,6 @@
 #include "JPetParamGetterAscii/JPetParamSaverAscii.h"
 #include "JPetParamBank/JPetParamBank.h"
 #include "JPetParamGetterAscii/JPetParamAsciiConstants.h"
-
 #include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/property_tree/json_parser.hpp>
@@ -47,90 +46,26 @@ void JPetParamSaverAscii::addToTree(boost::property_tree::ptree& tree, const JPe
     tree.erase(runNumber);
   }
   boost::property_tree::ptree runContents;
-  fillScintillators(runContents, bank);
-  fillPMs(runContents, bank);
-  fillBarrelSlots(runContents, bank);
+  fillSetups(runContents, bank);
   fillLayers(runContents, bank);
-  fillFrames(runContents, bank);
-  fillFEBs(runContents, bank);
-  fillTRBs(runContents, bank);
-  fillTOMBChannels(runContents, bank);
+  fillSlots(runContents, bank);
+  fillScins(runContents, bank);
+  fillMatrices(runContents, bank);
+  fillPMs(runContents, bank);
+  fillChannels(runContents, bank);
   fillDataSources(runContents, bank);
   fillDataModules(runContents, bank);
   tree.add_child(runNumber, runContents);
 }
 
-void JPetParamSaverAscii::fillScintillators(boost::property_tree::ptree& runContents, const JPetParamBank& bank)
+void JPetParamSaverAscii::fillSetups(boost::property_tree::ptree& runContents, const JPetParamBank& bank)
 {
   boost::property_tree::ptree infos;
-  for (auto scin : bank.getScintillators())
+  for (auto setup : bank.getSetups())
   {
-    infos.push_back(std::make_pair("", scintillatorToInfo(*scin.second)));
+    infos.push_back(std::make_pair("", setupToInfo(*setup.second)));
   }
-  runContents.add_child(objectsNames.at(ParamObjectType::kScintillator), infos);
-}
-
-boost::property_tree::ptree JPetParamSaverAscii::scintillatorToInfo(const JPetScin& scin)
-{
-  boost::property_tree::ptree info;
-  info.put("id", scin.getID());
-  info.put("attenuation_length", scin.getAttenLen());
-  auto dimensions = scin.getScinSize();
-  info.put("length", dimensions.fLength);
-  info.put("width", dimensions.fWidth);
-  info.put("height", dimensions.fHeight);
-  info.put(objectsNames.at(ParamObjectType::kBarrelSlot) + "_id", scin.getBarrelSlot().getID());
-  return info;
-}
-
-void JPetParamSaverAscii::fillPMs(boost::property_tree::ptree& runContents, const JPetParamBank& bank)
-{
-  boost::property_tree::ptree infos;
-  for (auto pm : bank.getPMs())
-  {
-    infos.push_back(std::make_pair("", PMToInfo(*pm.second)));
-  }
-  runContents.add_child(objectsNames.at(ParamObjectType::kPM), infos);
-}
-
-boost::property_tree::ptree JPetParamSaverAscii::PMToInfo(const JPetPM& pm)
-{
-  boost::property_tree::ptree info;
-  info.put("id", pm.getID());
-  info.put("is_right_side", (pm.getSide() == JPetPM::Side::SideB));
-  info.put("description", pm.getDescription());
-  info.put(objectsNames.at(ParamObjectType::kBarrelSlot) + "_id", pm.getBarrelSlot().getID());
-  if (pm.hasFEB())
-  {
-    info.put(objectsNames.at(ParamObjectType::kFEB) + "_id", pm.getFEB().getID());
-  }
-  info.put(objectsNames.at(ParamObjectType::kScintillator) + "_id", pm.getScin().getID());
-  return info;
-}
-
-void JPetParamSaverAscii::fillBarrelSlots(boost::property_tree::ptree& runContents, const JPetParamBank& bank)
-{
-  boost::property_tree::ptree infos;
-  for (auto bs : bank.getBarrelSlots())
-  {
-    infos.push_back(std::make_pair("", barrelSlotToInfo(*bs.second)));
-  }
-  runContents.add_child(objectsNames.at(ParamObjectType::kBarrelSlot), infos);
-}
-
-boost::property_tree::ptree JPetParamSaverAscii::barrelSlotToInfo(const JPetBarrelSlot& bs)
-{
-  boost::property_tree::ptree info;
-  info.put("id", bs.getID());
-  info.put("active", bs.isActive());
-  info.put("name", bs.getName());
-  info.put("theta1", bs.getTheta());
-  info.put("frame_id", bs.getInFrameID());
-  if (bs.hasLayer())
-  {
-    info.put(objectsNames.at(ParamObjectType::kLayer) + "_id", bs.getLayer().getID());
-  }
-  return info;
+  runContents.add_child(objectsNames.at(ParamObjectType::kSetup), infos);
 }
 
 void JPetParamSaverAscii::fillLayers(boost::property_tree::ptree& runContents, const JPetParamBank& bank)
@@ -143,114 +78,162 @@ void JPetParamSaverAscii::fillLayers(boost::property_tree::ptree& runContents, c
   runContents.add_child(objectsNames.at(ParamObjectType::kLayer), infos);
 }
 
+void JPetParamSaverAscii::fillSlots(boost::property_tree::ptree& runContents, const JPetParamBank& bank)
+{
+  boost::property_tree::ptree infos;
+  for (auto slot : bank.getSlots())
+  {
+    infos.push_back(std::make_pair("", slotToInfo(*slot.second)));
+  }
+  runContents.add_child(objectsNames.at(ParamObjectType::kSlot), infos);
+}
+
+void JPetParamSaverAscii::fillScins(boost::property_tree::ptree& runContents, const JPetParamBank& bank)
+{
+  boost::property_tree::ptree infos;
+  for (auto scin : bank.getScins())
+  {
+    infos.push_back(std::make_pair("", scinToInfo(*scin.second)));
+  }
+  runContents.add_child(objectsNames.at(ParamObjectType::kScin), infos);
+}
+
+void JPetParamSaverAscii::fillMatrices(boost::property_tree::ptree& runContents, const JPetParamBank& bank)
+{
+  boost::property_tree::ptree infos;
+  for (auto mtx : bank.getMatrices())
+  {
+    infos.push_back(std::make_pair("", matrixToInfo(*mtx.second)));
+  }
+  runContents.add_child(objectsNames.at(ParamObjectType::kMatrix), infos);
+}
+
+void JPetParamSaverAscii::fillPMs(boost::property_tree::ptree& runContents, const JPetParamBank& bank)
+{
+  boost::property_tree::ptree infos;
+  for (auto pm : bank.getPMs())
+  {
+    infos.push_back(std::make_pair("", pmToInfo(*pm.second)));
+  }
+  runContents.add_child(objectsNames.at(ParamObjectType::kPM), infos);
+}
+
+void JPetParamSaverAscii::fillChannels(boost::property_tree::ptree& runContents, const JPetParamBank& bank)
+{
+  boost::property_tree::ptree infos;
+  for (auto channel : bank.getChannels())
+  {
+    infos.push_back(std::make_pair("", channelToInfo(*channel.second)));
+  }
+  runContents.add_child(objectsNames.at(ParamObjectType::kChannel), infos);
+}
+
+void JPetParamSaverAscii::fillDataSources(boost::property_tree::ptree& runContents, const JPetParamBank& bank)
+{
+  boost::property_tree::ptree infos;
+  for (auto dataSource : bank.getDataSources())
+  {
+    infos.push_back(std::make_pair("", dataSourceToInfo(*dataSource.second)));
+  }
+  runContents.add_child(objectsNames.at(ParamObjectType::kDataSource), infos);
+}
+
+void JPetParamSaverAscii::fillDataModules(boost::property_tree::ptree& runContents, const JPetParamBank& bank)
+{
+  boost::property_tree::ptree infos;
+  for (auto dataModule : bank.getDataModules())
+  {
+    infos.push_back(std::make_pair("", dataModuleToInfo(*dataModule.second)));
+  }
+  runContents.add_child(objectsNames.at(ParamObjectType::kDataModule), infos);
+}
+
+boost::property_tree::ptree JPetParamSaverAscii::setupToInfo(const JPetSetup& setup)
+{
+  boost::property_tree::ptree info;
+  info.put("id", setup.getID());
+  info.put("description", setup.getDescription());
+  return info;
+}
+
 boost::property_tree::ptree JPetParamSaverAscii::layerToInfo(const JPetLayer& layer)
 {
   boost::property_tree::ptree info;
   info.put("id", layer.getID());
-  info.put("active", layer.getIsActive());
   info.put("name", layer.getName());
   info.put("radius", layer.getRadius());
-  info.put(objectsNames.at(ParamObjectType::kFrame) + "_id", layer.getFrame().getID());
+  info.put(objectsNames.at(ParamObjectType::kSetup) + "_id", layer.getSetup().getID());
   return info;
 }
 
-void JPetParamSaverAscii::fillFrames(boost::property_tree::ptree& runContents, const JPetParamBank& bank)
-{
-  boost::property_tree::ptree infos;
-  for (auto frame : bank.getFrames())
-  {
-    infos.push_back(std::make_pair("", frameToInfo(*frame.second)));
-  }
-  runContents.add_child(objectsNames.at(ParamObjectType::kFrame), infos);
-}
-
-boost::property_tree::ptree JPetParamSaverAscii::frameToInfo(const JPetFrame& frame)
+boost::property_tree::ptree JPetParamSaverAscii::slotToInfo(const JPetSlot& slot)
 {
   boost::property_tree::ptree info;
-  info.put("id", frame.getID());
-  info.put("active", frame.getIsActive());
-  info.put("status", frame.getStatus());
-  info.put("description", frame.getDescription());
-  info.put("version", frame.getVersion());
-  info.put("creator_id", frame.getCreator());
+  info.put("id", slot.getID());
+  info.put("theta", slot.getTheta());
+  if (slot.getType() == JPetSlot::Barrel)
+  {
+    info.put("type", "barrel");
+  }
+  else if (slot.getType() == JPetSlot::Module)
+  {
+    info.put("type", "module");
+  }
+  info.put(objectsNames.at(ParamObjectType::kLayer) + "_id", slot.getLayer().getID());
   return info;
 }
 
-void JPetParamSaverAscii::fillFEBs(boost::property_tree::ptree& runContents, const JPetParamBank& bank)
-{
-  boost::property_tree::ptree infos;
-  for (auto feb : bank.getFEBs())
-  {
-    infos.push_back(std::make_pair("", FEBToInfo(*feb.second)));
-  }
-  runContents.add_child(objectsNames.at(ParamObjectType::kFEB), infos);
-}
-
-boost::property_tree::ptree JPetParamSaverAscii::FEBToInfo(const JPetFEB& feb)
+boost::property_tree::ptree JPetParamSaverAscii::scinToInfo(const JPetScin& scin)
 {
   boost::property_tree::ptree info;
-  info.put("id", feb.getID());
-  info.put("active", feb.isActive());
-  info.put("status", feb.status());
-  info.put("description", feb.description());
-  info.put("version", feb.version());
-  info.put("creator_id", feb.getCreator());
-  info.put("time_outputs_per_input", feb.getNtimeOutsPerInput());
-  info.put("no_time_outputs_per_input", feb.getNnotimeOutsPerInput());
-  info.put(objectsNames.at(ParamObjectType::kTRB) + "_id", feb.getTRB().getID());
+  info.put("id", scin.getID());
+  info.put("length", scin.getLength());
+  info.put("width", scin.getWidth());
+  info.put("height", scin.getHeight());
+  info.put("xcenter", scin.getCenterX());
+  info.put("ycenter", scin.getCenterY());
+  info.put("zcenter", scin.getCenterZ());
+  info.put("rot_x", scin.getRotationX());
+  info.put("rot_y", scin.getRotationY());
+  info.put("rot_z", scin.getRotationZ());
+  info.put(objectsNames.at(ParamObjectType::kSlot) + "_id", scin.getSlot().getID());
   return info;
 }
 
-void JPetParamSaverAscii::fillTRBs(boost::property_tree::ptree& runContents, const JPetParamBank& bank)
-{
-  boost::property_tree::ptree infos;
-  for (auto trb : bank.getTRBs())
-  {
-    infos.push_back(std::make_pair("", TRBToInfo(*trb.second)));
-  }
-  runContents.add_child(objectsNames.at(ParamObjectType::kTRB), infos);
-}
-
-boost::property_tree::ptree JPetParamSaverAscii::TRBToInfo(const JPetTRB& trb)
+boost::property_tree::ptree JPetParamSaverAscii::matrixToInfo(const JPetMatrix& mtx)
 {
   boost::property_tree::ptree info;
-  info.put("id", trb.getID());
-  info.put("type", trb.getType());
-  info.put("channel", trb.getChannel());
+  info.put("id", mtx.getID());
+  if (mtx.getSide() == JPetMatrix::SideA)
+  {
+    info.put("side", "A");
+  }
+  else if (mtx.getSide() == JPetMatrix::SideB)
+  {
+    info.put("side", "B");
+  }
+  info.put(objectsNames.at(ParamObjectType::kScin) + "_id", mtx.getScin().getID());
   return info;
 }
 
-void JPetParamSaverAscii::fillTOMBChannels(boost::property_tree::ptree& runContents, const JPetParamBank& bank)
-{
-  boost::property_tree::ptree infos;
-  for (auto tomb : bank.getTOMBChannels())
-  {
-    infos.push_back(std::make_pair("", TOMBChannelToInfo(*tomb.second)));
-  }
-  runContents.add_child(objectsNames.at(ParamObjectType::kTOMBChannel), infos);
-}
-
-boost::property_tree::ptree JPetParamSaverAscii::TOMBChannelToInfo(const JPetTOMBChannel& tomb)
+boost::property_tree::ptree JPetParamSaverAscii::pmToInfo(const JPetPM& pm)
 {
   boost::property_tree::ptree info;
-  info.put("local_number", tomb.getLocalChannelNumber());
-  info.put("channel", tomb.getChannel());
-  info.put("FEB", tomb.getFEBInputNumber());
-  info.put("threshold", tomb.getThreshold());
-  info.put(objectsNames.at(ParamObjectType::kTRB) + "_id", tomb.getTRB().getID());
-  info.put(objectsNames.at(ParamObjectType::kFEB) + "_id", tomb.getFEB().getID());
-  info.put(objectsNames.at(ParamObjectType::kPM) + "_id", tomb.getPM().getID());
+  info.put("id", pm.getID());
+  info.put("description", pm.getDesc());
+  info.put("pos_in_matrix", pm.getMatrixPosition());
+  info.put(objectsNames.at(ParamObjectType::kMatrix) + "_id", pm.getMatrix().getID());
   return info;
 }
 
-void JPetParamSaverAscii::fillDataSources(
-  boost::property_tree::ptree& runContents, const JPetParamBank& bank
-) {
-  boost::property_tree::ptree infos;
-  for (auto dataSource : bank.getDataSources()) {
-    infos.push_back(std::make_pair("", dataSourceToInfo(*dataSource.second)));
-  }
-  runContents.add_child(objectsNames.at(ParamObjectType::kDataSource), infos);
+boost::property_tree::ptree JPetParamSaverAscii::channelToInfo(const JPetChannel& channel)
+{
+  boost::property_tree::ptree info;
+  info.put("id", channel.getID());
+  info.put("thr_num", channel.getThresholdNumber());
+  info.put("thr_val", channel.getThresholdValue());
+  info.put(objectsNames.at(ParamObjectType::kPM) + "_id", channel.getPM().getID());
+  return info;
 }
 
 boost::property_tree::ptree JPetParamSaverAscii::dataSourceToInfo(const JPetDataSource& dataSource)
@@ -267,16 +250,6 @@ boost::property_tree::ptree JPetParamSaverAscii::dataSourceToInfo(const JPetData
   info.put("trbnet_address", trb2stringStream.str());
   info.put("hub_address", hub2stringStream.str());
   return info;
-}
-
-void JPetParamSaverAscii::fillDataModules(
-  boost::property_tree::ptree& runContents, const JPetParamBank& bank
-) {
-  boost::property_tree::ptree infos;
-  for (auto dataModule : bank.getDataModules()) {
-    infos.push_back(std::make_pair("", dataModuleToInfo(*dataModule.second)));
-  }
-  runContents.add_child(objectsNames.at(ParamObjectType::kDataModule), infos);
 }
 
 boost::property_tree::ptree JPetParamSaverAscii::dataModuleToInfo(const JPetDataModule& dataModule)

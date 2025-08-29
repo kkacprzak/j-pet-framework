@@ -19,7 +19,6 @@
 #include "JPetOptionsGenerator/JPetOptionsGeneratorTools.h"
 #include "JPetCmdParser/JPetCmdParser.h"
 #include "JPetCommonTools/JPetCommonTools.h"
-
 #include <boost/test/unit_test.hpp>
 #include <cstdlib>
 #include <iostream>

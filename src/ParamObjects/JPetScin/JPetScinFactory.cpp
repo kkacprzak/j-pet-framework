@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2018 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2021 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -14,10 +14,8 @@
  */
 
 #include "JPetScin/JPetScinFactory.h"
-
 #include <boost/lexical_cast.hpp>
 #include <exception>
-#include <string>
 #include <tuple>
 
 std::map<int, JPetScin*>& JPetScinFactory::getScins()
@@ -31,20 +29,21 @@ std::map<int, JPetScin*>& JPetScinFactory::getScins()
 
 void JPetScinFactory::initialize()
 {
-  ParamObjectsDescriptions descriptions = paramGetter.getAllBasicData(ParamObjectType::kScintillator, runId);
+  ParamObjectsDescriptions descriptions = fParamGetter.getAllBasicData(ParamObjectType::kScin, fRunID);
   if (descriptions.size() == 0)
   {
-    ERROR(std::string("No scintillators in run ") + boost::lexical_cast<std::string>(runId));
+    ERROR(Form("No scintillators in run %i", fRunID));
+    return;
   }
   for (auto description : descriptions)
   {
     fScins[description.first] = build(description.second);
   }
   fInitialized = true;
-  ParamRelationalData relations = paramGetter.getAllRelationalData(ParamObjectType::kScintillator, ParamObjectType::kBarrelSlot, runId);
+  ParamRelationalData relations = fParamGetter.getAllRelationalData(ParamObjectType::kScin, ParamObjectType::kSlot, fRunID);
   for (auto relation : relations)
   {
-    fScins[relation.first]->setBarrelSlot(*barrelSlotFactory.getBarrelSlots().at(relation.second));
+    fScins[relation.first]->setSlot(*fSlotFactory.getSlots().at(relation.second));
   }
 }
 
@@ -53,15 +52,20 @@ JPetScin* JPetScinFactory::build(ParamObjectDescription data)
   try
   {
     int id = boost::lexical_cast<int>(data.at("id"));
-    double attenuationLength = boost::lexical_cast<double>(data.at("attenuation_length"));
-    double length = boost::lexical_cast<double>(data.at("length"));
-    double width = boost::lexical_cast<double>(data.at("width"));
-    double height = boost::lexical_cast<double>(data.at("height"));
-    return new JPetScin(id, attenuationLength, length, width, height);
+    float length = boost::lexical_cast<float>(data.at("length"));
+    float height = boost::lexical_cast<float>(data.at("height"));
+    float width = boost::lexical_cast<float>(data.at("width"));
+    float centerX = boost::lexical_cast<float>(data.at("xcenter"));
+    float centerY = boost::lexical_cast<float>(data.at("ycenter"));
+    float centerZ = boost::lexical_cast<float>(data.at("zcenter"));
+    float rotX = boost::lexical_cast<float>(data.at("rot_x"));
+    float rotY = boost::lexical_cast<float>(data.at("rot_y"));
+    float rotZ = boost::lexical_cast<float>(data.at("rot_z"));
+    return new JPetScin(id, length, height, width, centerX, centerY, centerZ, rotX, rotY, rotZ);
   }
   catch (const std::exception& e)
   {
-    ERROR(std::string("Failed to build scintillator with error: ") + e.what());
+    ERROR(Form("Failed to build scintillator with error: %s", e.what()));
     throw;
   }
 }

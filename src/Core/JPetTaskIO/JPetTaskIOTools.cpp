@@ -84,14 +84,18 @@ std::tuple<bool, std::string, std::string, bool> setInputAndOutputFile(const Opt
     ERROR("No inputFile option provided");
     return std::make_tuple(false, "", "", false);
   }
-  // handle input file path
+
+  // handle input file path unless the expected file type is HLD
   std::string inputFilename = getInputFile(opts);
-  if (JPetCommonTools::extractDataTypeFromFileName(inputFilename) != inFileType)
+  if (inFileType != "hld")
   {
-    WARNING(Form("Input file type %s does not match the one provided by the previous module (%s).", inFileType.c_str(),
-                 JPetCommonTools::extractDataTypeFromFileName(inputFilename).c_str()));
+    if (JPetCommonTools::extractDataTypeFromFileName(inputFilename) != inFileType)
+    {
+      WARNING(Form("Input file type %s does not match the one provided by the previous module (%s).", inFileType.c_str(),
+                   JPetCommonTools::extractDataTypeFromFileName(inputFilename).c_str()));
+    }
+    inputFilename = JPetCommonTools::replaceDataTypeInFileName(inputFilename, inFileType);
   }
-  inputFilename = JPetCommonTools::replaceDataTypeInFileName(inputFilename, inFileType);
 
   // handle output file path
   auto outFileFullPath = inputFilename;
@@ -112,7 +116,9 @@ OptsStrAny setOutputOptions(const JPetParams& oldParams, bool resetOutputPath, c
 {
   OptsStrAny new_opts = oldParams.getOptions();
   if (file_type_checker::getInputFileType(oldParams.getOptions()) == file_type_checker::kHldRoot ||
-      file_type_checker::getInputFileType(oldParams.getOptions()) == file_type_checker::kMCGeant)
+      file_type_checker::getInputFileType(oldParams.getOptions()) == file_type_checker::kMCGeant ||
+      file_type_checker::getInputFileType(oldParams.getOptions()) == file_type_checker::kMCGATE ||
+      file_type_checker::getInputFileType(oldParams.getOptions()) == file_type_checker::kNTuple)
   {
     jpet_options_generator_tools::setOutputFileType(new_opts, "root");
   }

@@ -17,8 +17,8 @@
 #define JPETUNPACKTASK_H
 
 #include "JPetTask/JPetTask.h"
-#include "Unpacker2.h"
-#include "Unpacker2D.h"
+#include "Unpacker2/Unpacker2.h"
+#include "Unpacker2/Unpacker2D.h"
 
 class Unpacker2D;
 class Unpacker2;

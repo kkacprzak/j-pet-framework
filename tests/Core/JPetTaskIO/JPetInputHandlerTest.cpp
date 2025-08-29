@@ -1,14 +1,17 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE JPetInputHandlerTest
-#include "JPetTaskIO/JPetInputHandler.h"
+
 #include "JPetParamGetterAscii/JPetParamGetterAscii.h"
 #include "JPetParamManager/JPetParamManager.h"
+#include "JPetTaskIO/JPetInputHandlerHLD.h"
+#include "JPetTaskIO/JPetInputHandlerROOT.h"
+#include "JPetTimeWindow/JPetTimeWindow.h"
 
 #include <boost/test/unit_test.hpp>
 
 const std::string dataDir = "unitTestData/JPetParamManagerTest/";
 const std::string dataFileName = dataDir + "data.json";
-const char* kInputTestFile = "unitTestData/JPetTaskChainExecutorTest/dabc_17025151847.unk.evt.root";
+const char* kInputTestFile = "unitTestData/JPetTaskChainExecutorTest/goodRootFile.unk.evt.root";
 // Number of events per time window in the file
 // unitTestData/JPetTaskChainExecutorTest/dabc_17025151847.unk.evt.root"
 // time window    |    events
@@ -17,6 +20,8 @@ const char* kInputTestFile = "unitTestData/JPetTaskChainExecutorTest/dabc_170251
 // 2                      6
 // 99                     10
 // 100 (last one)         11
+
+// TODO make test for JPetInputHandlerHLD
 
 int getEntrysInWindow(JPetInputHandler& handler)
 {
@@ -33,7 +38,8 @@ BOOST_AUTO_TEST_CASE(basicTest)
   JPetParams params;
   using namespace jpet_options_generator_tools;
   auto opts = getDefaultOptions();
-  JPetInputHandler handler;
+
+  JPetInputHandlerROOT handler;
   BOOST_REQUIRE(!handler.openInput("", params));
   auto range = handler.getEntryRange();
   BOOST_REQUIRE_EQUAL(range.firstEntry, 0);
@@ -53,7 +59,7 @@ BOOST_AUTO_TEST_CASE(calculateEntryRange)
   auto mgr = std::make_shared<JPetParamManager>(new JPetParamManager(new JPetParamGetterAscii(dataFileName)));
   JPetParams params(opts, mgr);
 
-  JPetInputHandler handler;
+  JPetInputHandlerROOT handler;
   auto res = handler.openInput(kInputTestFile, params);
   BOOST_REQUIRE(res);
   auto firstEvent = 0ll;
@@ -62,7 +68,7 @@ BOOST_AUTO_TEST_CASE(calculateEntryRange)
   std::tie(isOK, firstEvent, lastEvent) = handler.calculateEntryRange(opts);
   BOOST_REQUIRE(isOK);
   BOOST_REQUIRE_EQUAL(firstEvent, 0);
-  BOOST_REQUIRE_EQUAL(lastEvent, 100);
+  BOOST_REQUIRE_EQUAL(lastEvent, 999);
 }
 
 BOOST_AUTO_TEST_CASE(setEntryRange2)
@@ -75,13 +81,13 @@ BOOST_AUTO_TEST_CASE(setEntryRange2)
   auto mgr = std::make_shared<JPetParamManager>(new JPetParamManager(new JPetParamGetterAscii(dataFileName)));
   JPetParams params(opts, mgr);
 
-  JPetInputHandler handler;
+  JPetInputHandlerROOT handler;
   handler.openInput(kInputTestFile, params);
   bool isOK = handler.setEntryRange(opts);
   BOOST_REQUIRE(isOK);
   BOOST_REQUIRE_EQUAL(1, handler.getFirstEntryNumber());
   BOOST_REQUIRE_EQUAL(1, handler.getLastEntryNumber());
-  BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 10);
+  BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 3);
 }
 
 BOOST_AUTO_TEST_CASE(calculateEntryRange3)
@@ -94,13 +100,13 @@ BOOST_AUTO_TEST_CASE(calculateEntryRange3)
   auto mgr = std::make_shared<JPetParamManager>(new JPetParamManager(new JPetParamGetterAscii(dataFileName)));
   JPetParams params(opts, mgr);
 
-  JPetInputHandler handler;
+  JPetInputHandlerROOT handler;
   handler.openInput(kInputTestFile, params);
   bool isOK = handler.setEntryRange(opts);
   BOOST_REQUIRE(isOK);
   BOOST_REQUIRE_EQUAL(0, handler.getFirstEntryNumber());
   BOOST_REQUIRE_EQUAL(1, handler.getLastEntryNumber());
-  BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 15);
+  BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 7);
 }
 
 BOOST_AUTO_TEST_CASE(calculateEntryRange4)
@@ -113,13 +119,13 @@ BOOST_AUTO_TEST_CASE(calculateEntryRange4)
   auto mgr = std::make_shared<JPetParamManager>(new JPetParamManager(new JPetParamGetterAscii(dataFileName)));
   JPetParams params(opts, mgr);
 
-  JPetInputHandler handler;
+  JPetInputHandlerROOT handler;
   handler.openInput(kInputTestFile, params);
   bool isOK = handler.setEntryRange(opts);
   BOOST_REQUIRE(isOK);
   BOOST_REQUIRE_EQUAL(1, handler.getFirstEntryNumber());
-  BOOST_REQUIRE_EQUAL(100, handler.getLastEntryNumber());
-  BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 10);
+  BOOST_REQUIRE_EQUAL(999, handler.getLastEntryNumber());
+  BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 3);
 }
 
 BOOST_AUTO_TEST_CASE(calculateEntryRange5)
@@ -132,13 +138,13 @@ BOOST_AUTO_TEST_CASE(calculateEntryRange5)
   auto mgr = std::make_shared<JPetParamManager>(new JPetParamManager(new JPetParamGetterAscii(dataFileName)));
   JPetParams params(opts, mgr);
 
-  JPetInputHandler handler;
+  JPetInputHandlerROOT handler;
   handler.openInput(kInputTestFile, params);
   bool isOK = handler.setEntryRange(opts);
   BOOST_REQUIRE(isOK);
   BOOST_REQUIRE_EQUAL(0, handler.getFirstEntryNumber());
-  BOOST_REQUIRE_EQUAL(100, handler.getLastEntryNumber());
-  BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 15);
+  BOOST_REQUIRE_EQUAL(999, handler.getLastEntryNumber());
+  BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 7);
 }
 
 BOOST_AUTO_TEST_CASE(calculateEntryRange6)
@@ -151,13 +157,13 @@ BOOST_AUTO_TEST_CASE(calculateEntryRange6)
   auto mgr = std::make_shared<JPetParamManager>(new JPetParamManager(new JPetParamGetterAscii(dataFileName)));
   JPetParams params(opts, mgr);
 
-  JPetInputHandler handler;
+  JPetInputHandlerROOT handler;
   handler.openInput(kInputTestFile, params);
   bool isOK = handler.setEntryRange(opts);
   BOOST_REQUIRE(isOK);
   BOOST_REQUIRE_EQUAL(0, handler.getFirstEntryNumber());
   BOOST_REQUIRE_EQUAL(5, handler.getLastEntryNumber());
-  BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 15);
+  BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 7);
 }
 
 BOOST_AUTO_TEST_CASE(calculateEntryRange7)
@@ -170,13 +176,13 @@ BOOST_AUTO_TEST_CASE(calculateEntryRange7)
   auto mgr = std::make_shared<JPetParamManager>(new JPetParamManager(new JPetParamGetterAscii(dataFileName)));
   JPetParams params(opts, mgr);
 
-  JPetInputHandler handler;
+  JPetInputHandlerROOT handler;
   handler.openInput(kInputTestFile, params);
   bool isOK = handler.setEntryRange(opts);
   BOOST_REQUIRE(isOK);
   BOOST_REQUIRE_EQUAL(2, handler.getFirstEntryNumber());
   BOOST_REQUIRE_EQUAL(5, handler.getLastEntryNumber());
-  BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 6);
+  BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 3);
 }
 
 BOOST_AUTO_TEST_CASE(getNextEntry)
@@ -189,14 +195,14 @@ BOOST_AUTO_TEST_CASE(getNextEntry)
   auto mgr = std::make_shared<JPetParamManager>(new JPetParamManager(new JPetParamGetterAscii(dataFileName)));
   JPetParams params(opts, mgr);
 
-  JPetInputHandler handler;
+  JPetInputHandlerROOT handler;
   handler.openInput(kInputTestFile, params);
   handler.setEntryRange(opts);
-  BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 15);
+  BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 7);
   BOOST_REQUIRE(handler.nextEntry());
-  BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 10);
+  BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 3);
   BOOST_REQUIRE(handler.nextEntry());
-  BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 6);
+  BOOST_REQUIRE_EQUAL(getEntrysInWindow(handler), 3);
   BOOST_REQUIRE(handler.nextEntry());
   BOOST_REQUIRE(handler.nextEntry());
   BOOST_REQUIRE(handler.nextEntry());

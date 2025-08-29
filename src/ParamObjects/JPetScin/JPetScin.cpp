@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2018 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2021 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -14,99 +14,125 @@
  */
 
 #include "JPetScin/JPetScin.h"
-
-#include <cassert>
+#include "JPetLoggerInclude.h"
 
 ClassImp(JPetScin);
 
-JPetScin::JPetScin() : fScinSize(0., 0., 0.) { SetName("JPetScin"); }
+JPetScin::JPetScin() { SetName("JPetScin"); }
 
-JPetScin::JPetScin(int id) : fID(id), fScinSize(0., 0., 0.) { SetName("JPetScin"); }
-
-JPetScin::JPetScin(int id, float attenLen, float length, float height, float width) : fID(id), fAttenLen(attenLen), fScinSize(length, height, width)
+/**
+ * Constructor of a Scin object without defined rotation vector, which in this case is initialized to be (0,0,0) (no rotation)
+ */
+JPetScin::JPetScin(int id, float length, float height, float width, float center_x, float center_y, float center_z)
+    : fID(id), fLength(length), fHeight(height), fWidth(width), fScinCenter(center_x, center_y, center_z), fScinRotation(0.0, 0.0, 0.0)
 {
   SetName("JPetScin");
 }
 
-JPetScin::JPetScin(bool isNull) : fScinSize(0., 0., 0.), fIsNullObject(isNull) { SetName("JPetScin"); }
+JPetScin::JPetScin(int id, float length, float height, float width, float center_x, float center_y, float center_z, float rotX, float rotY,
+                   float rotZ)
+    : fID(id), fLength(length), fHeight(height), fWidth(width), fScinCenter(center_x, center_y, center_z), fScinRotation(rotX, rotY, rotZ)
+{
+  SetName("JPetScin");
+}
+
+JPetScin::JPetScin(const JPetScin& scin)
+    : fID(scin.getID()), fLength(scin.getLength()), fHeight(scin.getHeight()), fWidth(scin.getWidth()),
+      fScinCenter(scin.getCenterX(), scin.getCenterY(), scin.getCenterZ()),
+      fScinRotation(scin.getRotationX(), scin.getRotationY(), scin.getRotationZ())
+{
+  SetName("JPetScin");
+}
+
+JPetScin::JPetScin(bool isNull) : fIsNullObject(isNull) { SetName("JPetScin"); }
 
 JPetScin::~JPetScin() {}
 
-float JPetScin::getScinSize(JPetScin::Dimension dim) const
+void JPetScin::setID(int id) { fID = id; }
+
+void JPetScin::setDimensions(float length, float height, float width)
 {
-  float value = 0;
-  switch (dim)
-  {
-  case kLength:
-    value = fScinSize.fLength;
-    break;
-  case kHeight:
-    value = fScinSize.fHeight;
-    break;
-  case kWidth:
-    value = fScinSize.fWidth;
-    break;
-  default:
-    assert(1 == 0);
-  }
-  return value;
+  fLength = length;
+  fHeight = height;
+  fWidth = width;
 }
 
-void JPetScin::setScinSize(JPetScin::Dimension dim, float value)
-{
-  switch (dim)
-  {
-  case kLength:
-    fScinSize.fLength = value;
-    break;
-  case kHeight:
-    fScinSize.fHeight = value;
-    break;
-  case kWidth:
-    fScinSize.fWidth = value;
-    break;
-  default:
-    assert(1 == 0);
-  }
-}
+void JPetScin::setLength(float length) { fLength = length; }
 
-bool JPetScin::operator==(const JPetScin& scin) const { return getID() == scin.getID(); }
+void JPetScin::setHeight(float height) { fHeight = height; }
 
-bool JPetScin::operator!=(const JPetScin& scin) const { return getID() != scin.getID(); }
+void JPetScin::setWidth(float width) { fWidth = width; }
+
+void JPetScin::setCenter(TVector3 center) { fScinCenter = center; }
+
+void JPetScin::setCenterX(float centerX) { fScinCenter[0] = centerX; }
+
+void JPetScin::setCenterY(float centerY) { fScinCenter[1] = centerY; }
+
+void JPetScin::setCenterZ(float centerZ) { fScinCenter[2] = centerZ; }
+
+void JPetScin::setRotation(TVector3 rotation) { fScinRotation = rotation; }
+
+void JPetScin::setRotationX(float rotationX) { fScinCenter[0] = rotationX; }
+
+void JPetScin::setRotationY(float rotationY) { fScinCenter[1] = rotationY; }
+
+void JPetScin::setRotationZ(float rotationZ) { fScinCenter[2] = rotationZ; }
+
+void JPetScin::setSlot(JPetSlot& slot) { fTRefSlot = &slot; }
 
 int JPetScin::getID() const { return fID; }
 
-float JPetScin::getAttenLen() const { return fAttenLen; }
+float JPetScin::getLength() const { return fLength; }
 
-JPetScin::ScinDimensions JPetScin::getScinSize() const { return fScinSize; }
+float JPetScin::getHeight() const { return fHeight; }
 
-float JPetScin::getScinSize(Dimension dim) const;
+float JPetScin::getWidth() const { return fWidth; }
 
-void JPetScin::setAttenLen(float attenLen) { fAttenLen = attenLen; }
+TVector3 JPetScin::getCenter() const { return fScinCenter; }
 
-void JPetScin::setScinSize(ScinDimensions size) { fScinSize = size; }
+float JPetScin::getCenterX() const { return fScinCenter.X(); }
 
-void JPetScin::setScinSize(Dimension dim, float value);
+float JPetScin::getCenterY() const { return fScinCenter.Y(); }
 
-void JPetScin::setBarrelSlot(JPetBarrelSlot& p_barrelSlot) { fTRefBarrelSlot = &p_barrelSlot; }
+float JPetScin::getCenterZ() const { return fScinCenter.Z(); }
 
-JPetBarrelSlot& JPetScin::getBarrelSlot() const
+TVector3 JPetScin::getRotation() const { return fScinRotation; }
+
+float JPetScin::getRotationX() const { return fScinRotation.X(); }
+
+float JPetScin::getRotationY() const { return fScinRotation.Y(); }
+
+float JPetScin::getRotationZ() const { return fScinRotation.Z(); }
+
+const JPetSlot& JPetScin::getSlot() const
 {
-  if (fTRefBarrelSlot.GetObject())
-    return (JPetBarrelSlot&)*(fTRefBarrelSlot.GetObject());
+  if (fTRefSlot.GetObject())
+  {
+    return static_cast<JPetSlot&>(*(fTRefSlot.GetObject()));
+  }
   else
   {
-    ERROR("No JPetBarrelSlot slot set, Null object will be returned");
-    return JPetBarrelSlot::getDummyResult();
+    ERROR("No JPetSlot set, Null object will be returned");
+    return JPetSlot::getDummyResult();
   }
+}
+
+bool JPetScin::operator==(const JPetScin& scin) const
+{
+  return this->getID() == scin.getID() && this->getLength() == scin.getLength() && this->getHeight() == scin.getHeight() &&
+         this->getWidth() == scin.getWidth() && this->getCenter() == scin.getCenter() && this->getRotation() == scin.getRotation() &&
+         this->getSlot() == scin.getSlot();
+}
+
+bool JPetScin::operator!=(const JPetScin& scin) const { return !(*this == scin); }
+
+JPetScin& JPetScin::getDummyResult()
+{
+  static JPetScin dummyResult(true);
+  return dummyResult;
 }
 
 bool JPetScin::isNullObject() const { return fIsNullObject; }
 
-JPetScin& JPetScin::getDummyResult()
-{
-  static JPetScin DummyResult(true);
-  return DummyResult;
-}
-
-void JPetScin::clearTRefBarrelSlot() { fTRefBarrelSlot = NULL; }
+void JPetScin::clearTRefSlot() { fTRefSlot = nullptr; }

@@ -18,24 +18,7 @@
 
 #include <boost/noncopyable.hpp>
 
-#include "JPetBarrelSlot/JPetBarrelSlot.h"
-#include "JPetBaseHit/JPetBaseHit.h"
-#include "JPetRawMCHit/JPetRawMCHit.h"
-#include "JPetEvent/JPetEvent.h"
-#include "JPetFEB/JPetFEB.h"
-#include "JPetHit/JPetHit.h"
-#include "JPetLOR/JPetLOR.h"
 #include "JPetLoggerInclude.h"
-#include "JPetMCRecoHit/JPetMCRecoHit.h"
-#include "JPetPM/JPetPM.h"
-#include "JPetPhysRecoHit/JPetPhysRecoHit.h"
-#include "JPetPhysSignal/JPetPhysSignal.h"
-#include "JPetRecoHit/JPetRecoHit.h"
-#include "JPetScin/JPetScin.h"
-#include "JPetSigCh/JPetSigCh.h"
-#include "JPetTRB/JPetTRB.h"
-#include "JPetTimeWindow/JPetTimeWindow.h"
-
 #include <TFile.h>
 #include <TList.h>
 #include <TTree.h>

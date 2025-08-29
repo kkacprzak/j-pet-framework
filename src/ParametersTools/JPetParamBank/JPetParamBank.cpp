@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2020 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2021 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -23,14 +23,13 @@ JPetParamBank::JPetParamBank(const bool d) : fDummy(d) {}
 
 JPetParamBank::JPetParamBank(const JPetParamBank& paramBank) : fDummy(false)
 {
-  copyMapValues(fScintillators, paramBank.fScintillators);
-  copyMapValues(fPMs, paramBank.fPMs);
-  copyMapValues(fFEBs, paramBank.fFEBs);
-  copyMapValues(fTRBs, paramBank.fTRBs);
-  copyMapValues(fBarrelSlots, paramBank.fBarrelSlots);
+  copyMapValues(fSetups, paramBank.fSetups);
   copyMapValues(fLayers, paramBank.fLayers);
-  copyMapValues(fFrames, paramBank.fFrames);
-  copyMapValues(fTOMBChannels, paramBank.fTOMBChannels);
+  copyMapValues(fSlots, paramBank.fSlots);
+  copyMapValues(fScins, paramBank.fScins);
+  copyMapValues(fMatrices, paramBank.fMatrices);
+  copyMapValues(fPMs, paramBank.fPMs);
+  copyMapValues(fChannels, paramBank.fChannels);
   copyMapValues(fDataSources, paramBank.fDataSources);
   copyMapValues(fDataModules, paramBank.fDataModules);
 }
@@ -41,14 +40,13 @@ bool JPetParamBank::isDummy() const { return fDummy; }
 
 void JPetParamBank::clear()
 {
-  fScintillators.clear();
-  fPMs.clear();
-  fFEBs.clear();
-  fTRBs.clear();
-  fBarrelSlots.clear();
+  fSetups.clear();
   fLayers.clear();
-  fFrames.clear();
-  fTOMBChannels.clear();
+  fSlots.clear();
+  fScins.clear();
+  fMatrices.clear();
+  fPMs.clear();
+  fChannels.clear();
   fDataSources.clear();
   fDataModules.clear();
 }
@@ -56,40 +54,38 @@ void JPetParamBank::clear()
 int JPetParamBank::getSize(ParamObjectType type) const
 {
   int size = -1;
-  switch (type) {
-    case kScintillator:
-      size = getScintillatorsSize();
-      break;
-    case kPM:
-      size = getPMsSize();
-      break;
-    case kBarrelSlot:
-      size = getBarrelSlotsSize();
-      break;
-    case kLayer:
-      size = getLayersSize();
-      break;
-    case kFrame:
-      size = getFramesSize();
-      break;
-    case kFEB:
-      size = getFEBsSize();
-      break;
-    case kTRB:
-      size = getTRBsSize();
-      break;
-    case kTOMBChannel:
-      size = getTOMBChannelsSize();
-      break;
-    case kDataSource:
-      size = getDataSourcesSize();
-      break;
-    case kDataModule:
-      size = getDataModulesSize();
-      break;
-    default:
-      ERROR("Incorrect type");
-      break;
+  switch (type)
+  {
+  case kSetup:
+    size = getSetupsSize();
+    break;
+  case kLayer:
+    size = getLayersSize();
+    break;
+  case kSlot:
+    size = getSlotsSize();
+    break;
+  case kScin:
+    size = getScinsSize();
+    break;
+  case kMatrix:
+    size = getMatricesSize();
+    break;
+  case kPM:
+    size = getPMsSize();
+    break;
+  case kChannel:
+    size = getChannelsSize();
+    break;
+  case kDataSource:
+    size = getDataSourcesSize();
+    break;
+  case kDataModule:
+    size = getDataModulesSize();
+    break;
+  default:
+    ERROR("Bad ParamObject type");
+    break;
   }
   return size;
 }

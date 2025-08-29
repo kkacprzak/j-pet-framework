@@ -15,9 +15,10 @@
 
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE JPetOptionsTest
-#include "JPetOptionsTools/JPetOptionsTools.h"
 
+#include "JPetOptionsTools/JPetOptionsTools.h"
 #include <boost/test/unit_test.hpp>
+
 using boost::any_cast;
 using namespace std;
 
