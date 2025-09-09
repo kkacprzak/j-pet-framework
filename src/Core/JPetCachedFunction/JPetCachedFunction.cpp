@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2019 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2025 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -17,48 +17,53 @@
 #include "JPetLoggerInclude.h"
 #include <TFormula.h>
 
-namespace  jpet_common_tools
+namespace jpet_common_tools
 {
 
-JPetCachedFunction::JPetCachedFunction(const JPetCachedFunctionParams& params): fParams(params)
-{
-}
+JPetCachedFunction::JPetCachedFunction(const JPetCachedFunctionParams& params) : fParams(params) {}
 
-JPetCachedFunction1D::JPetCachedFunction1D(const JPetCachedFunctionParams& params, const Range& range): JPetCachedFunction(params), fRange(range)
+JPetCachedFunction1D::JPetCachedFunction1D(const JPetCachedFunctionParams& params, const Range& range) : JPetCachedFunction(params), fRange(range)
 {
   TFormula func("myFunc", fParams.fFormula.c_str());
   func.SetParameters(fParams.fParams.data());
-  if (fRange.fBins <= 0) {
+  if (fRange.fBins <= 0)
+  {
     ERROR("Number of bins must be greater than 0!");
     fParams.fValidFunction = false;
     return;
   }
   double step = (fRange.fMax - fRange.fMin) / fRange.fBins;
-  if (step <= 0.) {
-    ERROR("Check values of XMin:" + std::to_string(fRange.fMin) << " and XMax:" << std::to_string(fRange.fMax) << " !!! getX() function will not work correctly.");
+  if (step <= 0.)
+  {
+    ERROR("Check values of XMin:" + std::to_string(fRange.fMin)
+          << " and XMax:" << std::to_string(fRange.fMax) << " !!! getX() function will not work correctly.");
     fParams.fValidFunction = false;
     return;
   }
   fStep = step;
   fValues.reserve(fRange.fBins);
   double currX = fRange.fMin;
-  for (int i = 0; i < fRange.fBins; i++) {
+  for (int i = 0; i < fRange.fBins; i++)
+  {
     fValues.push_back(func.Eval(currX));
     currX = currX + step;
   }
   fParams.fValidFunction = true;
 }
 
-JPetCachedFunction2D::JPetCachedFunction2D(const JPetCachedFunctionParams& params, const Range& xRange, const Range& yRange): JPetCachedFunction(params), fRange(xRange, yRange)
+JPetCachedFunction2D::JPetCachedFunction2D(const JPetCachedFunctionParams& params, const Range& xRange, const Range& yRange)
+    : JPetCachedFunction(params), fRange(xRange, yRange)
 {
   TFormula func("myFunc", fParams.fFormula.c_str());
   func.SetParameters(fParams.fParams.data());
-  if (fRange.first.fBins <= 0) {
+  if (fRange.first.fBins <= 0)
+  {
     ERROR("Number of bins X must be greater than 0!");
     fParams.fValidFunction = false;
     return;
   }
-  if (fRange.second.fBins <= 0) {
+  if (fRange.second.fBins <= 0)
+  {
     ERROR("Number of bins Y must be greater than 0!");
     fParams.fValidFunction = false;
     return;
@@ -66,12 +71,14 @@ JPetCachedFunction2D::JPetCachedFunction2D(const JPetCachedFunctionParams& param
 
   double stepX = (fRange.first.fMax - fRange.first.fMin) / fRange.first.fBins;
   double stepY = (fRange.second.fMax - fRange.second.fMin) / fRange.second.fBins;
-  if (stepX <= 0.) {
+  if (stepX <= 0.)
+  {
     ERROR("Check values of XMin:" + std::to_string(fRange.first.fMin) << " and XMax:" << std::to_string(fRange.first.fMax) << " !!!");
     fParams.fValidFunction = false;
     return;
   }
-  if (stepY <= 0.) {
+  if (stepY <= 0.)
+  {
     ERROR("Check values of YMin:" + std::to_string(fRange.second.fMin) << " and YMax:" << std::to_string(fRange.second.fMax) << " !!!");
     fParams.fValidFunction = false;
     return;
@@ -81,8 +88,10 @@ JPetCachedFunction2D::JPetCachedFunction2D(const JPetCachedFunctionParams& param
   fValues.reserve(fRange.first.fBins * fRange.second.fBins);
   double currX = fRange.first.fMin;
   double currY = fRange.second.fMin;
-  for (int j = 0; j < fRange.second.fBins; j++) {
-    for (int i = 0; i < fRange.first.fBins; i++) {
+  for (int j = 0; j < fRange.second.fBins; j++)
+  {
+    for (int i = 0; i < fRange.first.fBins; i++)
+    {
       fValues.push_back(func.Eval(currX, currY));
       currX = currX + stepX;
     }
@@ -92,33 +101,21 @@ JPetCachedFunction2D::JPetCachedFunction2D(const JPetCachedFunctionParams& param
   fParams.fValidFunction = true;
 }
 
-Range JPetCachedFunction1D::getRange() const
-{
-  return fRange;
-}
+Range JPetCachedFunction1D::getRange() const { return fRange; }
 
-std::pair<Range, Range> JPetCachedFunction2D::getRange() const
-{
-  return fRange;
-}
+std::pair<Range, Range> JPetCachedFunction2D::getRange() const { return fRange; }
 
-JPetCachedFunctionParams JPetCachedFunction::getParams() const
-{
-  return fParams;
-}
+JPetCachedFunctionParams JPetCachedFunction::getParams() const { return fParams; }
 
-std::vector<double> JPetCachedFunction::getValues() const
-{
-  return fValues;
-}
-
+std::vector<double> JPetCachedFunction::getValues() const { return fValues; }
 
 double JPetCachedFunction1D::operator()(double x) const
 {
-  if ((x < fRange.fMin) || (x > fRange.fMax)) return 0;
+  if ((x < fRange.fMin) || (x > fRange.fMax))
+    return 0;
   int index = xValueToIndex(x);
   assert(index >= 0);
-  assert(((unsigned int) index) < getValues().size());
+  assert(((unsigned int)index) < getValues().size());
   return getValues()[index];
 }
 
@@ -128,13 +125,13 @@ int JPetCachedFunction1D::xValueToIndex(double x) const
   return (x - fRange.fMin) / fStep;
 }
 
-
 double JPetCachedFunction2D::operator()(double x, double y) const
 {
-  if ((x < fRange.first.fMin) || (x > fRange.first.fMax) || (y < fRange.second.fMin) || (y > fRange.second.fMax)) return 0;
+  if ((x < fRange.first.fMin) || (x > fRange.first.fMax) || (y < fRange.second.fMin) || (y > fRange.second.fMax))
+    return 0;
   auto index = xyValueToIndex(x, y);
   assert(index >= 0);
-  assert(((unsigned int) index) < fValues.size());
+  assert(((unsigned int)index) < fValues.size());
   return fValues[index];
 }
 
@@ -144,4 +141,4 @@ int JPetCachedFunction2D::xyValueToIndex(double x, double y) const
   return ((x - fRange.first.fMin) / fSteps.first) + ((y - fRange.second.fMin) / fSteps.second) * fRange.first.fBins;
 }
 
-}
+} // namespace jpet_common_tools

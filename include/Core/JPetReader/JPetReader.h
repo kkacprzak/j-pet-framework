@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2018 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2025 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -16,9 +16,9 @@
 #ifndef JPETREADER_H
 #define JPETREADER_H
 
+#include "./JPetLoggerInclude.h"
 #include "./JPetReaderInterface/JPetReaderInterface.h"
 #include "./JPetTreeHeader/JPetTreeHeader.h"
-#include "./JPetLoggerInclude.h"
 #include <TBranch.h>
 #include <TFile.h>
 #include <TTree.h>
@@ -34,7 +34,7 @@
  * @todo Add the correct file to 'file_with_no_jpettreeheader' test and
  * see TTree GetEntry method, add test of file with no JPetTreeHeader
  */
-class JPetReader: private boost::noncopyable, public JPetReaderInterface
+class JPetReader : private boost::noncopyable, public JPetReaderInterface
 {
 public:
   static const std::string kRootTreeName;
@@ -48,8 +48,7 @@ public:
   virtual bool nthEntry(long long n) override;
   virtual long long getCurrentEntryNumber() const override;
   virtual long long getNbOfAllEntries() const override;
-  virtual bool openFileAndLoadData(
-    const char* filename, const char* treename = "T") override;
+  virtual bool openFileAndLoadData(const char* filename, const char* treename = "T") override;
   virtual void closeFile();
   JPetTreeHeader* getHeaderClone() const;
   virtual TObject* getObjectFromFile(const char* name);
@@ -59,7 +58,7 @@ protected:
   virtual bool openFile(const char* filename);
   virtual bool loadData(const char* treename = "T");
   bool loadCurrentEntry();
-  inline bool isCorrectTreeEntryCode (int entryCode) const;
+  inline bool isCorrectTreeEntryCode(int entryCode) const;
 
   TBranch* fBranch = nullptr;
   TObject* fEntry = nullptr;

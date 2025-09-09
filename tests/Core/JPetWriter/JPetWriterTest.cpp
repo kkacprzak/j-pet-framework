@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2021 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2025 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -29,8 +29,8 @@
 #include "Signals/JPetPhysSignal/JPetPhysSignal.h"
 #include "Signals/JPetRecoSignal/JPetRecoSignal.h"
 #include <TFile.h>
-#include <TList.h>
 #include <THashTable.h>
+#include <TList.h>
 #include <TNamed.h>
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>

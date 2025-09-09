@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2018 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2025 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -26,10 +26,10 @@ namespace JPetTaskIOTools
 std::tuple<bool, long long, long long> setUserLimits(const jpet_options_tools::OptsStrAny& opts, const long long totalNumEvents);
 /// @brief Function returns (isOK, inputFile, outputFileFullPath, isResetOutputPath) based on provided options.
 /// if isOK is set to false, that means that an error has occured.
-std::tuple<bool, std::string, std::string, bool> setInputAndOutputFile(const OptsStrAny& opts, bool prevResetOutputPath, const std::string& inFileType, const std::string& outFileType);
+std::tuple<bool, std::string, std::string, bool> setInputAndOutputFile(const OptsStrAny& opts, bool prevResetOutputPath,
+                                                                       const std::string& inFileType, const std::string& outFileType);
 
 OptsStrAny setOutputOptions(const JPetParams& oldParams, bool resetOutputPath, const std::string& fullOutPath);
 
-
-};
+}; // namespace JPetTaskIOTools
 #endif /*  !JPETTASKIOTOOLS_H */

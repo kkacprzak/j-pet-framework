@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2018 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2025 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -56,11 +56,13 @@ std::vector<const char*> JPetCommonTools::createArgs(const std::string& commandL
   std::istringstream iss(commandLine);
   std::vector<std::string> args{std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{}};
   std::vector<const char*> args_char;
-  std::transform(args.begin(), args.end(), std::back_inserter(args_char), [](const std::string& s) {
-    char* pc = new char[s.size() + 1];
-    std::strcpy(pc, s.c_str());
-    return pc;
-  });
+  std::transform(args.begin(), args.end(), std::back_inserter(args_char),
+                 [](const std::string& s)
+                 {
+                   char* pc = new char[s.size() + 1];
+                   std::strcpy(pc, s.c_str());
+                   return pc;
+                 });
   return args_char;
 }
 

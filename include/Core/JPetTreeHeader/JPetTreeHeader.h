@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2018 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2025 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -19,9 +19,9 @@
 #include <TObject.h>
 #include <TString.h>
 #include <iostream>
+#include <map>
 #include <ostream>
 #include <vector>
-#include <map>
 
 /**
  * @brief A class representing a header with info on JPet ROOT Trees.
@@ -38,10 +38,11 @@
  * e.g. a variable named "source position" with a value of "Xcm;Ycm;Zcm"
  * can be added to the dictionary.
  */
-class JPetTreeHeader: public TObject
+class JPetTreeHeader : public TObject
 {
 public:
-  struct ProcessingStageInfo {
+  struct ProcessingStageInfo
+  {
     std::string fModuleName;
     std::string fModuleDescription;
     int fModuleVersion;
@@ -50,77 +51,40 @@ public:
 
   JPetTreeHeader();
   JPetTreeHeader(int run);
-  void Print() const
-  {
-    std::cout << this->stringify();
-  }
+  void Print() const { std::cout << this->stringify(); }
   std::string stringify() const;
-  inline int getRunNumber() const
-  {
-    return fRunNo;
-  }
-  inline void setRunNumber(int p_run_no)
-  {
-    fRunNo = p_run_no;
-  }
-  inline std::string getFrameworkRevision() const
-  {
-    return fFrameworkRevision;
-  }
-  inline std::string getFrameworkVersion() const
-  {
-    return fFrameworkVersion;
-  }
-  inline void setFrameworkVersion(const char* p_version)
-  {
-    fFrameworkVersion = p_version;
-  }
-  inline void setFrameworkRevision(const char* p_revision)
-  {
-    fFrameworkRevision = p_revision;
-  }
-  inline std::string getBaseFileName() const
-  {
-    return fBaseFilename;
-  }
+  inline int getRunNumber() const { return fRunNo; }
+  inline void setRunNumber(int p_run_no) { fRunNo = p_run_no; }
+  inline std::string getFrameworkRevision() const { return fFrameworkRevision; }
+  inline std::string getFrameworkVersion() const { return fFrameworkVersion; }
+  inline void setFrameworkVersion(const char* p_version) { fFrameworkVersion = p_version; }
+  inline void setFrameworkRevision(const char* p_revision) { fFrameworkRevision = p_revision; }
+  inline std::string getBaseFileName() const { return fBaseFilename; }
   void addStageInfo(std::string name, std::string title, int version, std::string time_stamp);
-  int getStagesNb()const
-  {
-    return fStages.size();
-  }
+  int getStagesNb() const { return fStages.size(); }
   void setVariable(std::string name, std::string value);
   std::string getVariable(std::string name) const;
-  inline void setBaseFileName(const char* p_name)
-  {
-    fBaseFilename = p_name;
-  }
+  inline void setBaseFileName(const char* p_name) { fBaseFilename = p_name; }
 
-  const ProcessingStageInfo& emptyProcessingStageInfo() const
-  {
-    return emptyStage;
-  }
+  const ProcessingStageInfo& emptyProcessingStageInfo() const { return emptyStage; }
 
   const ProcessingStageInfo& getProcessingStageInfo(unsigned int i) const
   {
-    if (i < fStages.size()) return fStages.at(i);
-    else return emptyProcessingStageInfo();
+    if (i < fStages.size())
+      return fStages.at(i);
+    else
+      return emptyProcessingStageInfo();
   }
 
   /**
    * Get the source position in mm; -1 means that no source was used
    */
-  inline double getSourcePosition() const
-  {
-    return fSourcePosition;
-  }
+  inline double getSourcePosition() const { return fSourcePosition; }
 
   /**
    * Set source position in mm; set -1 if no source was used
    */
-  inline void setSourcePosition(double p_pos)
-  {
-    fSourcePosition = p_pos;
-  }
+  inline void setSourcePosition(double p_pos) { fSourcePosition = p_pos; }
 
 protected:
   std::string stringifyDictionary() const;

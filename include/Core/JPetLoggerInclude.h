@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2018 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2025 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -30,16 +30,17 @@
 #include <boost/log/attributes/scoped_attribute.hpp>
 #include <boost/log/utility/manipulators/add_value.hpp>
 
-
 /* Macro with multi-line statement
  * DO not use directly, instead use INFO, WARNING, ERROR, DEBUG or LOG macros
  * See: http://www.cs.technion.ac.il/users/yechiel/c++-faq/macros-with-multi-stmts.html
  */
 #define CUSTOM_LOG(logger, sev, X)                                                                                                                   \
-  if (true) {                                                                                                                                        \
+  if (true)                                                                                                                                          \
+  {                                                                                                                                                  \
     BOOST_LOG_SEV(logger, sev) << boost::log::add_value("Line", __LINE__) << boost::log::add_value("File", __FILE__)                                 \
                                << boost::log::add_value("Function", __func__) << X;                                                                  \
-  } else                                                                                                                                             \
+  }                                                                                                                                                  \
+  else                                                                                                                                               \
     (void)0
 
 /* To log information you should use macros INFO(X), WARNING(X), ERROR(X), DEBUG(X) or

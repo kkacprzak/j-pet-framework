@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2018 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2025 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -14,8 +14,8 @@
  */
 
 #include "JPetOptionsTools/JPetOptionsTransformators.h"
-#include "JPetOptionsTools/JPetOptionsTools.h"
 #include "JPetCommonTools/JPetCommonTools.h"
+#include "JPetOptionsTools/JPetOptionsTools.h"
 #include <boost/any.hpp>
 #include <iostream>
 #include <string>
@@ -64,7 +64,8 @@ std::pair<std::string, boost::any> generateHigherEventBound(boost::any option)
  */
 Transformer generateSetFileTypeTransformator(const std::map<std::string, boost::any>& options)
 {
-  auto setFileType = [options](boost::any option) -> std::pair<std::string, boost::any> {
+  auto setFileType = [options](boost::any option) -> std::pair<std::string, boost::any>
+  {
     std::string optionKey = "inputFileType_std::string";
     if (!isOptionSet(options, "file_std::vector<std::string>"))
     {

@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2021 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2025 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -32,8 +32,7 @@ class JPetScin : public TNamed
 public:
   JPetScin();
   JPetScin(int id, float length, float height, float width, float center_x, float center_y, float center_z);
-  JPetScin(int id, float length, float height, float width, float center_x, float center_y, float center_z, float rotX, float rotY,
-           float rotZ);
+  JPetScin(int id, float length, float height, float width, float center_x, float center_y, float center_z, float rotX, float rotY, float rotZ);
   JPetScin(const JPetScin& scin);
   explicit JPetScin(bool isNull);
   virtual ~JPetScin();

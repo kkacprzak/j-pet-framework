@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2021 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2025 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -43,23 +43,23 @@ BOOST_AUTO_TEST_CASE(check_decayTree_creation_and_getting_branch)
   int fourthNodeID = 3;
   int thirdTrackID = 5;
   int fifthNodeID = 30;
-  
+
   InteractionType firstInteractionType = InteractionType::kPrimaryGamma;
   InteractionType secondInteractionType = InteractionType::kScattNonActivePart;
   InteractionType thirdInteractionType = InteractionType::kScattActivePart;
   InteractionType fourthInteractionType = InteractionType::kPrimaryGamma;
   InteractionType fifthInteractionType = InteractionType::kSecondaryPart;
-  
+
   decayTree.AddNodeToBranch(firstNodeID, firstTrackID, firstInteractionType);
   decayTree.AddNodeToBranch(secondNodeID, firstTrackID, secondInteractionType);
   decayTree.AddNodeToBranch(thirdNodeID, firstTrackID, thirdInteractionType);
   decayTree.AddNodeToBranch(fourthNodeID, secondTrackID, fourthInteractionType);
   decayTree.AddNodeToBranch(fifthNodeID, thirdTrackID, fifthInteractionType);
-  
+
   auto firstBranch = decayTree.GetDecayTreeBranchByTrack(firstTrackID);
   auto secondBranch = decayTree.GetDecayTreeBranchByTrack(secondTrackID);
   auto thirdBranch = decayTree.GetDecayTreeBranchByTrack(thirdTrackID);
-  
+
   BOOST_REQUIRE_EQUAL(firstBranch->GetPrimaryBranchID(), primaryBranchID);
   BOOST_REQUIRE_EQUAL(firstBranch->GetTrackID(), firstTrackID);
   BOOST_REQUIRE_EQUAL(firstBranch->GetPrimaryNodeID(), firstNodeID);
@@ -69,14 +69,14 @@ BOOST_AUTO_TEST_CASE(check_decayTree_creation_and_getting_branch)
   BOOST_REQUIRE_EQUAL(firstBranch->GetInteractionType(firstNodeID), firstInteractionType);
   BOOST_REQUIRE_EQUAL(firstBranch->GetInteractionType(secondNodeID), secondInteractionType);
   BOOST_REQUIRE_EQUAL(firstBranch->GetInteractionType(thirdNodeID), thirdInteractionType);
-  
+
   BOOST_REQUIRE_EQUAL(secondBranch->GetPrimaryBranchID(), primaryBranchID);
   BOOST_REQUIRE_EQUAL(secondBranch->GetTrackID(), secondTrackID);
   BOOST_REQUIRE_EQUAL(secondBranch->GetPrimaryNodeID(), fourthNodeID);
   BOOST_REQUIRE_EQUAL(secondBranch->GetLastNodeID(), fourthNodeID);
   BOOST_REQUIRE_EQUAL(secondBranch->GetPreviousNodeID(fourthNodeID), fourthNodeID);
   BOOST_REQUIRE_EQUAL(secondBranch->GetInteractionType(fourthNodeID), fourthInteractionType);
-  
+
   BOOST_REQUIRE_EQUAL(thirdBranch->GetPrimaryBranchID(), secondBranchID);
   BOOST_REQUIRE_EQUAL(thirdBranch->GetTrackID(), thirdTrackID);
   BOOST_REQUIRE_EQUAL(thirdBranch->GetPrimaryNodeID(), fifthNodeID);

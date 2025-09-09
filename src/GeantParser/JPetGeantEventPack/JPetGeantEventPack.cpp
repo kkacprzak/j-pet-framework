@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2020 The J-PET Monte Carlo Authors. All rights reserved.
+ *  @copyright Copyright 2025 The J-PET Monte Carlo Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -15,9 +15,9 @@
 
 #include "JPetGeantEventPack/JPetGeantEventPack.h"
 
-ClassImp(JPetGeantEventPack)
+ClassImp(JPetGeantEventPack);
 
-    JPetGeantEventPack::JPetGeantEventPack()
+JPetGeantEventPack::JPetGeantEventPack()
     : fMCHits("JPetGeantScinHits", 10000), fMCDecayTrees("JPetGeantDecayTree", 1000), fEvtIndex(0), fHitIndex(0), fMCDecayTreesIndex(0)
 {
   fGenInfo = new JPetGeantEventInformation();

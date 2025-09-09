@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2017 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2025 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -81,7 +81,8 @@ Predicate JPetTaskLooper::getMaxIterationPredicate(int maxIteration)
 {
   assert(maxIteration >= 0);
   int counter = 0;
-  auto iterationFunction = [maxIteration, counter](const JPetParams&) mutable -> bool {
+  auto iterationFunction = [maxIteration, counter](const JPetParams&) mutable -> bool
+  {
     if (counter < maxIteration)
     {
       counter++;
@@ -97,7 +98,8 @@ Predicate JPetTaskLooper::getMaxIterationPredicate(int maxIteration)
 
 Predicate JPetTaskLooper::getStopOnOptionPredicate(const std::string stopIterationOptName)
 {
-  auto stopFunction = [stopIterationOptName](const JPetParams& params) -> bool {
+  auto stopFunction = [stopIterationOptName](const JPetParams& params) -> bool
+  {
     using namespace jpet_options_tools;
     auto options = params.getOptions();
     bool continueIteration = isOptionSet(options, stopIterationOptName) && (!getOptionAsBool(options, stopIterationOptName));

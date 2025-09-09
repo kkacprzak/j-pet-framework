@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2018 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2025 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -53,7 +53,8 @@ std::map<std::string, std::string> JPetOptionsTypeHandler::anyMapToStringMap(con
       newOptionsMap[option.first] = any_cast<std::string>(option.second);
       break;
     case JPetOptionsTypeHandler::kAllowedTypes::kVectorString:
-      newOptionsMap[option.first] = [&option]() -> std::string {
+      newOptionsMap[option.first] = [&option]() -> std::string
+      {
         std::string result = "[";
         for (const auto& s : any_cast<std::vector<std::string>>(option.second))
         {
@@ -64,7 +65,8 @@ std::map<std::string, std::string> JPetOptionsTypeHandler::anyMapToStringMap(con
       }();
       break;
     case JPetOptionsTypeHandler::kAllowedTypes::kVectorInt:
-      newOptionsMap[option.first] = [&option]() -> std::string {
+      newOptionsMap[option.first] = [&option]() -> std::string
+      {
         std::string result = "";
         for (const auto& s : any_cast<std::vector<int>>(option.second))
         {
@@ -74,7 +76,8 @@ std::map<std::string, std::string> JPetOptionsTypeHandler::anyMapToStringMap(con
       }();
       break;
     case JPetOptionsTypeHandler::kAllowedTypes::kVectorDouble:
-      newOptionsMap[option.first] = [&option]() -> std::string {
+      newOptionsMap[option.first] = [&option]() -> std::string
+      {
         std::string result = "";
         for (const auto& s : any_cast<std::vector<double>>(option.second))
         {

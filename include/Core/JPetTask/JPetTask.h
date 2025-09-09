@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2018 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2025 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -15,9 +15,9 @@
 
 #ifndef JPETTASK_H
 #define JPETTASK_H
+#include "./JPetDataInterface/JPetDataInterface.h"
 #include "./JPetParams/JPetParams.h"
 #include "./JPetTaskInterface/JPetTaskInterface.h"
-#include "./JPetDataInterface/JPetDataInterface.h"
 #include <string>
 #include <vector>
 
@@ -31,7 +31,7 @@ class JPetWriter;
  * init, exec and terminate methods in the inherited class.
  * @todo Add tests for this class. Any.
  */
-class JPetTask: public JPetTaskInterface
+class JPetTask : public JPetTaskInterface
 {
 public:
   JPetTask(const char* name = "");

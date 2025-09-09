@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2021 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2025 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -93,9 +93,7 @@ BOOST_AUTO_TEST_CASE(generate_root_file)
   manager.parseCmdLine(argc, argv);
   manager.run(argc, argv);
   BOOST_REQUIRE_MESSAGE(boost::filesystem::exists(test_root_filename), "File " << test_root_filename << " does not exist.");
-  BOOST_REQUIRE_MESSAGE(boost::filesystem::exists("test.root"), "File "
-                                                                    << "test.root"
-                                                                    << " does not exist.");
+  BOOST_REQUIRE_MESSAGE(boost::filesystem::exists("test.root"), "File " << "test.root" << " does not exist.");
 }
 
 BOOST_AUTO_TEST_CASE(position_does_not_exist)
@@ -140,9 +138,7 @@ BOOST_AUTO_TEST_CASE(generate_root_file2)
   auto argv = args_char.data();
   JPetManager& manager = JPetManager::getManager();
   manager.run(argc, argv);
-  BOOST_REQUIRE_MESSAGE(boost::filesystem::exists("test.root"), "File "
-                                                                    << "test.root"
-                                                                    << " does not exist.");
+  BOOST_REQUIRE_MESSAGE(boost::filesystem::exists("test.root"), "File " << "test.root" << " does not exist.");
   BOOST_REQUIRE_MESSAGE(boost::filesystem::exists(test_root_filename1), "File " << test_root_filename1 << " does not exist.");
   BOOST_REQUIRE_MESSAGE(boost::filesystem::exists(test_root_filename2), "File " << test_root_filename2 << " does not exist.");
 }

@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2021 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2025 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -43,7 +43,7 @@ BOOST_AUTO_TEST_CASE(branch_setter_getter)
   JPetGeantDecayTreeBranch branch;
   branch.SetTrackID(trackID);
   branch.SetPrimaryBranchID(primaryBranchID);
-  
+
   BOOST_REQUIRE_EQUAL(branch.GetTrackID(), trackID);
   BOOST_REQUIRE_EQUAL(branch.GetPrimaryBranchID(), primaryBranchID);
 }
@@ -54,12 +54,12 @@ BOOST_AUTO_TEST_CASE(check_branch_setting_one_element)
   int trackID = 2;
   int nodeID = 3;
   InteractionType interactionType = InteractionType::kPrimaryGamma;
-  
+
   JPetGeantDecayTreeBranch branch;
   branch.SetTrackID(trackID);
   branch.SetPrimaryBranchID(primaryBranchID);
   branch.AddNodeID(nodeID, interactionType);
-  
+
   BOOST_REQUIRE_EQUAL(branch.GetPrimaryNodeID(), nodeID);
   BOOST_REQUIRE_EQUAL(branch.GetLastNodeID(), nodeID);
   BOOST_REQUIRE_EQUAL(branch.GetPreviousNodeID(nodeID), nodeID);
@@ -76,14 +76,14 @@ BOOST_AUTO_TEST_CASE(check_branch_setting_more_elements)
   InteractionType firstInteractionType = InteractionType::kPrimaryGamma;
   InteractionType secondInteractionType = InteractionType::kScattNonActivePart;
   InteractionType thirdInteractionType = InteractionType::kScattActivePart;
-  
+
   JPetGeantDecayTreeBranch branch;
   branch.SetTrackID(trackID);
   branch.SetPrimaryBranchID(primaryBranchID);
   branch.AddNodeID(firstNodeID, firstInteractionType);
   branch.AddNodeID(secondNodeID, secondInteractionType);
   branch.AddNodeID(thirdNodeID, thirdInteractionType);
-  
+
   BOOST_REQUIRE_EQUAL(branch.GetPrimaryNodeID(), firstNodeID);
   BOOST_REQUIRE_EQUAL(branch.GetLastNodeID(), thirdNodeID);
   BOOST_REQUIRE_EQUAL(branch.GetPreviousNodeID(thirdNodeID), secondNodeID);
@@ -92,7 +92,5 @@ BOOST_AUTO_TEST_CASE(check_branch_setting_more_elements)
   BOOST_REQUIRE_EQUAL(branch.GetInteractionType(secondNodeID), secondInteractionType);
   BOOST_REQUIRE_EQUAL(branch.GetInteractionType(thirdNodeID), thirdInteractionType);
 }
-
-
 
 BOOST_AUTO_TEST_SUITE_END()

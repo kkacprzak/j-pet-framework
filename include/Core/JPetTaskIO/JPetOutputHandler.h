@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2018 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2025 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -33,11 +33,13 @@ class JPetTaskInterface;
 class JPetOutputHandler
 {
 public:
-  JPetOutputHandler(); 
+  JPetOutputHandler();
   explicit JPetOutputHandler(const char* outputFilename);
 
-  void saveOutput(JPetParamManager& manager, JPetTreeHeader* header, JPetStatistics* statistics, std::map<std::string, std::unique_ptr<JPetStatistics>>& fSubTasksStatistics);
-  void saveAndCloseOutput(JPetParamManager& manager, JPetTreeHeader* header, JPetStatistics* statistics, std::map<std::string, std::unique_ptr<JPetStatistics>>& fSubTasksStatistics);
+  void saveOutput(JPetParamManager& manager, JPetTreeHeader* header, JPetStatistics* statistics,
+                  std::map<std::string, std::unique_ptr<JPetStatistics>>& fSubTasksStatistics);
+  void saveAndCloseOutput(JPetParamManager& manager, JPetTreeHeader* header, JPetStatistics* statistics,
+                          std::map<std::string, std::unique_ptr<JPetStatistics>>& fSubTasksStatistics);
   bool writeEventToFile(JPetTaskInterface* task);
 
 protected:
@@ -46,6 +48,5 @@ protected:
 private:
   JPetOutputHandler(const JPetOutputHandler&);
   void operator=(const JPetOutputHandler&);
-
 };
 #endif /*  !JPETOUTPUTHANDLER_H */

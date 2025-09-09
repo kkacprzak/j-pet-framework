@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2018 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2025 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -16,10 +16,10 @@
 #ifndef _JPET_TIMER_H_
 #define _JPET_TIMER_H_
 
-#include <numeric>
-#include <vector>
-#include <string>
 #include <chrono>
+#include <numeric>
+#include <string>
+#include <vector>
 
 /**
  * @brief Measuremet of tasks execution time.
@@ -28,8 +28,7 @@ class JPetTimer
 {
 public:
   using vectorElapsedTimes = std::vector<std::pair<std::string, std::chrono::seconds>>;
-  using startTimeType = std::chrono::time_point<std::chrono::_V2::system_clock,
-    std::chrono::duration<long int, std::ratio<1l, 1000000000l>>>;
+  using startTimeType = std::chrono::time_point<std::chrono::_V2::system_clock, std::chrono::duration<long int, std::ratio<1l, 1000000000l>>>;
 
   JPetTimer();
   ~JPetTimer();

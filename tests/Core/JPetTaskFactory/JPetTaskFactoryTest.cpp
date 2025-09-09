@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2019 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2025 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -156,7 +156,8 @@ BOOST_AUTO_TEST_CASE(factory_addAndRegisterTaskWithStop)
   factory.registerTask<TestClass>("task2");
   BOOST_REQUIRE_EQUAL(factory.getTasksDictionary().size(), 2);
   BOOST_REQUIRE(factory.addTaskInfo("task1", "raw", "calib", 1, false));
-  BOOST_REQUIRE(factory.addTaskInfo("task2", "calib", "sig", -1, false)); /// iterative with stop condition the task will be packed in the Looper Class
+  BOOST_REQUIRE(
+      factory.addTaskInfo("task2", "calib", "sig", -1, false)); /// iterative with stop condition the task will be packed in the Looper Class
   BOOST_REQUIRE_EQUAL(factory.getTasksToUse().size(), 2);
 
   std::map<std::string, boost::any> opts = {{"inputFileType_std::string", std::string("root")}};

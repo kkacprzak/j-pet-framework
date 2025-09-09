@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2017 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2025 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -15,24 +15,25 @@
 
 #ifndef JPETTASKLOOPER_H
 #define JPETTASKLOOPER_H
+#include "./JPetParams/JPetParams.h"
 #include "./JPetTask/JPetTask.h"
 #include <memory>
-#include "./JPetParams/JPetParams.h"
 
-using Predicate=std::function<bool(const JPetParams& params)>;
+using Predicate = std::function<bool(const JPetParams& params)>;
 
-class JPetTaskLooper: public JPetTask
+class JPetTaskLooper : public JPetTask
 {
 public:
   static Predicate getMaxIterationPredicate(int maxIteration);
   static Predicate getStopOnOptionPredicate(const std::string optionName);
 
-  JPetTaskLooper(const char* name, std::unique_ptr<JPetTask> subtask, Predicate isCondition = [](const JPetParams&){return false;});
-  virtual ~JPetTaskLooper(){}
+  JPetTaskLooper(const char* name, std::unique_ptr<JPetTask> subtask, Predicate isCondition = [](const JPetParams&) { return false; });
+  virtual ~JPetTaskLooper() {}
   bool init(const JPetParams& inOptions) override;
   bool run(const JPetDataInterface& inData) override;
   bool terminate(JPetParams& outOptions) override;
   void setConditionFunction(Predicate isCondition);
+
 protected:
   Predicate fIsCondition;
   JPetParams fParams;

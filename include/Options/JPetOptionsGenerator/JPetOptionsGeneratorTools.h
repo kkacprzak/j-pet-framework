@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2018 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2025 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -19,8 +19,8 @@
 #include "./JPetOptionsTools/JPetOptionsTools.h"
 #include "boost/program_options.hpp"
 #include <boost/any.hpp>
-#include <string>
 #include <map>
+#include <string>
 
 namespace po = boost::program_options;
 using OptsStrAny = std::map<std::string, boost::any>;
@@ -36,12 +36,11 @@ TransformersMap generateTransformationMap(OptsStrAny& options);
 OptsStrAny resetEventRange(const OptsStrAny& srcOpts);
 OptsStrAny addTypeSuffixes(const OptsStrAny& oldMap);
 OptsStrAny getDefaultOptions();
-void addTransformFunction(TransformersMap& oldMap,  const std::string& name,
-                          jpet_options_tools::Transformer transformFunction);
+void addTransformFunction(TransformersMap& oldMap, const std::string& name, jpet_options_tools::Transformer transformFunction);
 void addNewOptionsFromCfgFile(const std::string& cfgFile, OptsStrAny& options);
 void setOutputFileType(OptsStrAny& options, const std::string fileType);
 void setResetEventRangeOption(OptsStrAny& options, bool isReset);
 void setOutputFile(OptsStrAny& options, const std::string file);
 void setOutputPath(OptsStrAny& options, const std::string path);
-};
+}; // namespace jpet_options_generator_tools
 #endif /* !JPETOPTIONSGENERATORTOOLS_H */

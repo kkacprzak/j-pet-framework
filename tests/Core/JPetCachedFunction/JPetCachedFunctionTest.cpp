@@ -1,3 +1,18 @@
+/**
+ *  @copyright Copyright 2025 The J-PET Framework Authors. All rights reserved.
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may find a copy of the License in the LICENCE file.
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *  @file JPetCachedFunctionTest.cpp
+ */
+
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE JPetCachedFunctionTest
 
@@ -9,9 +24,10 @@ using namespace jpet_common_tools;
 /// Returns Time-over-threshold for given deposited energy
 /// the current parametrization is par1 + par2 * eDep
 /// Returned value in ps, and eDep is given in keV.
-double getToT1(double eDep, double  par1 = -91958., double par2 = 19341.)
+double getToT1(double eDep, double par1 = -91958., double par2 = 19341.)
 {
-  if (eDep < 0. ) return 0.;
+  if (eDep < 0.)
+    return 0.;
   double value = par1 + eDep * par2;
   return value;
 }
@@ -20,7 +36,7 @@ BOOST_AUTO_TEST_SUITE(JPetCachedFunctionTestSuite)
 
 BOOST_AUTO_TEST_CASE(getTot_params)
 {
-  JPetCachedFunctionParams params("pol1", { -91958., 19341.});
+  JPetCachedFunctionParams params("pol1", {-91958., 19341.});
   JPetCachedFunction1D func(params, Range(100, 0., 100.));
   BOOST_CHECK(func.getParams().fValidFunction);
   BOOST_CHECK_EQUAL(func.getParams().fParams.size(), 2);
@@ -35,8 +51,8 @@ BOOST_AUTO_TEST_CASE(getTot_params)
 
 BOOST_AUTO_TEST_CASE(getTot_standardFunc)
 {
-  JPetCachedFunctionParams params("pol1", { -91958., 19341.});
-  JPetCachedFunction1D func(params, Range( 10000, 0., 100.));
+  JPetCachedFunctionParams params("pol1", {-91958., 19341.});
+  JPetCachedFunction1D func(params, Range(10000, 0., 100.));
   BOOST_CHECK(func.getParams().fValidFunction);
   BOOST_CHECK_CLOSE(func(0.), getToT1(0.), 0.1);
   BOOST_CHECK_CLOSE(func(1.), getToT1(1.), 0.1);

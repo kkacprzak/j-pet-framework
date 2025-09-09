@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2018 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2025 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -67,13 +67,15 @@ BOOST_AUTO_TEST_CASE(test2)
   opt["inputFile_std::string"] = std::string("unitTestData/JPetTaskChainExecutorTest/goodRootFile.unk.evt.root ");
   opt["inputFileType_std::string"] = std::string("root");
   opt["outputFile_std::string"] = std::string("JPetTaskChainExecutorTest2Chain2.root");
-  auto taskGenerator1 = []() {
+  auto taskGenerator1 = []()
+  {
     auto taskIO = jpet_common_tools::make_unique<JPetTaskIOLoopPerSubTask>("TaskA", "unk.evt", "test.file");
     taskIO->addSubTask(std::unique_ptr<TestTask>(new TestTask("test2 TestTask1")));
     taskIO->addSubTask(std::unique_ptr<TestTask>(new TestTask("test2 TestTask2")));
     return taskIO;
   };
-  auto taskGenerator2 = []() {
+  auto taskGenerator2 = []()
+  {
     auto taskIO = jpet_common_tools::make_unique<JPetTaskIOLoopPerSubTask>("TaskB", "test.file", "test2.file");
     taskIO->addSubTask(std::unique_ptr<TestTask>(new TestTask("test2 TestTask3")));
     return taskIO;

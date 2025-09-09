@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2019 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2025 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -16,27 +16,25 @@
 #ifndef JPETCACHEDFUNCTION_H
 #define JPETCACHEDFUNCTION_H
 
-#include <vector>
 #include <string>
+#include <vector>
 
-namespace  jpet_common_tools
+namespace jpet_common_tools
 {
 
-struct Range {
-  Range(int bins, double min, double max): fBins(bins), fMin(min), fMax(max) {}
+struct Range
+{
+  Range(int bins, double min, double max) : fBins(bins), fMin(min), fMax(max) {}
   Range() = default;
-  int fBins = 100 ;  /// Number of times the function is sampled.
-  double fMin =  -1.;
+  int fBins = 100; /// Number of times the function is sampled.
+  double fMin = -1.;
   double fMax = -1.;
 };
 
-
-struct JPetCachedFunctionParams {
-  JPetCachedFunctionParams(const std::string& formula, const std::vector<double>& params):
-    fFormula(formula), fParams(params)
-  {
-  }
-  std::string fFormula;  /// Function formula that must be understood by TFormula from ROOT.
+struct JPetCachedFunctionParams
+{
+  JPetCachedFunctionParams(const std::string& formula, const std::vector<double>& params) : fFormula(formula), fParams(params) {}
+  std::string fFormula;        /// Function formula that must be understood by TFormula from ROOT.
   std::vector<double> fParams; /// Parameters used by the function described by TFormula.
   bool fValidFunction = false;
 };
@@ -44,31 +42,30 @@ struct JPetCachedFunctionParams {
 /**
  * @brief  Class represent function of TFormula type with the cached values
  *
- * Special class based on TFormula that precomputes and stores function values in the cache. 
- * The classes JPetCachedFunction1D and JPetCachedFunction2D correspond to  func(x,p0,p1,...) 
+ * Special class based on TFormula that precomputes and stores function values in the cache.
+ * The classes JPetCachedFunction1D and JPetCachedFunction2D correspond to  func(x,p0,p1,...)
  * and func(x,y, p0,p1, ...) implementations.
  * Base class JPetCachedFunction is not ment to be created separately.
- * 
+ *
  */
 class JPetCachedFunction
 {
 protected:
-  explicit JPetCachedFunction(const JPetCachedFunctionParams& params); 
+  explicit JPetCachedFunction(const JPetCachedFunctionParams& params);
 
 public:
   JPetCachedFunctionParams getParams() const;
   std::vector<double> getValues() const;
 
 protected:
-  std::vector<double> fValues; /// Lookup table containg the function values.
-  JPetCachedFunctionParams fParams;  /// Parameters describing the function.
+  std::vector<double> fValues;      /// Lookup table containg the function values.
+  JPetCachedFunctionParams fParams; /// Parameters describing the function.
 };
 
-
 /**
- * @brief 1D version of JPetCachedFunction so f(x,p0,p1,...) 
+ * @brief 1D version of JPetCachedFunction so f(x,p0,p1,...)
  */
-class JPetCachedFunction1D: public JPetCachedFunction
+class JPetCachedFunction1D : public JPetCachedFunction
 {
 
 public:
@@ -85,9 +82,9 @@ private:
 };
 
 /**
- * @brief 2D version of JPetCachedFunction so f(x,y, p0,p1,...) 
+ * @brief 2D version of JPetCachedFunction so f(x,y, p0,p1,...)
  */
-class JPetCachedFunction2D: public JPetCachedFunction
+class JPetCachedFunction2D : public JPetCachedFunction
 {
 
 public:
@@ -103,5 +100,5 @@ private:
   std::pair<double, double> fSteps = {1., 1.}; /// Step size with which the lookup table is filled.
 };
 
-}
+} // namespace jpet_common_tools
 #endif /*  !JPETCACHEDFUNCTION_H */

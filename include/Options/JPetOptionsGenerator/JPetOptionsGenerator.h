@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2018 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2025 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -19,9 +19,9 @@
 #include "./JPetOptionsTools/JPetOptionsTools.h"
 #include "boost/program_options.hpp"
 #include <boost/any.hpp>
-#include <vector>
-#include <string>
 #include <map>
+#include <string>
+#include <vector>
 
 namespace po = boost::program_options;
 

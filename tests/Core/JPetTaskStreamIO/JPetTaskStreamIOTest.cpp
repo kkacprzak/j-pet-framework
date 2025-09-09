@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2020 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2025 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -16,22 +16,19 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE JPetTaskStreamIOTest
 
-#include "./JPetOptionsGenerator/JPetOptionsGenerator.h"
-#include "./JPetCmdParser/JPetCmdParser.h"
 #include "./JPetTaskStreamIO/JPetTaskStreamIO.h"
-#include "./JPetUserTask/JPetUserTask.h"
+#include "./JPetCmdParser/JPetCmdParser.h"
 #include "./JPetCommonTools/JPetCommonTools.h"
 #include "./JPetDataInterface/JPetDataInterface.h"
+#include "./JPetOptionsGenerator/JPetOptionsGenerator.h"
+#include "./JPetUserTask/JPetUserTask.h"
 #include <boost/test/unit_test.hpp>
 
-class JPetTaskTest: public JPetUserTask
+class JPetTaskTest : public JPetUserTask
 {
 public:
-  explicit JPetTaskTest(const char* name): JPetUserTask(name) {}
-  virtual ~JPetTaskTest()
-  {
-    ;
-  }
+  explicit JPetTaskTest(const char* name) : JPetUserTask(name) {}
+  virtual ~JPetTaskTest() { ; }
 
 protected:
   bool init()
@@ -39,24 +36,15 @@ protected:
     fOutputEvents = new JPetTimeWindow("JPetEvent");
     return true;
   }
-  bool exec()
-  {
-    return true;
-  }
-  bool terminate()
-  {
-    return true;
-  }
+  bool exec() { return true; }
+  bool terminate() { return true; }
 };
 
-class JPetTaskWrongInit: public JPetUserTask
+class JPetTaskWrongInit : public JPetUserTask
 {
 public:
-  explicit JPetTaskWrongInit(const char* name): JPetUserTask(name) {}
-  virtual ~JPetTaskWrongInit()
-  {
-    ;
-  }
+  explicit JPetTaskWrongInit(const char* name) : JPetUserTask(name) {}
+  virtual ~JPetTaskWrongInit() { ; }
 
 protected:
   bool init()
@@ -64,17 +52,11 @@ protected:
     fOutputEvents = new JPetTimeWindow("JPetEvent");
     return false;
   }
-  bool exec()
-  {
-    return true;
-  }
-  bool terminate()
-  {
-    return true;
-  }
+  bool exec() { return true; }
+  bool terminate() { return true; }
 };
 
-BOOST_AUTO_TEST_SUITE( FirstSuite )
+BOOST_AUTO_TEST_SUITE(FirstSuite)
 
 BOOST_AUTO_TEST_CASE(Run_ok)
 {

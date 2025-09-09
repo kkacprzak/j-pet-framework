@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2018 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2025 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -16,8 +16,8 @@
 #ifndef JPET_SCOPE_CONFIG_PARSER_H
 #define JPET_SCOPE_CONFIG_PARSER_H
 
-#include <boost/property_tree/ptree.hpp>
 #include "JPetScopeConfigPOD.h"
+#include <boost/property_tree/ptree.hpp>
 #include <string>
 #include <vector>
 
@@ -31,27 +31,18 @@ public:
   JPetScopeConfigParser() {}
   DirFileContainer getInputDirectoriesAndFakeInputFiles(const std::string& configFileWithPath) const;
   scope_config::Config getConfig(const std::string& configFileName) const;
-  std::vector<InputDirectory> getInputDirectories(
-    const std::string& configFileLocation, const scope_config::Config& config) const;
-  std::vector<FakeInputFile> getFakeInputFileNames(
-    const std::string& configFileName, const scope_config::Config& config) const;
-  std::vector<std::string> generateFileNames(
-    const std::string& configFileName, const std::string& configName,
-    const std::vector<int>& positions) const;
-  std::vector<std::string> generateDirectories(
-    const std::string& basePath, const std::vector<int>& positions) const;
-  boost::property_tree::ptree getJsonContent(
-    const std::string& configFileName) const;
-  std::vector<int> transformToNumbers(
-    const std::vector<std::string>& positions) const;
-  DirFileContainer getElementsWithExistingDirs(
-    const JPetScopeConfigParser::DirFileContainer& dirsAndFiles) const;
+  std::vector<InputDirectory> getInputDirectories(const std::string& configFileLocation, const scope_config::Config& config) const;
+  std::vector<FakeInputFile> getFakeInputFileNames(const std::string& configFileName, const scope_config::Config& config) const;
+  std::vector<std::string> generateFileNames(const std::string& configFileName, const std::string& configName,
+                                             const std::vector<int>& positions) const;
+  std::vector<std::string> generateDirectories(const std::string& basePath, const std::vector<int>& positions) const;
+  boost::property_tree::ptree getJsonContent(const std::string& configFileName) const;
+  std::vector<int> transformToNumbers(const std::vector<std::string>& positions) const;
+  DirFileContainer getElementsWithExistingDirs(const JPetScopeConfigParser::DirFileContainer& dirsAndFiles) const;
 
 protected:
-  scope_config::Config getConfig(
-    std::string configName, boost::property_tree::ptree const& configContent) const;
-  std::vector<std::string> getPositions(
-    boost::property_tree::ptree const& configContent) const;
+  scope_config::Config getConfig(std::string configName, boost::property_tree::ptree const& configContent) const;
+  std::vector<std::string> getPositions(boost::property_tree::ptree const& configContent) const;
   std::string getLocation(boost::property_tree::ptree const& content) const;
 
 private:

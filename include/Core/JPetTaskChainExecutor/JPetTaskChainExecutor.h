@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2018 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2025 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -16,15 +16,15 @@
 #ifndef JPETTASKCHAINEXECUTOR_H
 #define JPETTASKCHAINEXECUTOR_H
 
-#include <list>
-#include <TThread.h>
-#include <functional> // for TaskGenerator declaration
-#include <vector> // for TaskGeneratorChain declaration
 #include "./JPetParams/JPetParams.h"
 #include "./JPetTaskInterface/JPetTaskInterface.h"
 #include "./JPetTimer/JPetTimer.h"
+#include <TThread.h>
+#include <functional> // for TaskGenerator declaration
+#include <list>
+#include <vector> // for TaskGeneratorChain declaration
 
-using TaskGenerator = std::function< std::unique_ptr<JPetTaskInterface>() >;
+using TaskGenerator = std::function<std::unique_ptr<JPetTaskInterface>()>;
 using TaskGeneratorChain = std::vector<TaskGenerator>;
 
 /**
@@ -35,7 +35,7 @@ using TaskGeneratorChain = std::vector<TaskGenerator>;
  */
 class JPetTaskChainExecutor
 {
-public :
+public:
   JPetTaskChainExecutor(const TaskGeneratorChain& taskGeneratorChain, int processedFile, const jpet_options_tools::OptsStrAny&);
   TThread* run();
   virtual ~JPetTaskChainExecutor();
@@ -44,7 +44,7 @@ private:
   static void* processProxy(void*);
 
   int fInputSeqID = -1;
-  std::list<std::unique_ptr<JPetTaskInterface> > fTasks;
+  std::list<std::unique_ptr<JPetTaskInterface>> fTasks;
   TaskGeneratorChain ftaskGeneratorChain;
   JPetParams fParams;
 };

@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2018 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2025 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -13,17 +13,16 @@
  *  @file JPetTaskChainExecutor.cpp
  */
 
-#include "JPetOptionsGenerator/JPetOptionsGeneratorTools.h"
 #include "JPetTaskChainExecutor/JPetTaskChainExecutor.h"
-#include "JPetParamsFactory/JPetParamsFactory.h"
 #include "JPetLoggerInclude.h"
+#include "JPetOptionsGenerator/JPetOptionsGeneratorTools.h"
+#include "JPetParamsFactory/JPetParamsFactory.h"
 #include <cassert>
 #include <memory>
 
-JPetTaskChainExecutor::JPetTaskChainExecutor(
-  const TaskGeneratorChain& taskGeneratorChain, int processedFileID,
- const jpet_options_tools::OptsStrAny& opts):
- fInputSeqID(processedFileID), ftaskGeneratorChain(taskGeneratorChain)
+JPetTaskChainExecutor::JPetTaskChainExecutor(const TaskGeneratorChain& taskGeneratorChain, int processedFileID,
+                                             const jpet_options_tools::OptsStrAny& opts)
+    : fInputSeqID(processedFileID), ftaskGeneratorChain(taskGeneratorChain)
 {
   /// ParamManager is generated and added to fParams
   fParams = jpet_params_factory::generateParams(opts);

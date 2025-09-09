@@ -1,5 +1,5 @@
 /**
- *  @copyright Copyright 2019 The J-PET Framework Authors. All rights reserved.
+ *  @copyright Copyright 2025 The J-PET Framework Authors. All rights reserved.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may find a copy of the License in the LICENCE file.
@@ -18,8 +18,8 @@
 
 #include "JPetLoggerInclude.h"
 #include "JPetParamConstants.h"
-#include <string>
 #include <map>
+#include <string>
 
 typedef std::map<std::string, std::string> ParamObjectDescription;
 typedef std::map<int, ParamObjectDescription> ParamObjectsDescriptions;
@@ -33,11 +33,9 @@ typedef std::map<int, int> ParamRelationalData;
 class JPetParamGetter
 {
 public:
-  virtual ParamObjectsDescriptions getAllBasicData(
-    ParamObjectType type, const int runID) = 0;
-  virtual ParamRelationalData getAllRelationalData(
-    ParamObjectType type1, ParamObjectType type2, const int runID) = 0;
-  virtual ~JPetParamGetter() {};
+  virtual ParamObjectsDescriptions getAllBasicData(ParamObjectType type, const int runID) = 0;
+  virtual ParamRelationalData getAllRelationalData(ParamObjectType type1, ParamObjectType type2, const int runID) = 0;
+  virtual ~JPetParamGetter(){};
 };
 
 #endif /* !JPET_PARAM_GETTER_H */
